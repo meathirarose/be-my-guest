@@ -1,12 +1,17 @@
-import './App.css'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage"; 
+import LandingPage from "./pages/LandingPage";   
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <div className="text-center p-4">
-      <p className="text-4xl font-bold text-blue-500">Welcome to Tailwind CSS!</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
-export default App
+export default App;
