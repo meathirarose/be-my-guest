@@ -9,7 +9,7 @@ export class UserService {
     }
 
     // Register user method
-    public async registerUser(name: string, email: string, password: string): Promise<IUser> {
+    public async registerUser(name: string, email: string, password: string, country: string): Promise<IUser> {
         const existingUser = await this.userRepository.findByEmail(email);
         if (existingUser) {
             throw new Error("User with this email already exists.");
@@ -19,6 +19,7 @@ export class UserService {
             name,
             email,
             password,
+            country,
             role: 'customer',
             createdAt: new Date()
         };
