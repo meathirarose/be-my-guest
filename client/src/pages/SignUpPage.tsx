@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../shared/components/Header';
-import SignUpView from '../components/signup-page/SignUpView';
+import SignUpView from '../components/signup/SignUpView';
 import Footer from '../shared/components/Footer';
 
 const SignUpPage: React.FC = () => {
