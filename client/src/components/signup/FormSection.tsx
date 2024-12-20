@@ -18,9 +18,7 @@ const SignupForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    console.log(name, value);
-    setFormData((prev) => ({...prev, [name]: value}));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,13 +30,13 @@ const SignupForm: React.FC = () => {
       const response = await SignUpUser(
         formData.name, formData.email, formData.country, formData.password, formData.confirmPassword
       );
-       if(response && response.status === 201){
-        alert("signup successfull");
-        navigate('/login');
-       }
+      if (response && response.status === 201) {
+        navigate("/verify-email"); 
+      }
     } catch (error) {
       console.log(error || "Signup failed!");
-    }finally {
+      setError("Signup failed. Please try again.");
+    } finally {
       setLoading(false);
     }
   }
@@ -96,10 +94,16 @@ const SignupForm: React.FC = () => {
         <button 
           type="submit"
           disabled={loading}
-          className="w-full p-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
+          aria-busy={loading}
+          className={`w-full p-3 text-white rounded-lg ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-500 hover:bg-purple-600'}`}
         >
-          {loading ? "Signing Up...": "SIGNUP"}
+          {loading ? (
+            <>
+              <span className="loader mr-2"></span> Signing Up...
+            </>
+          ) : "VERIFY YOUR MAIL"}
         </button>
+
       </form>
 
       <p className="text-center text-gray-600 mt-4">
