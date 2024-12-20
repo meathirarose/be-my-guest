@@ -19,6 +19,8 @@ mongoose.connect(process.env.MONGO_URL as string)
 
 app.use('/api/users', userRoutes);
 
+//error handler middleware
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

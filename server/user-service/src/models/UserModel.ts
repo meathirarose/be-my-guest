@@ -1,15 +1,7 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { Role, IUserAttrs, IUserDoc, IUserModel } from "../interfaces/IUserModel";
 
-export interface IUser extends Document {
-    name: string, 
-    email: string, 
-    password: string,
-    country: string, 
-    role: string, 
-    createdAt: Date
-}
-
-const userSchema: Schema = new Schema<IUser>({
+const userSchema: Schema = new Schema<IUserDoc>({
     name: {
         type: String,
         required: true
@@ -29,15 +21,33 @@ const userSchema: Schema = new Schema<IUser>({
     },
     role: {
         type: String,
-        enum: ['customer', 'property-owner', 'admin'],
-        default: 'customer'
+        enum: Object.values(Role),
+        default: Role.CUSTOMER
+    },
+    verified: {
+        type: Boolean,
+        default: false
     },
     createdAt: {
         type: Date,
         default: Date.now()
     }
-});
+}, {
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  });
 
-const User = mongoose.model<IUser>('User', userSchema);
-
+userSchema.statics.build = (attrs: IUserAttrs) => {
+    return new User(attrs);
+};
+  
+const User = mongoose.model<IUserDoc, IUserModel>("User", userSchema);
+  
 export { User };
