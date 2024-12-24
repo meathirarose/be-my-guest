@@ -36,6 +36,6 @@ export const userValidationSchema = Joi.object({
         'string.empty': 'Confirm password cannot be empty',
         'any.required': 'Confirm password is required',
         'string.valid': 'Confirm password must match the password'
-    })
+    }),
 
 });

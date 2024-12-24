@@ -13,7 +13,6 @@ export class UserController {
         try {
 
             const { error, value } = userValidationSchema.validate(req.body, { abortEarly: false });
-            console.log(error,  "errorrrrrrrrrrrrrrrrrrrrrrrrrr--------------");
 
             if(error){
                 const errorMessages = error.details.map(detail => detail.message);
@@ -36,9 +35,8 @@ export class UserController {
 
     public verifyEmail = async (req: Request, res: Response) => {
         try {
-            console.log("verify email controller-----------------------------------------------")
             const { token } = req.query;
-            console.log(token);
+            console.log(token, "---------------------------------------------------------token");
 
             await this.userService.verifyEmail(token as string);
             res.status(200).json({ status: "success", message: "Email successfully verified." });
@@ -48,4 +46,31 @@ export class UserController {
             res.status(400).json({ message: error});
         }
     };
+
+    public signInUser = async (req: Request, res: Response) => {
+        try {
+            console.log('====================================');
+            console.log("login start------------------------");
+            console.log('====================================');
+
+            const { error, value } = userValidationSchema.validate(req.body, { abortEarly: false });
+
+            if(error){
+                console.log(error);
+                const errorMessages = error.details.map(detail => detail.message);
+
+                res.status(400).json({ message: 'Validation error', error: errorMessages});
+                return;
+            }
+
+            const { email, password } = req.body;
+
+            
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({ message: error });
+        }
+    }
 }

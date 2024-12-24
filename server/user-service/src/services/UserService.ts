@@ -46,8 +46,7 @@ export class UserService {
         try {
             console.log("verify email starttt-------------------------------------")
             const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string};
-            console.log(email, "service email------------------------------")
-            console.log(token, "----------------------")
+            
             const user = await this.userRepository.findByEmail(email);
 
             console.log("User found-----------------", user);
