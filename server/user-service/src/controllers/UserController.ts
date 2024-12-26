@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { userValidationSchema } from "../validations/UserValidation";
+import { BadRequestError } from "../errors/BadRequestError";
+import { AuthService } from "../utils/jwt";
+import { IUserController } from "../interfaces/IUserController";
 
-export class UserController {
+export class UserController implements IUserController{
     private userService: UserService;
 
     constructor() {
@@ -11,7 +14,7 @@ export class UserController {
 
     public registerUser = async (req: Request, res: Response): Promise<void> => {
         try {
-
+            console.log("hello register-----------------------------");
             const { error, value } = userValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
@@ -22,8 +25,10 @@ export class UserController {
             }
 
             const { name, email, password, country } = value;
+            console.log(value, "hello value from register--------------")
 
             const user = await this.userService.registerUser(name, email, password, country);
+            console.log(user,"hello user--------------------from register user-------------")
             
             res.status(201).json({ message: "User created successfully!", data: user });
 
@@ -33,7 +38,7 @@ export class UserController {
         }
     };
 
-    public verifyEmail = async (req: Request, res: Response) => {
+    public verifyEmail = async (req: Request, res: Response): Promise<void> => {
         try {
             const { token } = req.query;
             console.log(token, "---------------------------------------------------------token");
@@ -47,7 +52,7 @@ export class UserController {
         }
     };
 
-    public signInUser = async (req: Request, res: Response) => {
+    public signInUser = async (req: Request, res: Response): Promise<void> => {
         try {
             console.log('====================================');
             console.log("login start------------------------");
@@ -65,8 +70,31 @@ export class UserController {
 
             const { email, password } = req.body;
 
-            
+            if(!email || !password) {
+                throw new BadRequestError("Email and Password are required!");
+            }
 
+            const user = await this.userService.signInUser(email, password);
+            const token = AuthService.generateToken( { 
+                id: user.id, 
+                email: user.email, 
+                role: user.role
+            });
+
+            res.cookie('accessToken', token, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 60 * 60 * 1000,
+            });
+
+            res.status(200).json({
+                message: "Login Successful!",
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    role: user.role,
+                }
+            });
 
         } catch (error) {
             console.log(error);

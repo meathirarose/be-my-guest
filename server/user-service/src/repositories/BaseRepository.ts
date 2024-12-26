@@ -9,7 +9,7 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
     }
 
     // Create a new document
-    async create(item: T): Promise<T> {
+    async save(item: T): Promise<T> {
         const newItem = new this.model(item);
         return await newItem.save();
     }

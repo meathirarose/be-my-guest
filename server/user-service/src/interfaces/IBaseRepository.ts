@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
 
 export interface IBaseRepository<T> {
-    create(item: T): Promise<T>;
+    save(item: T): Promise<T>;
     findById(id: string): Promise<T | null>;
     findAll(): Promise<T[]>;
     findOne(query: FilterQuery<T>): Promise<T | null>;  

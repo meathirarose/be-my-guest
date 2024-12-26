@@ -4,10 +4,14 @@ import { Role, IUserAttrs, IUserDoc } from "../interfaces/IUserModel";
 import { User } from "../models/UserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
+import { NotFoundError } from "../errors/NotFoundError";
+import { AuthService } from "../utils/jwt";
+import { BadRequestError } from "../errors/BadRequestError";
+import { IUserService } from "../interfaces/IUserService";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET || 'email-secret-key';
 
-export class UserService {
+export class UserService implements IUserService {
     private userRepository: UserRepository;
 
     constructor() {
@@ -20,7 +24,7 @@ export class UserService {
         const existingUser = await this.userRepository.findByEmail(email);
 
         if (existingUser) {
-            throw new Error("User with this email already exists.");
+            throw new BadRequestError("User with this email already exists.");
         }
 
         const hashedPassword = await bcryptjs.hash(password, 10);
@@ -39,24 +43,22 @@ export class UserService {
             await EmailService.sendVerificationMail(newUser.email);
         }
 
-        return await this.userRepository.create(newUser as IUserDoc);
+        return await this.userRepository.save(newUser as IUserDoc);
     };
 
     async verifyEmail(token: string): Promise<void> {
         try {
-            console.log("verify email starttt-------------------------------------")
+
             const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string};
             
             const user = await this.userRepository.findByEmail(email);
 
-            console.log("User found-----------------", user);
-
             if (!user) {
-                console.log("no user");
+                throw new NotFoundError();
             }
         
             if (user?.verified) {
-                console.log("User already verified");
+                throw new BadRequestError("User email is already verified");
             }
         
             const updatedUser = await this.userRepository.update(
@@ -69,5 +71,24 @@ export class UserService {
         } catch (error) {
             
         }
+    }
+
+    async signInUser(email: string, password: string): Promise<IUserDoc> {
+
+        const existingUser = await this.userRepository.findByEmail(email);
+        console.log(existingUser, "signin user--------------------------------------------");
+
+        if (!existingUser) {
+            throw new NotFoundError();
+        }
+
+        const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
+        console.log(passwordMatch, "password match signin user-----------------------------");
+
+        if(!passwordMatch) {
+            throw new BadRequestError("Invalid email or Password.!");
+        }
+
+        return existingUser;
     }
 }
