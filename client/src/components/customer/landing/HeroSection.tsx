@@ -1,7 +1,7 @@
 import React from "react";
-import heroImage from "../../assets/images/hero-image.png";
-import marariBeachImage from "../../assets/images/marari-beach.jpg";
-import heroCircle from "../../assets/images/hero-circle.jpg";
+import heroImage from "../../../assets/customer-images/hero-image.png";
+import marariBeachImage from "../../../assets/customer-images/marari-beach.jpg";
+import heroCircle from "../../../assets/customer-images/hero-circle.jpg";
 
 const HeroSection: React.FC = () => (
 

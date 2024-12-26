@@ -1,5 +1,5 @@
 import React from "react";
-import verifyEmailImage from "../assets/images/signup-image.jpg"; 
+import verifyEmailImage from "../../assets/customer-images/signup-image.jpg"; 
 
 const VerifyEmailPage: React.FC = () => {
   return (

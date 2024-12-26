@@ -1,7 +1,7 @@
 import React from "react";
-import bookingImage from "../../assets/images/booking.jpg";
-import localExperienceImage from "../../assets/images/local-experience.jpeg";
-import handpickedStayImage from "../../assets/images/handpicked-stay.jpg";
+import bookingImage from "../../../assets/customer-images/booking.jpg";
+import localExperienceImage from "../../../assets/customer-images/local-experience.jpeg";
+import handpickedStayImage from "../../../assets/customer-images/handpicked-stay.jpg";
 
 const MiddleSection: React.FC = () => {
   return (

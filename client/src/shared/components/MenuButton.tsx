@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
-import contactImage from "../../assets/images/contact-image.png";
+import contactImage from "../../assets/customer-images/contact-image.png";
 import { Link } from 'react-router-dom';
 
 const MenuButton: React.FC = () => {
@@ -38,7 +38,7 @@ const MenuButton: React.FC = () => {
               <Link to="/signup" className="w-full ">SignUp</Link>
             </li>
             <li className="w-full pb-2">
-              <Link to="/host-experience" className="w-full ">Host an Experience</Link>
+              <Link to="/host-landing" className="w-full ">Host an Experience</Link>
             </li>
             <li className="w-full pb">
               <Link to="/" className="w-full ">Landing Page</Link>

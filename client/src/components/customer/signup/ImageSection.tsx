@@ -1,5 +1,5 @@
 import React from "react";
-import signupImage from "../../assets/images/signup-image.jpg";
+import signupImage from "../../../assets/customer-images/signup-image.jpg";
 
 const SignupImageSection: React.FC = () => {
   return (

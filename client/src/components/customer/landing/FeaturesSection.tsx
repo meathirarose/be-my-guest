@@ -1,7 +1,7 @@
 import React from "react";
-import features1 from "../../assets/images/features1.png";
-import features2 from "../../assets/images/features2.png";
-import features3 from "../../assets/images/features3.png";
+import features1 from "../../../assets/customer-images/features1.png";
+import features2 from "../../../assets/customer-images/features2.png";
+import features3 from "../../../assets/customer-images/features3.png";
 
 const FeaturesSection: React.FC = () => {
   return (

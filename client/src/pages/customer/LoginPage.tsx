@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '../shared/components/Header';
-import LoginView from '../components/login/LoginView';
-import Footer from '../shared/components/Footer';
+import Header from '../../shared/components/Header';
+import LoginView from '../../components/customer/login/LoginView';
+import Footer from '../../shared/components/Footer';
 
 const LoginPage: React.FC = () => {
   return (

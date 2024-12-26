@@ -1,6 +1,6 @@
 import React from "react";
-import loginImage from "../../assets/images/login-img.png";
-import loginCircle from "../../assets/images/login-circle-bg.png";
+import loginImage from "../../../assets/customer-images/login-img.png";
+import loginCircle from "../../../assets/customer-images/login-circle-bg.png";
 
 const LoginImageSection: React.FC = () => {
   return (

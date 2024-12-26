@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { SignUpUser } from "../../api/userApi";
+import { SignUpUser } from "../../../api/userApi";
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();

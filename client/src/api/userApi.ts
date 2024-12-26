@@ -20,6 +20,7 @@ export const SignUpUser = async (
         confirmPassword
       }
     );
+    console.log(response, "response from register user------------------------------------")
     console.log("user api------------------------", name, email, password, country, confirmPassword)
     return response;
   } catch (error) {

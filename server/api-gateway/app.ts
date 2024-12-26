@@ -18,9 +18,11 @@ app.use(cors({
     credentials: true,
 },));
 
+console.log("hello api-gateway start")
 app.use('/user-service',proxy(`${process.env.USER_SERVICE_URL}`));
 
 const PORT = process.env.SERVER_PORT || 4000;
+console.log("hello api-gateway end")
 
 app.listen(PORT,()=>{
     console.log(`API Gateway running on ${PORT}`);
