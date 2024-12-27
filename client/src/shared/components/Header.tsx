@@ -6,7 +6,7 @@ import MenuButton from "./MenuButton";
 const Header: React.FC = () => {
   const location = useLocation();
 
-  const isLandingPage = location.pathname === "/";
+  const isLandingPage = location.pathname === "/" || location.pathname === "/host-landing";
 
   return (
     <header className="fixed top-0 left-0 w-full flex justify-between items-center p-5 bg-gray-50 shadow-lg z-50">
