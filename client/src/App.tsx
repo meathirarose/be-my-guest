@@ -17,7 +17,7 @@ const App: React.FC = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/success-verification" element={<ConfirmVerifyEmailPage />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/user-home" element={<Home />} />
         <Route path="/host-landing" element={<PropertyOwnerLandingPage />} />{/* for property-owner */}
       </Routes>
     </Router>

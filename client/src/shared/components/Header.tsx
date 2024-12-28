@@ -2,19 +2,23 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import MenuButton from "./MenuButton";
 
-
 const Header: React.FC = () => {
   const location = useLocation();
 
-  const isLandingPage = location.pathname === "/" || location.pathname === "/host-landing";
+  // List of landing page paths
+  const landingPages = ["/", "/host-landing"];
+
+  // Check if the current path is a landing page
+  const isLandingPage = landingPages.includes(location.pathname);
 
   return (
     <header className="fixed top-0 left-0 w-full flex justify-between items-center p-5 bg-gray-50 shadow-lg z-50">
-
+      {/* Brand Name */}
       <div className="text-2xl font-bold">
         <span className="text-purple-700">Be My</span> Guest
       </div>
 
+      {/* Navigation */}
       <nav>
         {isLandingPage ? (
           <Link to="/login">
