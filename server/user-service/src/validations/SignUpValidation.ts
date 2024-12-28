@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const userValidationSchema = Joi.object({
+export const signUpValidationSchema = Joi.object({
     name: Joi.string().min(3).max(50).required().messages({
         'string.base': 'Name should be a type of text',
         'string.empty': 'Name cannot be empty',

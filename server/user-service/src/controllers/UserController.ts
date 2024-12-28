@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { userValidationSchema } from "../validations/UserValidation";
+import { signUpValidationSchema } from "../validations/SignUpValidation";
+import { signInValidationSchema } from "../validations/SignInValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
@@ -15,7 +16,7 @@ export class UserController implements IUserController{
     public registerUser = async (req: Request, res: Response): Promise<void> => {
         try {
             console.log("hello register-----------------------------");
-            const { error, value } = userValidationSchema.validate(req.body, { abortEarly: false });
+            const { error, value } = signUpValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
                 const errorMessages = error.details.map(detail => detail.message);
@@ -58,7 +59,7 @@ export class UserController implements IUserController{
             console.log("login start------------------------");
             console.log('====================================');
 
-            const { error, value } = userValidationSchema.validate(req.body, { abortEarly: false });
+            const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
                 console.log(error);
@@ -68,25 +69,27 @@ export class UserController implements IUserController{
                 return;
             }
 
-            const { email, password } = req.body;
+            const { email, password } = value;
 
             if(!email || !password) {
                 throw new BadRequestError("Email and Password are required!");
             }
 
             const user = await this.userService.signInUser(email, password);
+            console.log(user, "user from signin controller-----------------------------------")
             const token = AuthService.generateToken( { 
                 id: user.id, 
                 email: user.email, 
                 role: user.role
             });
+            console.log("token from signin controller-----------------------------------", token)
 
             res.cookie('accessToken', token, {
                 httpOnly: true,
                 sameSite: "strict",
                 maxAge: 60 * 60 * 1000,
             });
-
+            console.log("hello after cookie----------------------------------------------------")
             res.status(200).json({
                 message: "Login Successful!",
                 user: {

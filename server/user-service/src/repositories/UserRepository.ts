@@ -14,6 +14,7 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
         const user = new this.model({ name, email, password, country });
         return await user.save();
     }
+    
     async findByEmail(email: string): Promise<IUserDoc | null> {
         return this.findOne({ email }); 
     }
