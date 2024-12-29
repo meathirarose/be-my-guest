@@ -1,37 +1,46 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { SignUpUser } from "../../../api/userAuthApi";
+import { useNavigate } from "react-router-dom";
+import { registerPropertyOwner } from "../../../api/userAuthApi";
 
-const SignupForm: React.FC = () => {
-  const navigate = useNavigate();
-
+const PropertyOwnerSignupForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
+    phoneNumber: "",
     country: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+    setError("");
 
     try {
-      const response = await SignUpUser(
-        formData.name, formData.email, formData.country, formData.password, formData.confirmPassword
+      const response = await registerPropertyOwner(
+        formData.fullName,
+        formData.email,
+        formData.phoneNumber,
+        formData.country,
+        formData.password,
+        formData.confirmPassword,
       );
-      if (response && response.status === 201) {
-        navigate("/verify-email"); 
+      if (response.status === 201) {
+        alert("Verification email sent!");
+        navigate("/verify-email");
       }
     } catch (error) {
       console.log(error || "Signup failed!");
@@ -39,29 +48,35 @@ const SignupForm: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-sm px-6">
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
+          name="fullName"
+          placeholder="Full Name"
+          value={formData.fullName}
           onChange={handleChange}
           className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-
         <input
           type="email"
           name="email"
-          placeholder="Email"
+          placeholder="Email Address"
           value={formData.email}
           onChange={handleChange}
           className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-
+        <input
+          type="tel"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
         <input
           type="text"
           name="country"
@@ -70,7 +85,6 @@ const SignupForm: React.FC = () => {
           onChange={handleChange}
           className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-
         <input
           type="password"
           name="password"
@@ -79,7 +93,6 @@ const SignupForm: React.FC = () => {
           onChange={handleChange}
           className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-
         <input
           type="password"
           name="confirmPassword"
@@ -88,32 +101,19 @@ const SignupForm: React.FC = () => {
           onChange={handleChange}
           className="w-full p-3 mb-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        
-        <button 
+        <button
           type="submit"
           disabled={loading}
-          aria-busy={loading}
-          className={`w-full p-3 text-white rounded-lg ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-500 hover:bg-purple-600'}`}
+          className={`w-full p-3 text-white rounded-lg ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-purple-500 hover:bg-purple-600"
+          }`}
         >
-          {loading ? (
-            <>
-              <span className="loader mr-2"></span> Signing Up...
-            </>
-          ) : "VERIFY YOUR MAIL"}
+          {loading ? "Processing..." : "VERIFY YOUR MAIL"}
         </button>
-
       </form>
-
-      <p className="text-center text-gray-600 mt-4">
-        Already have an account?{" "}
-        <Link to="/login" className="text-blue-500 hover:underline">
-          Login
-        </Link>
-      </p>
     </div>
   );
 };
 
-export default SignupForm;
+export default PropertyOwnerSignupForm;

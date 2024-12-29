@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import verifyEmailImage from "../../assets/customer-images/signup-image.jpg"; 
-import { VerifyEmail } from "../../api/userApi";
+import { VerifyEmail } from "../../api/userAuthApi";
 import { Link } from "react-router-dom";
 
 const ConfirmVerifyEmailPage: React.FC = () => {

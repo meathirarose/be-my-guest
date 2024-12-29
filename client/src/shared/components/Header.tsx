@@ -5,6 +5,9 @@ import MenuButton from "./MenuButton";
 const Header: React.FC = () => {
   const location = useLocation();
 
+  // Determine the login path based on the current pathname
+  const loginPath = location.pathname === "/" ? "/login" : "/host-signin";
+
   // List of landing page paths
   const landingPages = ["/", "/host-landing"];
 
@@ -21,7 +24,7 @@ const Header: React.FC = () => {
       {/* Navigation */}
       <nav>
         {isLandingPage ? (
-          <Link to="/login">
+          <Link to={loginPath}>
             <button className="bg-purple-700 text-white px-6 py-2 rounded-full hover:bg-purple-800 transition duration-300">
               Get Started
             </button>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
-import { signInUser } from "../../../api/userApi";
+import { signInUser } from "../../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { login } from "../../../redux/user/userSlice";
 

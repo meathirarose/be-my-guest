@@ -59,3 +59,35 @@ export const VerifyEmail = async (token: string | null) => {
     throw error;
   }
 };
+
+export const registerPropertyOwner = async (
+  fullName: string,
+  email: string,
+  phoneNumber: string,
+  country: string,
+  password: string,
+  confirmPassword: string,
+) => {
+  try {
+    console.log("Start - Register Property Owner");
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/register-host`,
+      {
+        fullName,
+        email,
+        phoneNumber,
+        country,
+        password,
+        confirmPassword,
+      }
+    );
+
+    console.log("Response - Register Property Owner", response);
+    return response;
+  } catch (error) {
+    console.error("Error - Register Property Owner", error);
+    throw error;
+  }
+};
+
