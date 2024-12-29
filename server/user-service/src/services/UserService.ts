@@ -5,7 +5,6 @@ import { User } from "../models/UserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
 import { NotFoundError } from "../errors/NotFoundError";
-import { AuthService } from "../utils/jwt";
 import { BadRequestError } from "../errors/BadRequestError";
 import { IUserService } from "../interfaces/IUserService";
 
@@ -19,7 +18,12 @@ export class UserService implements IUserService {
     }
 
     // Register user method
-    public async registerUser(name: string, email: string, password: string, country: string): Promise<IUserDoc> {
+    public async registerUser(
+        name: string, 
+        email: string, 
+        password: string, 
+        country: string
+    ): Promise<IUserDoc> {
 
         const existingUser = await this.userRepository.findByEmail(email);
 
@@ -73,7 +77,10 @@ export class UserService implements IUserService {
         }
     }
 
-    async signInUser(email: string, password: string): Promise<IUserDoc> {
+    async signInUser(
+        email: string, 
+        password: string
+    ): Promise<IUserDoc> {
 
         const existingUser = await this.userRepository.findByEmail(email);
         console.log(existingUser, "signin user--------------------------------------------");
@@ -91,4 +98,37 @@ export class UserService implements IUserService {
 
         return existingUser;
     }
+
+    public async registerPropertyOwner(
+        name: string,
+        email: string,
+        phoneNumber: number,
+        password: string,
+        country: string
+    ): Promise<IUserDoc> {
+        const existingUser = await this.userRepository.findByEmail(email);
+        if (existingUser) {
+            throw new BadRequestError("User with this email already exists.");
+        }
+    
+        const hashedPassword = await bcryptjs.hash(password, 10);
+    
+        const newUserAttrs: IUserAttrs = {
+            name,
+            email,
+            phoneNumber,
+            password: hashedPassword,
+            country,
+            role: Role.PROPERTY_OWNER,
+            verified: false,
+        };
+    
+        const newUser = User.build(newUserAttrs);
+        if (newUser) {
+            await EmailService.sendVerificationMail(newUser.email);
+        }
+    
+        return await this.userRepository.save(newUser as IUserDoc);
+    }
+    
 }

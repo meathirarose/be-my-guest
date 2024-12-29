@@ -11,6 +11,7 @@ export interface IUserAttrs {
     name: string;
     email: string;
     country: string;
+    phoneNumber?: number,
     password: string;
     role: Role;
     verified?: boolean,
@@ -22,6 +23,7 @@ export interface IUserDoc extends mongoose.Document {
     name: string;
     email: string;
     country: string;
+    phoneNumber: number,
     password: string;
     role: Role;
     verified: boolean,

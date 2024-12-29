@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { Role, IUserAttrs, IUserDoc, IUserModel } from "../interfaces/IUserModel";
+import { required } from "joi";
 
 const userSchema: Schema = new Schema<IUserDoc>({
     name: {
@@ -10,6 +11,9 @@ const userSchema: Schema = new Schema<IUserDoc>({
         type: String,
         required: true,
         unique: true
+    },
+    phoneNumber: {
+        type: Number,
     },
     password: {
         type: String,

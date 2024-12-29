@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { signUpValidationSchema } from "../validations/SignUpValidation";
-import { signInValidationSchema } from "../validations/SignInValidation";
+import { signUpValidationSchema } from "../validations/SignUpUserValidation";
+import { signInValidationSchema } from "../validations/SignInUserValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
+import { signUpHostValidationSchema } from "../validations/SignUpHostValidation";
 
 export class UserController implements IUserController{
     private userService: UserService;
@@ -102,6 +103,34 @@ export class UserController implements IUserController{
         } catch (error) {
             console.log(error);
             res.status(400).json({ message: error });
+        }
+    }
+
+    public registerPropertyOwner = async (req: Request, res: Response): Promise<void> => {
+        console.log("hello register property owner-----------------------start--------------");
+        console.log(req.body,"req body---------------------------------------------------------")
+        try {
+            const { error, value } = signUpHostValidationSchema.validate(req.body, {abortEarly: false});
+            console.log(error, value, "error value----------------------------------------------")
+            if(error){
+                console.log(error, "error---------------------------------------------")
+                const errorMessages = error.details.map(detail => detail.message);
+                console.log(errorMessages, "error messages-------------------------")
+                res.status(400).json({ message: 'Validation error', error: errorMessages});
+                return;
+            }
+    
+            const { fullName, email, phoneNumber, country, password } = value;
+            console.log(value, "value from host register-------------------------------------------");
+    
+            const user = await this.userService.registerPropertyOwner(fullName, email, phoneNumber, password, country);
+            console.log(user, "hello user from host register controller-----------------------------------");
+    
+            res.status(201).json({ message: "Property-Owner registered successfully!", data: user });
+            
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(400).json({ message: error});
         }
     }
 }
