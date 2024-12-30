@@ -72,7 +72,7 @@ export const registerPropertyOwner = async (
     console.log("Start - Register Property Owner");
 
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/register-host`,
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/register-host`,
       {
         fullName,
         email,

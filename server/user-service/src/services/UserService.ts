@@ -50,32 +50,41 @@ export class UserService implements IUserService {
         return await this.userRepository.save(newUser as IUserDoc);
     };
 
-    async verifyEmail(token: string): Promise<void> {
+    async verifyEmail(token: string): Promise<{ name: string; email: string; role: string } | null> {
         try {
-
-            const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string};
-            
+            const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
+    
             const user = await this.userRepository.findByEmail(email);
-
+    
             if (!user) {
                 throw new NotFoundError();
             }
-        
+    
             if (user?.verified) {
                 throw new BadRequestError("User email is already verified");
             }
-        
-            const updatedUser = await this.userRepository.update(
+    
+            // Update the verified status
+            await this.userRepository.update(
                 { email },
                 { verified: true }
             );
-        
-            console.log("User verified successfully:", updatedUser);
-
+    
+            console.log("User verified successfully:", user);
+    
+            // Return user details (including name, email, and role)
+            return {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            };
+    
         } catch (error) {
-            
+            console.error("Error in verifyEmail service:", error);
+            throw error; // Re-throw the error to handle it in the controller
         }
     }
+    
 
     async signInUser(
         email: string, 
@@ -97,38 +106,6 @@ export class UserService implements IUserService {
         }
 
         return existingUser;
-    }
-
-    public async registerPropertyOwner(
-        name: string,
-        email: string,
-        phoneNumber: number,
-        password: string,
-        country: string
-    ): Promise<IUserDoc> {
-        const existingUser = await this.userRepository.findByEmail(email);
-        if (existingUser) {
-            throw new BadRequestError("User with this email already exists.");
-        }
-    
-        const hashedPassword = await bcryptjs.hash(password, 10);
-    
-        const newUserAttrs: IUserAttrs = {
-            name,
-            email,
-            phoneNumber,
-            password: hashedPassword,
-            country,
-            role: Role.PROPERTY_OWNER,
-            verified: false,
-        };
-    
-        const newUser = User.build(newUserAttrs);
-        if (newUser) {
-            await EmailService.sendVerificationMail(newUser.email);
-        }
-    
-        return await this.userRepository.save(newUser as IUserDoc);
     }
     
 }

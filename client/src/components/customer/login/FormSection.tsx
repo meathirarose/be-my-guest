@@ -32,7 +32,7 @@ const LoginForm: React.FC = () => {
       if (response && response.status === 200) {
         const { user, token } = response.data;
         dispatch(login({ user, token })); 
-        navigate("/user-home"); 
+        navigate("/user-home", { replace: true }); 
       }
     } catch (err) {
       if (err instanceof Error) {

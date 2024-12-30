@@ -5,7 +5,6 @@ import { signInValidationSchema } from "../validations/SignInUserValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
-import { signUpHostValidationSchema } from "../validations/SignUpHostValidation";
 
 export class UserController implements IUserController{
     private userService: UserService;
@@ -44,15 +43,23 @@ export class UserController implements IUserController{
         try {
             const { token } = req.query;
             console.log(token, "---------------------------------------------------------token");
-
-            await this.userService.verifyEmail(token as string);
-            res.status(200).json({ status: "success", message: "Email successfully verified." });
-
+    
+            const user = await this.userService.verifyEmail(token as string);
+    
+            console.log(user, "user from verify email controller-----------------------------------");
+    
+            res.status(200).json({ 
+                status: "success", 
+                message: "Email successfully verified.",
+                user, 
+            });
+    
         } catch (error) {
             console.error("Error:", error);
-            res.status(400).json({ message: error});
+            res.status(400).json({ message: error });
         }
     };
+    
 
     public signInUser = async (req: Request, res: Response): Promise<void> => {
         try {
@@ -106,31 +113,4 @@ export class UserController implements IUserController{
         }
     }
 
-    public registerPropertyOwner = async (req: Request, res: Response): Promise<void> => {
-        console.log("hello register property owner-----------------------start--------------");
-        console.log(req.body,"req body---------------------------------------------------------")
-        try {
-            const { error, value } = signUpHostValidationSchema.validate(req.body, {abortEarly: false});
-            console.log(error, value, "error value----------------------------------------------")
-            if(error){
-                console.log(error, "error---------------------------------------------")
-                const errorMessages = error.details.map(detail => detail.message);
-                console.log(errorMessages, "error messages-------------------------")
-                res.status(400).json({ message: 'Validation error', error: errorMessages});
-                return;
-            }
-    
-            const { fullName, email, phoneNumber, country, password } = value;
-            console.log(value, "value from host register-------------------------------------------");
-    
-            const user = await this.userService.registerPropertyOwner(fullName, email, phoneNumber, password, country);
-            console.log(user, "hello user from host register controller-----------------------------------");
-    
-            res.status(201).json({ message: "Property-Owner registered successfully!", data: user });
-            
-        } catch (error) {
-            console.error("Error:", error);
-            res.status(400).json({ message: error});
-        }
-    }
 }
