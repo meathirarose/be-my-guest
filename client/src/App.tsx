@@ -10,10 +10,12 @@ import PropertyOwnerSignUp from './pages/property-owner/SignUpPage';
 import PropertyOwnerSignIn from './pages/property-owner/SignInPage';
 import PropertyOwnerHome from './pages/property-owner/Home';
 import Home from "./pages/customer/Home";
+import ToastNotification from "./components/ToastNotification";
 
 const App: React.FC = () => {
   return (
     <Router>
+      <ToastNotification />
       <Routes>
         <Route path="/" element={<CustomerLanding />} />
         <Route path="/login" element={<CustomerLogin />} />

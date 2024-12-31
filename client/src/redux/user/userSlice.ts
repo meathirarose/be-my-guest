@@ -32,8 +32,17 @@ const userSlice = createSlice({
       state.token = null;
       state.isVerified = false;
     },
+    loginHost(state, action: PayloadAction<{ user: User; token: string }>) {
+      if (action.payload.user.role === "property-owner") {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isVerified = true;
+      } else {
+        console.warn("Attempted to loginHost with a non-property-owner role");
+      }
+    },
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, loginHost } = userSlice.actions;
 export default userSlice.reducer;

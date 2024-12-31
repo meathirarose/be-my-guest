@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// user signin
 export const signInUser = async (
   email: string,
   password: string
@@ -22,6 +23,7 @@ export const signInUser = async (
   }
 };
 
+// user signup
 export const SignUpUser = async (
   name: string,
   email: string,
@@ -48,6 +50,7 @@ export const SignUpUser = async (
   }
 };
 
+// verify email - common
 export const VerifyEmail = async (token: string | null) => {
   try {
 
@@ -60,6 +63,33 @@ export const VerifyEmail = async (token: string | null) => {
   }
 };
 
+// signin property owner
+export const SignInPropertyOwner = async (
+  email?: string,
+  phoneNumber?: number
+) => {
+  try {
+    console.log("Start - Signin Property Owner----------------------------------------");
+    if (!email && !phoneNumber) {
+      throw new Error("Either email or phone number must be provided.");
+    }
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/signin-host`,
+      {
+        email,
+        phoneNumber
+      },
+      { withCredentials: true }
+    );
+    console.log(response, "Sign In Property Owner response from userApi------------------------------------")
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// register property owner
 export const registerPropertyOwner = async (
   fullName: string,
   email: string,
