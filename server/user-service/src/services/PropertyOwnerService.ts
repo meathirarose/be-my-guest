@@ -44,4 +44,38 @@ export class PropertyOwnerService implements IPropertyOwnerService {
     
         return await this.userRepository.save(newUser as IUserDoc);
     }
+
+    public async signInPropertyOwnerByMail(email: string): Promise<IUserDoc> {
+
+        const user = await this.userRepository.findByEmail(email);
+
+        console.log(user, "user from signin propery owner email---------------------------------------");
+        if (!user) {
+            throw new BadRequestError("User not found!");
+        }
+
+        if (user.role !== Role.PROPERTY_OWNER) {
+            throw new BadRequestError("Not allowed: You are not a property owner.");
+        }
+
+        return user;
+
+    }
+
+    public async signInPropertyOwnerByPhoneNUmber(phoneNumber: number): Promise<IUserDoc> {
+
+        const user = await this.userRepository.findByPhoneNumber(phoneNumber);
+
+        console.log(user, "user from signin propery owner phoneNumber---------------------------------------");
+        if (!user) {
+            throw new BadRequestError("User not found!");
+        }
+
+        if (user.role !== Role.PROPERTY_OWNER) {
+            throw new BadRequestError("Not allowed: You are not a property owner.");
+        }
+
+        return user;
+
+    }
 }
