@@ -8,7 +8,7 @@ import ConfirmVerifyEmail from "./pages/customer/ConfirmVerifyEmailPage";
 import PropertyOwnerLanding from "./pages/property-owner/LandingPage";
 import PropertyOwnerSignUp from './pages/property-owner/SignUpPage';
 import PropertyOwnerSignIn from './pages/property-owner/SignInPage';
-import PropertyOwnerHome from './pages/property-owner/Home';
+import PropertyOwnerDashboard from './pages/property-owner/Dashboard';
 import Home from "./pages/customer/Home";
 import ToastNotification from "./components/ToastNotification";
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         <Route path="/host-landing" element={<PropertyOwnerLanding />} />{/* for property-owner */}
         <Route path="/host-signup" element={<PropertyOwnerSignUp />} />{/* for property-owner */}
         <Route path="/host-signin" element={<PropertyOwnerSignIn />} />{/* for property-owner */}
-        <Route path="/host-home" element={<PropertyOwnerHome />} />{/* for property-owner */}
+        <Route path="/host-home" element={<PropertyOwnerDashboard />} />{/* for property-owner */}
       </Routes>
     </Router>
   );

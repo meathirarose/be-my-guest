@@ -2,6 +2,7 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Toast Notification Component
 const ToastNotification: React.FC = () => {
   return (
     <ToastContainer

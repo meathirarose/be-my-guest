@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { signInUser } from "../../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { login } from "../../../redux/user/userSlice";
+import { showToast } from "../../../shared/utils/toastUtils"; 
+import InputField from "../../../shared/components/InputField"; 
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -14,64 +16,102 @@ const LoginForm: React.FC = () => {
     password: "",
   });
 
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState<string | null>(null); 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setError(null); 
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); 
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { email: "", password: "" };
+
+    // Email validation
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      valid = false;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+      valid = false;
+    } else if (
+      !/(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}/.test(
+        formData.password
+      )
+    ) {
+      newErrors.password =
+        "Password must contain at least one letter, one number, and one special character.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); 
+
+    if (!validateForm()) {
+      return; 
+    }
+
+    setLoading(true);
+
     try {
       const response = await signInUser(formData.email, formData.password);
 
       if (response && response.status === 200) {
         const { user, token } = response.data;
-        dispatch(login({ user, token })); 
-        navigate("/user-home", { replace: true }); 
+
+        dispatch(login({ user, token }));
+        showToast("success", "Sign-in successful!"); 
+        navigate("/user-home", { replace: true });
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "Sign-in failed. Please try again."); 
-      } else {
-        setError("An unexpected error occurred."); 
-      }
+      const errorMessage =
+        err instanceof Error
+          ? err.message || "Sign-in failed. Please try again."
+          : "An unexpected error occurred.";
+
+      showToast("error", errorMessage); 
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="w-full max-w-sm px-6">
-        {error && <div className="text-red-500 text-center mb-4">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <input
+          <InputField
             type="text"
             name="email"
             placeholder="Email"
             value={formData.email}
+            error={errors.email}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
 
-          <div className="relative mb-6">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
-              <i className="fas fa-eye"></i>
-            </span>
-          </div>
+          <InputField
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            error={errors.password}
+            onChange={handleInputChange}
+          />
 
           <button
             type="submit"
@@ -86,7 +126,7 @@ const LoginForm: React.FC = () => {
         <p className="text-center text-gray-600 mt-4">
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-500 hover:underline">
-            SignUp
+            Sign Up
           </Link>
         </p>
 
