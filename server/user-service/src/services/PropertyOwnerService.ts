@@ -49,7 +49,6 @@ export class PropertyOwnerService implements IPropertyOwnerService {
 
         const user = await this.userRepository.findByEmail(email);
 
-        console.log(user, "user from signin propery owner email---------------------------------------");
         if (!user) {
             throw new BadRequestError("User not found!");
         }
@@ -66,7 +65,6 @@ export class PropertyOwnerService implements IPropertyOwnerService {
 
         const user = await this.userRepository.findByPhoneNumber(phoneNumber);
 
-        console.log(user, "user from signin propery owner phoneNumber---------------------------------------");
         if (!user) {
             throw new BadRequestError("User not found!");
         }

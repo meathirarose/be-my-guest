@@ -17,7 +17,6 @@ export class UserService implements IUserService {
         this.userRepository = new UserRepository();
     }
 
-    // Register user method
     public async registerUser(
         name: string, 
         email: string, 
@@ -64,7 +63,6 @@ export class UserService implements IUserService {
                 throw new BadRequestError("User email is already verified");
             }
     
-            // Update the verified status
             await this.userRepository.update(
                 { email },
                 { verified: true }
@@ -72,7 +70,6 @@ export class UserService implements IUserService {
     
             console.log("User verified successfully:", user);
     
-            // Return user details (including name, email, and role)
             return {
                 name: user.name,
                 email: user.email,
@@ -81,7 +78,7 @@ export class UserService implements IUserService {
     
         } catch (error) {
             console.error("Error in verifyEmail service:", error);
-            throw error; // Re-throw the error to handle it in the controller
+            throw error; 
         }
     }
     
@@ -92,14 +89,12 @@ export class UserService implements IUserService {
     ): Promise<IUserDoc> {
 
         const existingUser = await this.userRepository.findByEmail(email);
-        console.log(existingUser, "signin user--------------------------------------------");
 
         if (!existingUser) {
             throw new NotFoundError();
         }
 
         const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
-        console.log(passwordMatch, "password match signin user-----------------------------");
 
         if(!passwordMatch) {
             throw new BadRequestError("Invalid email or Password.!");

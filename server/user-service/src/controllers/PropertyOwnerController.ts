@@ -16,7 +16,7 @@ export class PropertyOwnerController implements IPropertyOwnerController{
     public registerPropertyOwner = async (req: Request, res: Response): Promise<void> => {
 
         try {
-            console.log("hello from host register controller-----------------------------------");
+
             const { error, value } = signUpHostValidationSchema.validate(req.body, {abortEarly: false});
 
             if(error){
@@ -39,9 +39,6 @@ export class PropertyOwnerController implements IPropertyOwnerController{
 
     public signInPropertyOwner = async (req: Request, res: Response): Promise<void> => {
         try {
-            console.log('====================================');
-            console.log("login start PropertyOwner------------------------");
-            console.log('====================================');
 
             if (req.body.phoneNumber && typeof req.body.phoneNumber === "number") {
                 req.body.phoneNumber = req.body.phoneNumber.toString();
@@ -77,17 +74,13 @@ export class PropertyOwnerController implements IPropertyOwnerController{
                 email: user.email,
                 role: user.role
             });
-    
-            console.log("token from signin controller-------------------------------------", token);
-    
+       
             res.cookie('accessToken', token, {
                 httpOnly: true,
                 sameSite: "strict",
                 maxAge: 60 * 60 * 1000,
             });
-    
-            console.log("hello after cookie----------------------------------------------------");
-    
+       
             res.status(200).json({
                 message: "Login Successful!",
                 user: {

@@ -7,5 +7,6 @@ const userController = new UserController();
 router.post("/register", userController.registerUser);
 router.post("/verify-email", userController.verifyEmail);
 router.post("/signin", userController.signInUser as never);
+router.post('/refresh-token', (userController.refreshToken as never));
 
 export default router;

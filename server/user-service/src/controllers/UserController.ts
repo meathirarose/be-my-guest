@@ -15,7 +15,6 @@ export class UserController implements IUserController{
 
     public registerUser = async (req: Request, res: Response): Promise<void> => {
         try {
-            console.log("hello register-----------------------------");
             const { error, value } = signUpValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
@@ -26,10 +25,8 @@ export class UserController implements IUserController{
             }
 
             const { name, email, password, country } = value;
-            console.log(value, "hello value from register--------------")
 
             const user = await this.userService.registerUser(name, email, password, country);
-            console.log(user,"hello user--------------------from register user-------------")
             
             res.status(201).json({ message: "User created successfully!", data: user });
 
@@ -42,12 +39,9 @@ export class UserController implements IUserController{
     public verifyEmail = async (req: Request, res: Response): Promise<void> => {
         try {
             const { token } = req.query;
-            console.log(token, "---------------------------------------------------------token");
     
             const user = await this.userService.verifyEmail(token as string);
-    
-            console.log(user, "user from verify email controller-----------------------------------");
-    
+       
             res.status(200).json({ 
                 status: "success", 
                 message: "Email successfully verified.",
@@ -63,9 +57,6 @@ export class UserController implements IUserController{
 
     public signInUser = async (req: Request, res: Response): Promise<void> => {
         try {
-            console.log('====================================');
-            console.log("login start------------------------");
-            console.log('====================================');
 
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
 
@@ -84,20 +75,31 @@ export class UserController implements IUserController{
             }
 
             const user = await this.userService.signInUser(email, password);
-            console.log(user, "user from signin controller-----------------------------------")
+
             const token = AuthService.generateToken( { 
                 id: user.id, 
                 email: user.email, 
                 role: user.role
             });
-            console.log("token from signin controller-----------------------------------", token)
+
+            const refreshToken = AuthService.generateRefreshToken({ 
+                id: user.id, 
+                email: user.email, 
+                role: user.role 
+            });
 
             res.cookie('accessToken', token, {
                 httpOnly: true,
                 sameSite: "strict",
                 maxAge: 60 * 60 * 1000,
             });
-            console.log("hello after cookie----------------------------------------------------")
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000, 
+            });
+
             res.status(200).json({
                 message: "Login Successful!",
                 user: {
@@ -110,6 +112,44 @@ export class UserController implements IUserController{
         } catch (error) {
             console.log(error);
             res.status(400).json({ message: error });
+        }
+    }
+
+    public refreshToken = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { refreshToken } = req.cookies;
+
+            if (!refreshToken) {
+                throw new BadRequestError("Refresh token is missing!");
+            }
+
+            const decoded = AuthService.verifyRefreshToken(refreshToken);
+
+            if (!decoded) {
+                throw new BadRequestError("Invalid refresh token!");
+            }
+
+            // Generate new access token
+            const newAccessToken = AuthService.generateToken({ 
+                id: decoded.id, 
+                email: decoded.email, 
+                role: decoded.role 
+            });
+
+            res.cookie('accessToken', newAccessToken, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 60 * 60 * 1000, // 1 hour
+            });
+
+            return res.status(200).json({
+                message: "Tokens refreshed successfully",
+                accessToken: newAccessToken,
+            });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 

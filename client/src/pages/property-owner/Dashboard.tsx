@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/property-owner/home/Sidebar";
-import Header from "../../components/customer/Header";
+import Sidebar from "../../components/property-owner/home/SideBar";
+import Header from "../../components/property-owner/Header";
 import SearchBar from "../../components/property-owner/home/SearchBar";
 import PropertyList from "../../components/property-owner/home/PropertyList";
 import AddProperty from "../../components/property-owner/home/AddProperty";
