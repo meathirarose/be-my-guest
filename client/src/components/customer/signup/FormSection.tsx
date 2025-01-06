@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SignUpUser } from "../../../api/userAuthApi";
-import InputField from "../../../shared/components/InputField"; 
+import InputField from "../../../shared/components/ui/InputField"; 
 import { showToast } from "../../../shared/utils/toastUtils"; 
+import { SubmitButton } from "../../buttons/SubmitButton";
+import { LinkText } from "../../../shared/components/ui/LinkText";
+import { validateConfirmPassword, validateCountry, validateEmail, validateName, validatePassword } from "../../../shared/utils/formValidationUtils";
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -34,46 +37,34 @@ const SignupForm: React.FC = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors = { name: "", email: "", country: "", password: "", confirmPassword: "" };
-
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required.";
+    //name validation
+    const nameError = validateName(formData.name);
+    if(nameError) {
+      newErrors.name = nameError;
       isValid = false;
     }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required.";
-      isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
+    //email validation
+    const emailError = validateEmail(formData.email);
+    if(emailError) {
+      newErrors.email = emailError;
       isValid = false;
     }
-
-    // Country validation
-    if (!formData.country.trim()) {
-      newErrors.country = "Country is required.";
+    //country validation
+    const countryError = validateCountry(formData.country);
+    if(countryError) {
+      newErrors.country = countryError;
       isValid = false;
     }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required.";
-      isValid = false;
-    } else if (
-      !/(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}/.test(formData.password)
-    ) {
-      newErrors.password =
-        "Password must contain at least one letter, one number, and one special character.";
+    //password validation
+    const passwordError = validatePassword(formData.password);
+    if(passwordError) {
+      newErrors.password = passwordError;
       isValid = false;
     }
-
-    // Confirm Password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Confirm password is required.";
-      isValid = false;
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
+    //confirmPassword validation
+    const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
+    if(confirmPasswordError) {
+      newErrors.confirmPassword = confirmPasswordError;
       isValid = false;
     }
 
@@ -158,29 +149,13 @@ const SignupForm: React.FC = () => {
           onChange={handleChange}
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          aria-busy={loading}
-          className={`w-full p-3 text-white rounded-lg ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-purple-500 hover:bg-purple-600"
-          }`}
-        >
-          {loading ? (
-            <>
-              <span className="loader mr-2"></span> Signing Up...
-            </>
-          ) : (
-            "VERIFY YOUR MAIL"
-          )}
-        </button>
+          <SubmitButton isLoading={loading} text="VERIFY YOUR EMAIL" />
+
       </form>
 
       <p className="text-center text-gray-600 mt-4">
         Already have an account?{" "}
-        <Link to="/login" className="text-blue-500 hover:underline">
-          Login
-        </Link>
+          <LinkText to="/customer/login" text="Sign Up" ariaLabel="Sign Up" />
       </p>
     </div>
   );

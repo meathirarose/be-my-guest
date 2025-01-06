@@ -36,9 +36,9 @@ const ConfirmVerifyEmailPage: React.FC = () => {
   // Handle navigation based on the user's role
   const handleLoginRedirect = () => {
     if (role === "property-owner") {
-      navigate("/host-signin");
+      navigate("/host/signin");
     } else {
-      navigate("/login");
+      navigate("/customer/login");
     }
   };
 

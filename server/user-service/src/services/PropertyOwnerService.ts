@@ -5,6 +5,7 @@ import { UserRepository } from "../repositories/UserRepository";
 import { IUserAttrs, IUserDoc, Role } from "../interfaces/IUserModel";
 import { User } from "../models/UserModel";
 import { EmailService } from "../utils/emailSender";
+import { NotFoundError } from "../errors/NotFoundError";
 
 export class PropertyOwnerService implements IPropertyOwnerService {
     private userRepository: UserRepository;
@@ -16,7 +17,6 @@ export class PropertyOwnerService implements IPropertyOwnerService {
     public async registerPropertyOwner(
         name: string,
         email: string,
-        phoneNumber: number,
         password: string,
         country: string
     ): Promise<IUserDoc> {
@@ -30,7 +30,6 @@ export class PropertyOwnerService implements IPropertyOwnerService {
         const newUserAttrs: IUserAttrs = {
             name,
             email,
-            phoneNumber,
             password: hashedPassword,
             country,
             role: Role.PROPERTY_OWNER,
@@ -45,35 +44,23 @@ export class PropertyOwnerService implements IPropertyOwnerService {
         return await this.userRepository.save(newUser as IUserDoc);
     }
 
-    public async signInPropertyOwnerByMail(email: string): Promise<IUserDoc> {
-
-        const user = await this.userRepository.findByEmail(email);
-
-        if (!user) {
-            throw new BadRequestError("User not found!");
+        async signInPropertyOwner(
+            email: string, 
+            password: string
+        ): Promise<IUserDoc> {
+    
+            const existingUser = await this.userRepository.findByEmail(email);
+    
+            if (!existingUser) {
+                throw new NotFoundError();
+            }
+    
+            const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
+    
+            if(!passwordMatch) {
+                throw new BadRequestError("Invalid email or Password.!");
+            }
+    
+            return existingUser;
         }
-
-        if (user.role !== Role.PROPERTY_OWNER) {
-            throw new BadRequestError("Not allowed: You are not a property owner.");
-        }
-
-        return user;
-
-    }
-
-    public async signInPropertyOwnerByPhoneNUmber(phoneNumber: number): Promise<IUserDoc> {
-
-        const user = await this.userRepository.findByPhoneNumber(phoneNumber);
-
-        if (!user) {
-            throw new BadRequestError("User not found!");
-        }
-
-        if (user.role !== Role.PROPERTY_OWNER) {
-            throw new BadRequestError("Not allowed: You are not a property owner.");
-        }
-
-        return user;
-
-    }
 }

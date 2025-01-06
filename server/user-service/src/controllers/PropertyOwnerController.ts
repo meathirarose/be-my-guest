@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { IPropertyOwnerController } from "../interfaces/IPropertyOwnerController";
 import { PropertyOwnerService } from "../services/PropertyOwnerService";
-import { signUpHostValidationSchema } from "../validations/SignUpHostValidation";
-import { signInHostValidationSchema } from "../validations/SignInHostValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
+import { signUpValidationSchema } from "../validations/SignUpValidation";
+import { signInValidationSchema } from "../validations/SignInValidation";
 
 export class PropertyOwnerController implements IPropertyOwnerController{
     private propertyOwnerService: PropertyOwnerService;
@@ -17,7 +17,7 @@ export class PropertyOwnerController implements IPropertyOwnerController{
 
         try {
 
-            const { error, value } = signUpHostValidationSchema.validate(req.body, {abortEarly: false});
+            const { error, value } = signUpValidationSchema.validate(req.body, {abortEarly: false});
 
             if(error){
                 const errorMessages = error.details.map(detail => detail.message);
@@ -25,9 +25,9 @@ export class PropertyOwnerController implements IPropertyOwnerController{
                 return;
             }
     
-            const { fullName, email, phoneNumber, country, password } = value;
+            const { name, email, country, password } = value;
     
-            const user = await this.propertyOwnerService.registerPropertyOwner(fullName, email, phoneNumber, password, country);
+            const user = await this.propertyOwnerService.registerPropertyOwner(name, email, password, country);
     
             res.status(201).json({ message: "Property-Owner registered successfully!", data: user });
             
@@ -39,13 +39,9 @@ export class PropertyOwnerController implements IPropertyOwnerController{
 
     public signInPropertyOwner = async (req: Request, res: Response): Promise<void> => {
         try {
-
-            if (req.body.phoneNumber && typeof req.body.phoneNumber === "number") {
-                req.body.phoneNumber = req.body.phoneNumber.toString();
-            }
     
             // Validation for input
-            const { error, value } = signInHostValidationSchema.validate(req.body, { abortEarly: false });
+            const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
     
             if (error) {
                 console.log(error);
@@ -54,15 +50,13 @@ export class PropertyOwnerController implements IPropertyOwnerController{
                 return;
             }
     
-            const { email, phoneNumber } = value;
-    
-            if (!email && !phoneNumber) {
-                throw new BadRequestError("Email or Phone Number is required!");
+            const { email, password } = value;
+
+            if(!email || !password) {
+                throw new BadRequestError("Email and Password are required!");
             }
     
-            const user = email 
-                ? await this.propertyOwnerService.signInPropertyOwnerByMail(email) 
-                : await this.propertyOwnerService.signInPropertyOwnerByPhoneNUmber(phoneNumber);
+            const user = await this.propertyOwnerService.signInPropertyOwner(email, password);
     
             if (!user) {
                 throw new BadRequestError("User not found!");

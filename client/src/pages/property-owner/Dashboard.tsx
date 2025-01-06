@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/property-owner/home/SideBar";
-import Header from "../../components/property-owner/Header";
-import SearchBar from "../../components/property-owner/home/SearchBar";
-import PropertyList from "../../components/property-owner/home/PropertyList";
-import AddProperty from "../../components/property-owner/home/AddProperty";
+import Sidebar from "../../components/property-owner/common/SideBar";
+import Header from "../../components/property-owner/common/Header";
+import SearchBar from "../../components/property-owner/dashboard/SearchBar";
+import PropertyList from "../../components/property-owner/dashboard/PropertyList";
+import AddProperty from "../../components/property-owner/dashboard/AddProperty";
 
 const PropertyOwnerDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");

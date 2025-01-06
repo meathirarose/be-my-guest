@@ -1,15 +1,15 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import MenuButton from "./MenuButton";
+import MenuButton from "../ui/MenuButton";
 
 const Header: React.FC = () => {
   const location = useLocation();
 
   // Determine the login path based on the current pathname
-  const loginPath = location.pathname === "/" ? "/login" : "/host-signin";
+  const loginPath = location.pathname === "/customer" ? "/customer/login" : "/host/signin";
 
   // List of landing page paths
-  const landingPages = ["/", "/host-landing"];
+  const landingPages = ["/customer", "/host/host-landing"];
 
   // Check if the current path is a landing page
   const isLandingPage = landingPages.includes(location.pathname);

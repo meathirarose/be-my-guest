@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
-import contactImage from "../../assets/customer-images/contact-image.png";
+import contactImage from "../../../assets/customer-images/contact-image.png";
 import { Link } from 'react-router-dom';
 
 const MenuButton: React.FC = () => {
@@ -32,16 +32,16 @@ const MenuButton: React.FC = () => {
           <ul className="space-y-3 p-5">
             {/* Each list item now takes up the full width of the menu */}
             <li className="w-full pb-2">
-              <Link to="/login" className="w-full ">Login</Link>
+              <Link to="/customer/login" className="w-full ">Login</Link>
             </li>
             <li className="w-full border-b border-gray-300 pb-4">
-              <Link to="/signup" className="w-full ">SignUp</Link>
+              <Link to="/customer/signup" className="w-full ">SignUp</Link>
             </li>
             <li className="w-full pb-2">
-              <Link to="/host-landing" className="w-full ">Host an Experience</Link>
+              <Link to="/host/host-landing" className="w-full ">Host an Experience</Link>
             </li>
             <li className="w-full pb">
-              <Link to="/" className="w-full ">Landing Page</Link>
+              <Link to="/customer" className="w-full ">Landing Page</Link>
             </li>
           </ul>
         </div>

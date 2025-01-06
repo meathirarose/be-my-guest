@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '../../shared/components/Header';
+import Header from '../../shared/components/layout/Header';
 import SignUpView from '../../components/customer/signup/SignUpView';
-import Footer from '../../shared/components/Footer';
+import Footer from '../../shared/components/layout/Footer';
 
 const SignUpPage: React.FC = () => {
   return (

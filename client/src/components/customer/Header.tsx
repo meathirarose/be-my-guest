@@ -17,7 +17,7 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate("/customer/login");
   };
 
   return (

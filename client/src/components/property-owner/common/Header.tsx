@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi'; 
-import contactImage from "../../assets/customer-images/contact-image.png";
+import contactImage from "../../../assets/customer-images/contact-image.png";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/user/userSlice'; 
+import { logout } from '../../../redux/user/userSlice'; 
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/host-signin");
+    navigate("/host/signin");
   };
 
   return (

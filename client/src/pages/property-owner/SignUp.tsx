@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerPropertyOwner } from "../../api/userAuthApi";
-import Header from "../../shared/components/Header";
-import Footer from "../../shared/components/Footer";
+import Header from "../../shared/components/layout/Header";
+import Footer from "../../shared/components/layout/Footer";
 import bg_signup from "../../assets/property-owner-images/bg-signin.jpg";
-import InputField from "../../shared/components/InputField";
+import InputField from "../../shared/components/ui/InputField";
 import { showToast } from "../../shared/utils/toastUtils"; 
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
-    phoneNumber: "",
     country: "",
     password: "",
     confirmPassword: "",
@@ -32,10 +31,8 @@ const SignupPage: React.FC = () => {
   const validateInputs = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
+    if (!formData.name.trim()) newErrors.fullName = "Full name is required.";
     if (!formData.email.includes("@")) newErrors.email = "Enter a valid email.";
-    if (!formData.phoneNumber.trim())
-      newErrors.phoneNumber = "Phone number is required.";
     if (!formData.country.trim()) newErrors.country = "Country is required.";
     if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
@@ -59,9 +56,8 @@ const SignupPage: React.FC = () => {
 
     try {
       const response = await registerPropertyOwner(
-        formData.fullName,
+        formData.name,
         formData.email,
-        formData.phoneNumber,
         formData.country,
         formData.password,
         formData.confirmPassword
@@ -84,7 +80,7 @@ const SignupPage: React.FC = () => {
       <Header />
 
       <div
-        className="relative flex items-center justify-center py-8 bg-cover bg-center pt-52 pb-24"
+        className="relative flex items-center justify-center py-8 bg-cover bg-center pt-40 pb-24"
         style={{ backgroundImage: `url(${bg_signup})` }}
       >
         <div className="absolute inset-0 bg-black opacity-60"></div>
@@ -98,9 +94,9 @@ const SignupPage: React.FC = () => {
             {/* Replace individual inputs with InputField */}
             <InputField
               type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
+              name="name"
+              placeholder="Name"
+              value={formData.name}
               onChange={handleChange}
               error={errors.fullName}
             />
@@ -112,15 +108,6 @@ const SignupPage: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
-            />
-
-            <InputField
-              type="tel"
-              name="phoneNumber"
-              placeholder="Phone Number"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              error={errors.phoneNumber}
             />
 
             <InputField

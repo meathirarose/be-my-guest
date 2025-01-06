@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { signInUser } from "../../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { login } from "../../../redux/user/userSlice";
-import { showToast } from "../../../shared/utils/toastUtils"; 
-import InputField from "../../../shared/components/InputField"; 
+import { showToast } from "../../../shared/utils/toastUtils";
+import InputField from "../../../shared/components/ui/InputField";
+import { LinkText } from "../../../shared/components/ui/LinkText";
+import { SubmitButton } from "../../buttons/SubmitButton";
+import { SocialLoginButton } from "../../buttons/SocialLoginButtons";
+import { validateEmail, validatePassword } from "../../../shared/utils/formValidationUtils";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,36 +30,26 @@ const LoginForm: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); 
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const validateForm = () => {
     let valid = true;
     const newErrors = { email: "", password: "" };
 
-    // Email validation
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-      valid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
+    //email validation
+    const emailError = validateEmail(formData.email);
+    if (emailError) {
+      newErrors.email = emailError;
       valid = false;
     }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required.";
-      valid = false;
-    } else if (
-      !/(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}/.test(
-        formData.password
-      )
-    ) {
-      newErrors.password =
-        "Password must contain at least one letter, one number, and one special character.";
+    //password validation
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      newErrors.password = passwordError;
       valid = false;
     }
-
+    
     setErrors(newErrors);
     return valid;
   };
@@ -64,7 +58,7 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      return; 
+      return;
     }
 
     setLoading(true);
@@ -76,8 +70,8 @@ const LoginForm: React.FC = () => {
         const { user, token } = response.data;
 
         dispatch(login({ user, token }));
-        showToast("success", "Sign-in successful!"); 
-        navigate("/user-home", { replace: true });
+        showToast("success", "Sign-in successful!");
+        navigate("/customer/home", { replace: true });
       }
     } catch (err) {
       const errorMessage =
@@ -85,10 +79,14 @@ const LoginForm: React.FC = () => {
           ? err.message || "Sign-in failed. Please try again."
           : "An unexpected error occurred.";
 
-      showToast("error", errorMessage); 
+      showToast("error", errorMessage);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    console.log("Google login clicked");
   };
 
   return (
@@ -113,21 +111,16 @@ const LoginForm: React.FC = () => {
             onChange={handleInputChange}
           />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full p-3 text-white rounded-lg ${
-              loading ? "bg-gray-400" : "bg-purple-500 hover:bg-purple-600"
-            }`}
-          >
-            {loading ? "Signing in..." : "SIGN IN"}
-          </button>
+          <LinkText
+            to="/forgot-password"
+            text="Forgot Password?"
+            ariaLabel="Forgot Password"
+          />
+          <SubmitButton isLoading={loading} text="SIGN IN" />
         </form>
         <p className="text-center text-gray-600 mt-4">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-500 hover:underline">
-            Sign Up
-          </Link>
+          <LinkText to="/customer/signup" text="Sign Up" ariaLabel="Sign Up" />
         </p>
 
         <div className="flex items-center my-6">
@@ -136,9 +129,11 @@ const LoginForm: React.FC = () => {
           <div className="flex-1 border-t border-gray-300"></div>
         </div>
 
-        <button className="w-full p-3 flex items-center justify-center border rounded-lg hover:bg-gray-100">
-          <FcGoogle className="text-2xl mr-2" /> Continue with Google
-        </button>
+        <SocialLoginButton
+          icon={<FcGoogle className="text-2xl" />}
+          text="Continue with Google"
+          onClick={handleGoogleLogin}
+        />
       </div>
     </div>
   );

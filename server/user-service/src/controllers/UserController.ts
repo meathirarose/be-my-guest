@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { signUpValidationSchema } from "../validations/SignUpUserValidation";
-import { signInValidationSchema } from "../validations/SignInUserValidation";
+import { signUpValidationSchema } from "../validations/SignUpValidation";
+import { signInValidationSchema } from "../validations/SignInValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
@@ -75,7 +75,11 @@ export class UserController implements IUserController{
             }
 
             const user = await this.userService.signInUser(email, password);
-
+                
+            if (!user) {
+                throw new BadRequestError("User not found!");
+            }
+            
             const token = AuthService.generateToken( { 
                 id: user.id, 
                 email: user.email, 
