@@ -5,6 +5,8 @@ import { signInValidationSchema } from "../validations/SignInValidation";
 import { BadRequestError } from "../errors/BadRequestError";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
+import { verifyGoogleToken } from "../utils/authUtils";
+import { count } from "console";
 
 export class UserController implements IUserController{
     private userService: UserService;
@@ -108,7 +110,9 @@ export class UserController implements IUserController{
                 message: "Login Successful!",
                 user: {
                     id: user.id,
+                    name: user.name,
                     email: user.email,
+                    country: user.country,
                     role: user.role,
                 }
             });
@@ -156,5 +160,71 @@ export class UserController implements IUserController{
             return res.status(500).json({ error: "Internal server error" });
         }
     }
+
+    public googleLogin = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { idToken } = req.body;
+
+            if (!idToken) {
+                throw new Error("idToken is required!");
+            }
+
+            // Verify the Google token
+            const payload = await verifyGoogleToken(idToken);
+            if (!payload) {
+                throw new Error("Invalid Google token!");
+            }
+
+            const { email, name = "", sub: googleId } = payload;
+
+            if (!email || !googleId) {
+                throw new Error("Google token is missing essential information!");
+            }
+
+            // Check if the user exists or create a new one
+            const user = await this.userService.googleLogin(email, name, googleId);
+
+            // Generate tokens
+            const token = AuthService.generateToken({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+
+            const refreshToken = AuthService.generateRefreshToken({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+
+            // Set cookies
+            res.cookie("accessToken", token, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 60 * 60 * 1000, // 1 hour
+            });
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            });
+
+            return res.status(200).json({
+                message: "Login Successful!",
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    country: user.country,
+                    role: user.role,
+                    token: token,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(400).json({ message: error });    }
+    };
+
 
 }

@@ -1,21 +1,21 @@
 import axios from "axios";
 
 // user signin
-export const signInUser = async (
-  email: string,
-  password: string
-) => {
+export const signInUser = async (email: string, password: string) => {
   try {
-    console.log("Start------------sign in user--------------------------")
+    console.log("Start------------sign in user--------------------------");
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/signin`,
       {
         email,
-        password
+        password,
       },
       { withCredentials: true }
     );
-    console.log(response, "sign in user response from userApi------------------------------------")
+    console.log(
+      response,
+      "sign in user response from userApi------------------------------------"
+    );
     return response;
   } catch (error) {
     console.log(error);
@@ -39,7 +39,7 @@ export const SignUpUser = async (
         email,
         country,
         password,
-        confirmPassword
+        confirmPassword,
       }
     );
 
@@ -53,8 +53,11 @@ export const SignUpUser = async (
 // verify email - common
 export const VerifyEmail = async (token: string | null) => {
   try {
-
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user-service/api/users/verify-email?token=${token}`);
+    const response = await axios.post(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/user-service/api/users/verify-email?token=${token}`
+    );
 
     return response;
   } catch (error) {
@@ -64,21 +67,25 @@ export const VerifyEmail = async (token: string | null) => {
 };
 
 // signin property owner
-export const SignInPropertyOwner = async (
-  email: string,
-  password: string
-) => {
+export const SignInPropertyOwner = async (email: string, password: string) => {
   try {
-    console.log("Start - Signin Property Owner----------------------------------------");
+    console.log(
+      "Start - Signin Property Owner----------------------------------------"
+    );
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/signin-host`, 
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/user-service/api/property-owners/signin-host`,
       {
         email,
-        password, 
+        password,
       },
       { withCredentials: true }
     );
-    console.log(response, "Sign In Property Owner response from userApi------------------------------------");
+    console.log(
+      response,
+      "Sign In Property Owner response from userApi------------------------------------"
+    );
     return response;
   } catch (error) {
     console.log(error);
@@ -86,20 +93,21 @@ export const SignInPropertyOwner = async (
   }
 };
 
-
 // register property owner
 export const registerPropertyOwner = async (
   name: string,
   email: string,
   country: string,
   password: string,
-  confirmPassword: string,
+  confirmPassword: string
 ) => {
   try {
     console.log("Start - Register Property Owner");
 
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/register-host`,
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/user-service/api/property-owners/register-host`,
       {
         name,
         email,
@@ -117,3 +125,16 @@ export const registerPropertyOwner = async (
   }
 };
 
+export const googleLogin = async ({ idToken }: { idToken: string }) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/google-login`,
+      { idToken },
+      { withCredentials: true }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    throw error;
+  }
+};

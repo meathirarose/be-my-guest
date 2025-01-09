@@ -5,7 +5,16 @@ import Header from "../../shared/components/layout/Header";
 import Footer from "../../shared/components/layout/Footer";
 import bg_signup from "../../assets/property-owner-images/bg-signin.jpg";
 import InputField from "../../shared/components/ui/InputField";
-import { showToast } from "../../shared/utils/toastUtils"; 
+import { showToast } from "../../shared/utils/toastUtils";
+import { LinkText } from "../../shared/components/ui/LinkText";
+import { SubmitButton } from "../../components/buttons/SubmitButton";
+import {
+  validateConfirmPassword,
+  validateCountry,
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "../../shared/utils/formValidationUtils";
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,40 +25,80 @@ const SignupPage: React.FC = () => {
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    country: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const validateInputs = () => {
-    const newErrors: { [key: string]: string } = {};
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      name: "",
+      email: "",
+      country: "",
+      password: "",
+      confirmPassword: "",
+    };
 
-    if (!formData.name.trim()) newErrors.fullName = "Full name is required.";
-    if (!formData.email.includes("@")) newErrors.email = "Enter a valid email.";
-    if (!formData.country.trim()) newErrors.country = "Country is required.";
-    if (formData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters.";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match.";
+    // Name validation
+    const nameError = validateName(formData.name);
+    if (nameError) {
+      newErrors.name = nameError;
+      isValid = false;
+    }
 
-    return newErrors;
+    // Email validation
+    const emailError = validateEmail(formData.email);
+    if (emailError) {
+      newErrors.email = emailError;
+      isValid = false;
+    }
+
+    // Country validation
+    const countryError = validateCountry(formData.country);
+    if (countryError) {
+      newErrors.country = countryError;
+      isValid = false;
+    }
+
+    // Password validation
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      newErrors.password = passwordError;
+      isValid = false;
+    }
+
+    // Confirm Password validation
+    const confirmPasswordError = validateConfirmPassword(
+      formData.password,
+      formData.confirmPassword
+    );
+    if (confirmPasswordError) {
+      newErrors.confirmPassword = confirmPasswordError;
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setErrors({});
 
-    const validationErrors = validateInputs();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
@@ -91,14 +140,13 @@ const SignupPage: React.FC = () => {
               Sign Up
             </h2>
 
-            {/* Replace individual inputs with InputField */}
             <InputField
               type="text"
               name="name"
               placeholder="Name"
               value={formData.name}
               onChange={handleChange}
-              error={errors.fullName}
+              error={errors.name}
             />
 
             <InputField
@@ -136,19 +184,12 @@ const SignupPage: React.FC = () => {
               onChange={handleChange}
               error={errors.confirmPassword}
             />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full p-3 text-white rounded-lg ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-purple-500 hover:bg-purple-600"
-              }`}
-            >
-              {loading ? "Processing..." : "VERIFY YOUR MAIL"}
-            </button>
+            <SubmitButton isLoading={loading} text="VERIFY YOUR EMAIL" />
           </form>
+          <p className="text-center text-gray-600 mt-4">
+            Already have an account?{" "}
+            <LinkText to="/host/signin" text="Sign Up" ariaLabel="Sign Up" />
+          </p>
         </div>
       </div>
 

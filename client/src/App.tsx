@@ -5,6 +5,7 @@ import CustomerRoutes from "./routes/CustomerRoutes";
 import PropertyOwnerRoutes from "./routes/PropertyOwnerRoutes";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ConfirmVerifyEmail from "./pages/auth/ConfirmVerifyEmail";
+import AdminRoutes from "./routes/AdminRoutes";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,10 @@ const App: React.FC = () => {
 
         {/* Property Owner-Specific Routes */}
         <Route path="/host/*" element={<PropertyOwnerRoutes />} />
+
+        {/* Admin-Specific Routes */}
+        <Route path="/admin/*" element={<AdminRoutes />} />
+
       </Routes>
     </Router>
   );

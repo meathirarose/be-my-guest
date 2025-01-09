@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SignUpUser } from "../../../api/userAuthApi";
-import InputField from "../../../shared/components/ui/InputField"; 
-import { showToast } from "../../../shared/utils/toastUtils"; 
-import { SubmitButton } from "../../buttons/SubmitButton";
-import { LinkText } from "../../../shared/components/ui/LinkText";
-import { validateConfirmPassword, validateCountry, validateEmail, validateName, validatePassword } from "../../../shared/utils/formValidationUtils";
+import { SignUpUser } from "../../api/userAuthApi";
+import InputField from "../../shared/components/ui/InputField"; 
+import { showToast } from "../../shared/utils/toastUtils"; 
+import { SubmitButton } from "../buttons/SubmitButton";
+import { LinkText } from "../../shared/components/ui/LinkText";
+import { validateConfirmPassword, validateCountry, validateEmail, validateName, validatePassword } from "../../shared/utils/formValidationUtils";
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();

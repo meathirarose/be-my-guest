@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { signInUser } from "../../../api/userAuthApi";
+import { googleLogin, signInUser } from "../../api/userAuthApi";
 import { useDispatch } from "react-redux";
-import { login } from "../../../redux/user/userSlice";
-import { showToast } from "../../../shared/utils/toastUtils";
-import InputField from "../../../shared/components/ui/InputField";
-import { LinkText } from "../../../shared/components/ui/LinkText";
-import { SubmitButton } from "../../buttons/SubmitButton";
-import { SocialLoginButton } from "../../buttons/SocialLoginButtons";
-import { validateEmail, validatePassword } from "../../../shared/utils/formValidationUtils";
+import { login } from "../../redux/user/userSlice";
+import { showToast } from "../../shared/utils/toastUtils";
+import InputField from "../../shared/components/ui/InputField";
+import { LinkText } from "../../shared/components/ui/LinkText";
+import { SubmitButton } from "../buttons/SubmitButton";
+import { validateEmail, validatePassword } from "../../shared/utils/formValidationUtils";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
       newErrors.password = passwordError;
       valid = false;
     }
-    
+
     setErrors(newErrors);
     return valid;
   };
@@ -71,6 +71,8 @@ const LoginForm: React.FC = () => {
 
         dispatch(login({ user, token }));
         showToast("success", "Sign-in successful!");
+
+        // Check user role and navigate accordingly
         navigate("/customer/home", { replace: true });
       }
     } catch (err) {
@@ -85,8 +87,41 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
+  const handleGoogleLoginSuccess = async (response: CredentialResponse) => {
+    setLoading(true);
+    try {
+      const { credential } = response;
+      console.log("Google login response:", response);
+      if (!credential) {
+        throw new Error("Google login failed!");
+      }
+  
+      const decodedToken = jwtDecode(credential); 
+      console.log("Decoded token:", decodedToken);
+  
+      // Sending idToken to the backend for verification
+      const apiResponse = await googleLogin({ idToken: credential }); 
+      console.log("Google login API response:", apiResponse);
+      if (apiResponse.status === 200) {
+        const { user, token } = apiResponse.data;
+        console.log(user, token, "User and token from Google login");
+        dispatch(login({ user, token }));
+        showToast("success", "Sign-in successful!");
+
+        // Check user role and navigate accordingly
+        navigate("/customer/home", { replace: true });
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("error", "Google sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };  
+
+  const handleGoogleLoginFailure = () => {
+    showToast("error", "Google login failed. Please try again.");
+    setLoading(false);
   };
 
   return (
@@ -129,10 +164,10 @@ const LoginForm: React.FC = () => {
           <div className="flex-1 border-t border-gray-300"></div>
         </div>
 
-        <SocialLoginButton
-          icon={<FcGoogle className="text-2xl" />}
-          text="Continue with Google"
-          onClick={handleGoogleLogin}
+        <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginFailure}
+              useOneTap
         />
       </div>
     </div>

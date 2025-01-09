@@ -1,6 +1,6 @@
 import React from "react";
 import { MdDashboard } from "react-icons/md";
-import { FaCalendarAlt, FaHome, FaTaxi, FaMoneyCheck, FaComments, FaQuestionCircle } from "react-icons/fa";
+import { FaCalendarAlt, FaMoneyCheck, FaComments, FaQuestionCircle } from "react-icons/fa";
 
 const Sidebar: React.FC = () => {
   return (
@@ -16,14 +16,6 @@ const Sidebar: React.FC = () => {
         <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
           <FaCalendarAlt className="text-2xl" />
           <span>Bookings</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <FaHome className="text-2xl" />
-          <span>Properties</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <FaTaxi className="text-2xl" />
-          <span>Taxi Service</span>
         </li>
         <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
           <FaMoneyCheck className="text-2xl" />

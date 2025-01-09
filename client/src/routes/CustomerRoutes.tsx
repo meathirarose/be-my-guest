@@ -5,6 +5,7 @@ import CustomerLanding from "../pages/customer/Landing";
 import CustomerSignUp from "../pages/customer/SignUp";
 import Home from "../pages/customer/Home";
 import PrivateRouteForCustomer from "./PrivateRouteForCustomer";
+import Profile from "../pages/customer/Profile";
 
 const CustomerRoutes: React.FC = () => (
   <Routes>
@@ -12,6 +13,7 @@ const CustomerRoutes: React.FC = () => (
     <Route path="/customer" element={<CustomerLanding />} />
     <Route path="/customer/login" element={<CustomerLogin />} />
     <Route path="/customer/signup" element={<CustomerSignUp />} />
+    <Route path="/customer/profile" element={<Profile />} />
 
     {/* Private Routes */}
     <Route element={<PrivateRouteForCustomer />}>

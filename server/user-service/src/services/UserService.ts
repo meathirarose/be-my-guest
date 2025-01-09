@@ -81,7 +81,6 @@ export class UserService implements IUserService {
             throw error; 
         }
     }
-    
 
     async signInUser(
         email: string, 
@@ -101,6 +100,29 @@ export class UserService implements IUserService {
         }
 
         return existingUser;
+    }
+
+    async googleLogin(name: string, email: string, googleId: string): Promise<IUserDoc> {
+
+        const existingUser = await this.userRepository.findByEmail(email);
+
+        if (existingUser) {
+            return existingUser;
+        }
+        const hashedPassword = await bcryptjs.hash(googleId, 10);
+
+        const newUserAttrs: IUserAttrs = {
+            name,
+            email,
+            password: hashedPassword,
+            country: "India",
+            role: Role.CUSTOMER,
+            verified: true
+        };
+
+        const newUser = User.build(newUserAttrs);
+
+        return await this.userRepository.save(newUser as IUserDoc);
     }
     
 }
