@@ -9,8 +9,8 @@ import { signInValidationSchema } from "../validations/SignInValidation";
 export class PropertyOwnerController implements IPropertyOwnerController{
     private propertyOwnerService: PropertyOwnerService;
 
-    constructor() {
-        this.propertyOwnerService = new PropertyOwnerService();
+    constructor(propertyOwnerService: PropertyOwnerService) {
+        this.propertyOwnerService = propertyOwnerService;
     }
 
     public registerPropertyOwner = async (req: Request, res: Response): Promise<void> => {

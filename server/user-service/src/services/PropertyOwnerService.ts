@@ -10,8 +10,8 @@ import { NotFoundError } from "../errors/NotFoundError";
 export class PropertyOwnerService implements IPropertyOwnerService {
     private userRepository: UserRepository;
 
-    constructor() {
-        this.userRepository = new UserRepository();
+    constructor(userRepository: UserRepository) {
+        this.userRepository = userRepository;
     }
 
     public async registerPropertyOwner(

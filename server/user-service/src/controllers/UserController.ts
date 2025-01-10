@@ -11,8 +11,8 @@ import { count } from "console";
 export class UserController implements IUserController{
     private userService: UserService;
 
-    constructor() {
-        this.userService = new UserService();
+    constructor(userService: UserService) {
+        this.userService = userService;
     }
 
     public registerUser = async (req: Request, res: Response): Promise<void> => {

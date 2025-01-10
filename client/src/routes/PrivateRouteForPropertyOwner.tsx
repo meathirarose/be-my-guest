@@ -10,7 +10,7 @@ const PrivateRouteForPropertyOwner: React.FC = () => {
   const userRole = useSelector((state: RootState) => state.user?.user?.role);
 
   if (!isAuthenticated || userRole !== "property-owner") {
-    return <Navigate to="/host/host-signin" replace />;
+    return <Navigate to="/host/signin" replace />;
   }
 
   return <Outlet />;

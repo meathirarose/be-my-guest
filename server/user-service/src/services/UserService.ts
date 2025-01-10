@@ -13,8 +13,8 @@ const EMAIL_SECRET = process.env.EMAIL_SECRET || 'email-secret-key';
 export class UserService implements IUserService {
     private userRepository: UserRepository;
 
-    constructor() {
-        this.userRepository = new UserRepository();
+    constructor(userRepository: UserRepository) {
+        this.userRepository = userRepository;
     }
 
     public async registerUser(
