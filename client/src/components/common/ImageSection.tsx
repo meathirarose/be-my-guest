@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 interface ImageSectionProps {
   backgroundImage: string;
   foregroundImage?: string;
-  text: string | ReactNode;
+  text?: string | ReactNode;
   isFullWidth?: boolean;
   textAlignment?: "left" | "center" | "right";
   textPosition?: string;

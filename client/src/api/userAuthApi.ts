@@ -3,7 +3,6 @@ import axios from "axios";
 // user signin
 export const signInUser = async (email: string, password: string) => {
   try {
-    console.log("Start------------sign in user--------------------------");
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/signin`,
       {
@@ -12,10 +11,7 @@ export const signInUser = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
-    console.log(
-      response,
-      "sign in user response from userApi------------------------------------"
-    );
+
     return response;
   } catch (error) {
     console.log(error);
@@ -69,9 +65,6 @@ export const VerifyEmail = async (token: string | null) => {
 // signin property owner
 export const SignInPropertyOwner = async (email: string, password: string) => {
   try {
-    console.log(
-      "Start - Signin Property Owner----------------------------------------"
-    );
     const response = await axios.post(
       `${
         import.meta.env.VITE_BASE_URL
@@ -82,10 +75,7 @@ export const SignInPropertyOwner = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
-    console.log(
-      response,
-      "Sign In Property Owner response from userApi------------------------------------"
-    );
+
     return response;
   } catch (error) {
     console.log(error);
@@ -135,6 +125,45 @@ export const googleLogin = async ({ idToken }: { idToken: string }) => {
     return response;
   } catch (error) {
     console.error("Error during Google login:", error);
+    throw error;
+  }
+};
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/forgot-password`,
+      { email }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during forgot password:", error);
+    throw error;
+  }
+}
+
+export const resetPassword = async (password: string, confirmPassword: string, token: string) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/reset-password`,
+      { password, confirmPassword, token }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during reset password:", error);
+    throw error;
+  }
+}
+
+export const logoutUser = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/logout-customer`,
+      { withCredentials: true }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during logout:", error);
     throw error;
   }
 };

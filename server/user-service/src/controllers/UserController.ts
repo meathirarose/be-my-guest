@@ -7,6 +7,8 @@ import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
 import { verifyGoogleToken } from "../utils/authUtils";
 import { count } from "console";
+import { NotFoundError } from "../errors/NotFoundError";
+import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
 
 export class UserController implements IUserController{
     private userService: UserService;
@@ -166,7 +168,7 @@ export class UserController implements IUserController{
             const { idToken } = req.body;
 
             if (!idToken) {
-                throw new Error("idToken is required!");
+                throw new BadRequestError("idToken is required!");
             }
 
             // Verify the Google token
@@ -223,8 +225,61 @@ export class UserController implements IUserController{
             });
         } catch (error) {
             console.error(error);
-            return res.status(400).json({ message: error });    }
+            return res.status(400).json({ message: error });    
+        }
     };
 
+    public forgotPassword = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { email } = req.body;
+
+            if(!email) {
+                throw new NotFoundError();
+            }
+
+            await this.userService.forgotPassword(email);
+            res.status(200).json({ message: "Password reset link sent to your email!" });
+
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({ message: error });
+        }
+    }
+
+    public resetPassword = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { error, value } = resetPasswordValidationSchema.validate(req.body, { abortEarly: false });
+
+            if (error) {
+                console.error(error);
+                const errorMessages = error.details.map((detail) => detail.message);
+                return res.status(400).json({ message: 'Validation error', error: errorMessages });
+            }
+            
+            const { password, token } = value;
+
+            await this.userService.resetPassword(password, token);
+            
+            return res.status(200).json({ message: 'Password updated successfully!' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'An error occurred while resetting the password.' });
+        }
+    };
+    
+
+    public logoutUser = async(req: Request, res: Response) => {
+        try {
+            res.clearCookie('accessToken',{
+                httpOnly: true,
+                sameSite: "strict",
+            });
+
+            return res.status(200).json({message: "Logout successful!"});
+        } catch (error) {
+            console.error(error);
+            return res.status(400).json({ message: error });
+        }
+    }
 
 }

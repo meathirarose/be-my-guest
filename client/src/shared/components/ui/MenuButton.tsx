@@ -41,7 +41,7 @@ const MenuButton: React.FC = () => {
               <Link to="/host/host-landing" className="w-full ">Host an Experience</Link>
             </li>
             <li className="w-full pb">
-              <Link to="/customer" className="w-full ">Landing Page</Link>
+              <Link to="/" className="w-full ">Landing Page</Link>
             </li>
           </ul>
         </div>

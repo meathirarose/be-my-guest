@@ -6,10 +6,10 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   // Determine the login path based on the current pathname
-  const loginPath = location.pathname === "/customer" ? "/customer/login" : "/host/signin";
+  const loginPath = location.pathname === "/" ? "/customer/login" : "/host/signin";
 
   // List of landing page paths
-  const landingPages = ["/customer", "/host/host-landing"];
+  const landingPages = ["/", "/host/host-landing"];
 
   // Check if the current path is a landing page
   const isLandingPage = landingPages.includes(location.pathname);

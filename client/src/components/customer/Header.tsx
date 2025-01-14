@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/user/userSlice";
 import { RootState } from "../../redux/store";
 import { LinkText } from "../../shared/components/ui/LinkText";
+import { logoutUser } from "../../api/userAuthApi";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,9 +22,14 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/customer/login");
+  const handleLogout = async () => {
+    try {
+      await logoutUser()
+      dispatch(logout());
+      navigate("/customer/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   const handleProfileClick = () => {
