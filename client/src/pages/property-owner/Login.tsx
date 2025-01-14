@@ -9,10 +9,7 @@ import InputField from "../../shared/components/ui/InputField";
 import Header from "../../shared/components/layout/Header";
 import Footer from "../../shared/components/layout/Footer";
 import bg_signin from "../../assets/property-owner-images/bg-signin.jpg";
-import {
-  validateEmail,
-  validatePassword,
-} from "../../shared/utils/formValidationUtils";
+import { loginValidationSchema } from "../../validations/loginValidation";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { SocialLoginButton } from "../../components/buttons/SocialLoginButtons";
@@ -40,25 +37,25 @@ const LoginForm: React.FC = () => {
   };
 
   const validateForm = () => {
-    let valid = true;
-    const newErrors = { email: "", password: "" };
+    const { error } = loginValidationSchema.validate(formData, {
+      abortEarly: false,
+    });
 
-    // Email validation
-    const emailError = validateEmail(formData.email);
-    if (emailError) {
-      newErrors.email = emailError;
-      valid = false;
+    if (!error) {
+      setErrors({ email: "", password: "" });
+      return true;
     }
+    const newErrors: { email: string; password: string } = {
+      email: "",
+      password: "",
+    };
 
-    // Password validation
-    const passwordError = validatePassword(formData.password);
-    if (passwordError) {
-      newErrors.password = passwordError;
-      valid = false;
-    }
+    error.details.forEach((detail) => {
+      newErrors[detail.path[0] as "email" | "password"] = detail.message;
+    });
 
     setErrors(newErrors);
-    return valid;
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

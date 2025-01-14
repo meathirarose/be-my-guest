@@ -7,7 +7,7 @@ import { showToast } from "../../shared/utils/toastUtils";
 import InputField from "../../shared/components/ui/InputField";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../buttons/SubmitButton";
-import { validateEmail, validatePassword } from "../../shared/utils/formValidationUtils";
+import { loginValidationSchema } from "../../validations/loginValidation";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
@@ -34,24 +34,25 @@ const LoginForm: React.FC = () => {
   };
 
   const validateForm = () => {
-    let valid = true;
-    const newErrors = { email: "", password: "" };
+    const { error } = loginValidationSchema.validate(formData, {
+      abortEarly: false,
+    });
 
-    //email validation
-    const emailError = validateEmail(formData.email);
-    if (emailError) {
-      newErrors.email = emailError;
-      valid = false;
+    if (!error) {
+      setErrors({ email: "", password: "" });
+      return true;
     }
-    //password validation
-    const passwordError = validatePassword(formData.password);
-    if (passwordError) {
-      newErrors.password = passwordError;
-      valid = false;
-    }
+    const newErrors: { email: string; password: string } = {
+      email: "",
+      password: "",
+    };
+
+    error.details.forEach((detail) => {
+      newErrors[detail.path[0] as "email" | "password"] = detail.message;
+    });
 
     setErrors(newErrors);
-    return valid;
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -95,12 +96,12 @@ const LoginForm: React.FC = () => {
       if (!credential) {
         throw new Error("Google login failed!");
       }
-  
-      const decodedToken = jwtDecode(credential); 
+
+      const decodedToken = jwtDecode(credential);
       console.log("Decoded token:", decodedToken);
-  
+
       // Sending idToken to the backend for verification
-      const apiResponse = await googleLogin({ idToken: credential }); 
+      const apiResponse = await googleLogin({ idToken: credential });
       console.log("Google login API response:", apiResponse);
       if (apiResponse.status === 200) {
         const { user, token } = apiResponse.data;
@@ -117,7 +118,7 @@ const LoginForm: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const handleGoogleLoginFailure = () => {
     showToast("error", "Google login failed. Please try again.");
@@ -165,9 +166,9 @@ const LoginForm: React.FC = () => {
         </div>
 
         <GoogleLogin
-              onSuccess={handleGoogleLoginSuccess}
-              onError={handleGoogleLoginFailure}
-              useOneTap
+          onSuccess={handleGoogleLoginSuccess}
+          onError={handleGoogleLoginFailure}
+          useOneTap
         />
       </div>
     </div>

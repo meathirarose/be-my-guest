@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import InputField from "../ui/InputField";
-import { SubmitButton } from "../../../components/buttons/SubmitButton";
-import { validatePassword } from "../../utils/formValidationUtils";
+import InputField from "../../shared/components/ui/InputField";
+import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
-import { showToast } from "../../utils/toastUtils";
-import { resetPassword } from "../../../api/userAuthApi";
+import { showToast } from "../../shared/utils/toastUtils";
+import { resetPassword } from "../../api/userAuthApi";
+import { resetPasswordValidationSchema } from "../../validations/resetPasswordValidation";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -26,22 +26,25 @@ const ResetPassword: React.FC = () => {
   };
 
   const validateForm = () => {
-    let isValid = true;
-    const newErrors = { password: "", confirmPassword: "" };
+    const { error } = resetPasswordValidationSchema.validate({password, confirmPassword}, {
+      abortEarly: false,
+    });
 
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      newErrors.password = passwordError;
-      isValid = false;
+    if (!error) {
+      setErrors({ password: "", confirmPassword: "" });
+      return true;
     }
+    const newErrors: { password: string; confirmPassword: string } = {
+      password: "",
+      confirmPassword: "",
+    };
 
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
-      isValid = false;
-    }
+    error.details.forEach((detail) => {
+      newErrors[detail.path[0] as "password" | "confirmPassword"] = detail.message;
+    });
 
     setErrors(newErrors);
-    return isValid;
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

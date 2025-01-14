@@ -7,7 +7,7 @@ export const signInValidationSchema = Joi.object({
         'any.required': 'Email is required'
     }),
     password: Joi.string().min(8)
-        .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:;"'<>,.?/-]).+$/)
+        .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/-]).+$/)
         .required()
         .messages({
             'string.base': 'Password must be a string',

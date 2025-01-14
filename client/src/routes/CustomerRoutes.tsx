@@ -4,8 +4,8 @@ import PrivateRouteForCustomer from "./PrivateRouteForCustomer";
 import CustomerLanding from "../pages/customer/Landing";
 import CustomerLogin from "../pages/customer/Login";
 import CustomerSignUp from "../pages/customer/SignUp";
-import ForgotPassword from "../shared/components/layout/ForgotPassword";
-import ResetPassword from "../shared/components/layout/ResetPassword";
+import ForgotPassword from "../pages/customer/ForgotPassword";
+import ResetPassword from "../pages/customer/ResetPassword";
 import Home from "../pages/customer/Home";
 import Profile from "../pages/customer/Profile";
 

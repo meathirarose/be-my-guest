@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import InputField from "../ui/InputField";
-import { SubmitButton } from "../../../components/buttons/SubmitButton";
-import { validateEmail } from "../../utils/formValidationUtils";
+import InputField from "../../shared/components/ui/InputField";
+import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
-import { forgotPassword } from "../../../api/userAuthApi";
-import { showToast } from "../../utils/toastUtils";
+import { showToast } from "../../shared/utils/toastUtils";
+import { forgotPasswordEmailValidationSchema } from "../../validations/forgotPasswordEmailValidation";
+import { forgotPassword } from "../../api/userAuthApi";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -19,16 +19,25 @@ const ForgotPassword: React.FC = () => {
   };
 
   const validateForm = () => {
-    let isValid = true;
-    const newErrors = { email: "" };
+    const { error } = forgotPasswordEmailValidationSchema.validate(email, {
+      abortEarly: false,
+    });
 
-    const emailError = validateEmail(email);
-    if (emailError) {
-      newErrors.email = emailError;
-      isValid = false;
+    if (!error) {
+      setErrors({ email: ""});
+      return true;
     }
+    const newErrors: { email: string;} = {
+      email: "",
+
+    };
+
+    error.details.forEach((detail) => {
+      newErrors[detail.path[0] as "email"] = detail.message;
+    });
+
     setErrors(newErrors);
-    return isValid;
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

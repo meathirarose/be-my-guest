@@ -5,7 +5,7 @@ import InputField from "../../shared/components/ui/InputField";
 import { showToast } from "../../shared/utils/toastUtils"; 
 import { SubmitButton } from "../buttons/SubmitButton";
 import { LinkText } from "../../shared/components/ui/LinkText";
-import { validateConfirmPassword, validateCountry, validateEmail, validateName, validatePassword } from "../../shared/utils/formValidationUtils";
+import { signUpValidationSchema } from "../../validations/signupValidation";
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -35,41 +35,33 @@ const SignupForm: React.FC = () => {
   };
 
   const validateForm = () => {
-    let isValid = true;
-    const newErrors = { name: "", email: "", country: "", password: "", confirmPassword: "" };
-    //name validation
-    const nameError = validateName(formData.name);
-    if(nameError) {
-      newErrors.name = nameError;
-      isValid = false;
-    }
-    //email validation
-    const emailError = validateEmail(formData.email);
-    if(emailError) {
-      newErrors.email = emailError;
-      isValid = false;
-    }
-    //country validation
-    const countryError = validateCountry(formData.country);
-    if(countryError) {
-      newErrors.country = countryError;
-      isValid = false;
-    }
-    //password validation
-    const passwordError = validatePassword(formData.password);
-    if(passwordError) {
-      newErrors.password = passwordError;
-      isValid = false;
-    }
-    //confirmPassword validation
-    const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
-    if(confirmPasswordError) {
-      newErrors.confirmPassword = confirmPasswordError;
-      isValid = false;
+    const { error } = signUpValidationSchema.validate(formData, { abortEarly: false });
+
+    if (!error) {
+      setErrors({
+        name: "",
+        email: "",
+        country: "",
+        password: "",
+        confirmPassword: "",
+      });
+      return true;
     }
 
+    const newErrors: { name: string; email: string; country: string; password: string; confirmPassword: string } = {
+      name: "",
+      email: "",
+      country: "",
+      password: "",
+      confirmPassword: "",
+    };
+
+    error.details.forEach((detail) => {
+      newErrors[detail.path[0] as keyof typeof formData] = detail.message;
+    });
+
     setErrors(newErrors);
-    return isValid;
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
