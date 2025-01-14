@@ -4,7 +4,7 @@ import verifyEmailImage from "../../assets/customer-images/signup-image.jpg";
 const VerifyEmailPage: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative w-106 h-96 bg-purple-600 rounded-2xl overflow-hidden shadow-xl">
+      <div className="relative w-106 h-96 bg-purple-400 rounded-2xl overflow-hidden shadow-xl">
         
         <img
           src={verifyEmailImage}
@@ -12,7 +12,10 @@ const VerifyEmailPage: React.FC = () => {
           className="absolute bottom-0 top-0 opacity-20 w-full h-full rounded-2xl object-cover"
         />
 
-        <div className="relative z-20 bg-purple-400 bg-opacity-20 border-2 border-purple-600 rounded-2xl p-24 text-white flex flex-col items-center justify-center h-full">
+        <div className="relative z-20 bg-purple-500 bg-opacity-20 border-2 border-purple-600 rounded-2xl p-24 text-white flex flex-col items-center justify-center h-full">
+          <div className="text-4xl font-bold px-6 mb-14 text-center">
+            <span className="text-purple-700">Be My</span> Guest
+          </div>
           <h2 className="text-2xl font-bold leading-snug text-center mb-4">
             Verify Your Email
           </h2>
@@ -24,7 +27,7 @@ const VerifyEmailPage: React.FC = () => {
 
           <p className="text-sm text-center">
             Didn't receive the email?{" "}
-            <a href="/resend-email" className="text-blue-400 hover:underline">
+            <a href="/resend-email" className="text-blue-700 hover:underline">
               Click here to resend
             </a>
           </p>

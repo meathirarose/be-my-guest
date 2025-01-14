@@ -238,7 +238,10 @@ export class UserController implements IUserController{
             }
 
             await this.userService.forgotPassword(email);
-            res.status(200).json({ message: "Password reset link sent to your email!" });
+
+            res.status(200).json({ 
+                message: "Password reset link sent to your email!",
+            });
 
         } catch (error) {
             console.error(error);

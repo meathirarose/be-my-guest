@@ -4,8 +4,6 @@ import PrivateRouteForCustomer from "./PrivateRouteForCustomer";
 import CustomerLanding from "../pages/customer/Landing";
 import CustomerLogin from "../pages/customer/Login";
 import CustomerSignUp from "../pages/customer/SignUp";
-import ForgotPassword from "../pages/customer/ForgotPassword";
-import ResetPassword from "../pages/customer/ResetPassword";
 import Home from "../pages/customer/Home";
 import Profile from "../pages/customer/Profile";
 
@@ -16,8 +14,6 @@ const CustomerRoutes: React.FC = () => (
     <Route path="/customer/login" element={<CustomerLogin />} />
     <Route path="/customer/signup" element={<CustomerSignUp />} />
     <Route path="/customer/profile" element={<Profile />} />
-    <Route path="/customer/forgot-password" element={<ForgotPassword />} />
-    <Route path="/customer/reset-password" element={<ResetPassword />} />
 
     {/* Private Routes */}
     <Route element={<PrivateRouteForCustomer />}>

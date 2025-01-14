@@ -148,7 +148,7 @@ const LoginForm: React.FC = () => {
           />
 
           <LinkText
-            to="/customer/forgot-password"
+            to="/forgot-password"
             text="Forgot Password?"
             ariaLabel="Forgot Password"
           />

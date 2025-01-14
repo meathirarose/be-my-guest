@@ -134,7 +134,7 @@ export class EmailService {
       expiresIn: EMAIL_EXPIRATION,
     });
 
-    const resetLink = `${process.env.FRONTEND_URL}/customer/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
     const transporter = nodeMailer.createTransport({
       service: "Gmail",

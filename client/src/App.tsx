@@ -6,6 +6,8 @@ import PropertyOwnerRoutes from "./routes/PropertyOwnerRoutes";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ConfirmVerifyEmail from "./pages/auth/ConfirmVerifyEmail";
 import AdminRoutes from "./routes/AdminRoutes";
+import ForgotPassword from "./shared/components/layout/ForgotPassword";
+import ResetPassword from "./shared/components/layout/ResetPassword";
 
 const App: React.FC = () => {
   return (
@@ -15,6 +17,8 @@ const App: React.FC = () => {
         {/* Shared Public Routes */}
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/success-verification" element={<ConfirmVerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Customer-Specific Routes */}
         <Route path="/*" element={<CustomerRoutes />} />
