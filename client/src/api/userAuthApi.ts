@@ -155,6 +155,20 @@ export const resetPassword = async (password: string, confirmPassword: string, t
   }
 }
 
+export const updateProfile = async (name: string, email: string, country: string) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/update-profile`,
+      { name, email, country },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error during updating profile:", error);
+    throw error;
+  }
+}
+
 export const logoutUser = async () => {
   try {
     const response = await axios.post(

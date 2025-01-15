@@ -5,28 +5,36 @@ import userRoutes from './routes/userRoutes';
 import propertyOwnerRoutes from './routes/propertyOwnerRoutes';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import { NotFoundError } from './errors/NotFoundError';
 
 dotenv.config();
 
 const app = express();
 
+app.use(express.json()); 
+
 // CORS Configuration
-app.use(
-    cors({
-      origin: process.env.FRONTEND_URL,
-      methods: ["GET", "POST"],
-      allowedHeaders: ["Content-Type"],
-      credentials: true, 
-    })
-  );
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "",
+  method: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}
+
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Middleware
-app.use(express.json()); 
 app.use(bodyParser.json());
 
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/property-owners', propertyOwnerRoutes);
+
+app.all("*",()=>{
+  throw new NotFoundError();
+})
 
 //Error handler middleware
 app.use(errorHandler);

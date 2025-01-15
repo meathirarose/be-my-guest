@@ -11,12 +11,15 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 app.use(morgan('tiny'));
-app.use(cors({
-    origin:"http://localhost:5173",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true,
-},));
+
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "",
+  method: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}
+
+app.use(cors(corsOptions));
 
 app.use('/user-service',proxy(`${process.env.USER_SERVICE_URL}`));
 

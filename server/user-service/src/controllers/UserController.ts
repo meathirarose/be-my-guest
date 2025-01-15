@@ -177,14 +177,14 @@ export class UserController implements IUserController{
                 throw new Error("Invalid Google token!");
             }
 
-            const { email, name = "", sub: googleId } = payload;
+            const { name = "", email, sub: googleId } = payload;
 
             if (!email || !googleId) {
                 throw new Error("Google token is missing essential information!");
             }
 
             // Check if the user exists or create a new one
-            const user = await this.userService.googleLogin(email, name, googleId);
+            const user = await this.userService.googleLogin(name, email, googleId);
 
             // Generate tokens
             const token = AuthService.generateToken({
@@ -244,8 +244,13 @@ export class UserController implements IUserController{
             });
 
         } catch (error) {
-            console.error(error);
-            res.status(400).json({ message: error });
+            if (error instanceof NotFoundError) {
+                res.status(404).json({ message: error.message });
+            } else if (error instanceof BadRequestError) {
+                res.status(400).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: "An unexpected error occurred." });
+            }
         }
     }
 
@@ -269,6 +274,22 @@ export class UserController implements IUserController{
             return res.status(500).json({ message: 'An error occurred while resetting the password.' });
         }
     };
+
+    public updateProfile = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { name, email, country } = req.body;
+            console.log(req.body, "from the update profile controller---------------------------------");
+
+            const user = await this.userService.updateProfile(name, email, country);
+            console.log(user, "from the update profile controller nn---------------------------------");
+
+            return res.status(200).json({ message: "Profile updated successfully!", user });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(400).json({ message: error });
+        }
+    }
     
 
     public logoutUser = async(req: Request, res: Response) => {

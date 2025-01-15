@@ -1,6 +1,10 @@
 import { toast, ToastOptions } from "react-toastify";
 
-export const showToast = (type: "success" | "error", message: string, options: ToastOptions = {}) => {
+export const showToast = (
+  type: "success" | "error" | "info",
+  message: string,
+  options: ToastOptions = {}
+) => {
   const defaultOptions: ToastOptions = {
     position: "top-right",
     autoClose: 1500,
@@ -12,7 +16,7 @@ export const showToast = (type: "success" | "error", message: string, options: T
       borderRadius: "6px",
       padding: "8px 18px",
     },
-    ...options, 
+    ...options,
   };
 
   if (type === "success") {
@@ -24,6 +28,11 @@ export const showToast = (type: "success" | "error", message: string, options: T
     toast.error(message, {
       ...defaultOptions,
       style: { ...defaultOptions.style, backgroundColor: "#D32F2F", color: "#fff" },
+    });
+  } else if (type === "info") { 
+    toast.info(message, {
+      ...defaultOptions,
+      style: { ...defaultOptions.style, backgroundColor: "#0288D1", color: "#fff" },
     });
   }
 };

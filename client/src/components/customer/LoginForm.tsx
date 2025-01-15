@@ -9,7 +9,6 @@ import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../buttons/SubmitButton";
 import { loginValidationSchema } from "../../validations/loginValidation";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -70,10 +69,13 @@ const LoginForm: React.FC = () => {
       if (response && response.status === 200) {
         const { user, token } = response.data;
 
-        dispatch(login({ user, token }));
-        showToast("success", "Sign-in successful!");
+        if(user?.role === "property-owner"){
+          showToast("info", "This email is not linked to this account. Please sign in with a different account.");
+        }else {
+          dispatch(login({ user, token }));
+          showToast("success", "Sign-in successful!");
+        }
 
-        // Check user role and navigate accordingly
         navigate("/customer/home", { replace: true });
       }
     } catch (err) {
@@ -92,24 +94,23 @@ const LoginForm: React.FC = () => {
     setLoading(true);
     try {
       const { credential } = response;
-      console.log("Google login response:", response);
+      
       if (!credential) {
         throw new Error("Google login failed!");
       }
 
-      const decodedToken = jwtDecode(credential);
-      console.log("Decoded token:", decodedToken);
-
       // Sending idToken to the backend for verification
       const apiResponse = await googleLogin({ idToken: credential });
-      console.log("Google login API response:", apiResponse);
       if (apiResponse.status === 200) {
         const { user, token } = apiResponse.data;
-        console.log(user, token, "User and token from Google login");
-        dispatch(login({ user, token }));
-        showToast("success", "Sign-in successful!");
 
-        // Check user role and navigate accordingly
+        if(user?.role === "property-owner"){
+          showToast("info", "This email is not linked to this account. Please sign in with a different account.");
+        }else {
+          dispatch(login({ user, token }));
+          showToast("success", "Sign-in successful!");
+        }
+        
         navigate("/customer/home", { replace: true });
       }
     } catch (err) {

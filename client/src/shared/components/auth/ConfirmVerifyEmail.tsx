@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import verifyEmailImage from "../../assets/customer-images/signup-image.jpg"; 
-import { VerifyEmail } from "../../api/userAuthApi";
+import verifyEmailImage from "../../../assets/customer-images/signup-image.jpg"; 
+import { VerifyEmail } from "../../../api/userAuthApi";
 import { useNavigate } from "react-router-dom";
 
 const ConfirmVerifyEmailPage: React.FC = () => {

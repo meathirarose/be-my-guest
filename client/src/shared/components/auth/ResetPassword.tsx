@@ -87,15 +87,15 @@ const ResetPassword: React.FC = () => {
           className="absolute bottom-0 top-0 opacity-20 w-full h-full rounded-2xl object-cover"
         />
 
-        <div className="relative z-20 bg-purple-500 bg-opacity-20 border-2 border-purple-600 rounded-2xl p-24 text-white flex flex-col items-center justify-center h-full">
+        <div className="relative z-20 bg-purple-500 bg-opacity-20 border-2 border-purple-600 rounded-2xl p-24 flex flex-col items-center justify-center h-full">
           <div className="text-4xl font-bold px-6 mb-14 text-center">
-            <span className="text-purple-700">Be My</span> Guest
+            <span className="text-purple-700">Be My</span> <span className="text-white">Guest</span>
           </div>
-          <h2 className="text-2xl font-bold leading-snug text-center mb-4">
+          <h2 className="text-2xl font-bold leading-snug text-center text-white mb-4">
             Reset Your Password
           </h2>
 
-          <p className="text-base text-center mb-4">
+          <p className="text-base text-center text-white mb-4">
             Please enter and confirm your new password.
           </p>
 

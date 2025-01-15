@@ -57,7 +57,7 @@ export class UserService implements IUserService {
       const user = await this.userRepository.findByEmail(email);
 
       if (!user) {
-        throw new NotFoundError();
+        throw new NotFoundError("User not found with this email");
       }
 
       if (user?.verified) {
@@ -173,5 +173,31 @@ export class UserService implements IUserService {
     }
   }
 
+  async updateProfile(name: string, email: string, country: string): Promise<IUserDoc> {
+    try {
+      console.log(email, name, country, "ith user service nn details kittanundo")
+      const user = await this.userRepository.findByEmail(email);
+      console.log("User found:----------------------------------------------------", user);
 
+      if (!user) {
+        throw new NotFoundError("User not found with this email");
+      }
+  
+      const updatedUser = await this.userRepository.update(
+        { email },
+        { name, country }
+      );
+
+      console.log("User updated successfully:---------------------------------------------", updatedUser);
+  
+      if (!updatedUser) {
+        throw new BadRequestError("Failed to update the user");
+      }
+  
+      return updatedUser;
+    } catch (error) {
+      console.error("Error in verifyEmail service:", error);
+      throw error;
+    }
+  }
 }

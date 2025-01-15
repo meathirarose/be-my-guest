@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ToastNotification from "./components/ToastNotification";
 import CustomerRoutes from "./routes/CustomerRoutes";
 import PropertyOwnerRoutes from "./routes/PropertyOwnerRoutes";
-import VerifyEmail from "./pages/auth/VerifyEmail";
-import ConfirmVerifyEmail from "./pages/auth/ConfirmVerifyEmail";
+import VerifyEmail from "./shared/components/auth/VerifyEmail";
+import ConfirmVerifyEmail from "./shared/components/auth/ConfirmVerifyEmail";
 import AdminRoutes from "./routes/AdminRoutes";
-import ForgotPassword from "./shared/components/layout/ForgotPassword";
-import ResetPassword from "./shared/components/layout/ResetPassword";
+import ForgotPassword from "./shared/components/auth/ForgotPassword";
+import ResetPassword from "./shared/components/auth/ResetPassword";
 
 const App: React.FC = () => {
   return (
