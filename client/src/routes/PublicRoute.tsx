@@ -3,19 +3,21 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-const PrivateRouteForCustomer: React.FC = () => {
+const PublicRoute: React.FC = () => {
 
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.isVerified
   );
   const userRole = useSelector((state: RootState) => state.user?.user?.role);
-  console.log(userRole, "user role aane from private router------------------------------------")
-  if (!isAuthenticated || userRole !== "customer") {
-    console.log("is authenticated alla")
-    return <Navigate to="/customer/login" replace />;
+
+  if (isAuthenticated) {    
+    if(userRole === 'customer')
+      return <Navigate to="/customer/home" replace />;
+    else if(userRole === 'property-owner')
+      return <Navigate to="/host/dashboard" replace />;
   }
 
   return <Outlet />;
 };
 
-export default PrivateRouteForCustomer;
+export default PublicRoute;

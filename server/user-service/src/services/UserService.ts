@@ -7,13 +7,14 @@ import { EmailService } from "../utils/emailSender";
 import { NotFoundError } from "../errors/NotFoundError";
 import { BadRequestError } from "../errors/BadRequestError";
 import { IUserService } from "../interfaces/IUserService";
+import { IUserRepository } from "../interfaces/IUserRepository";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET || "email-secret-key";
 
 export class UserService implements IUserService {
-  private userRepository: UserRepository;
+  private userRepository: IUserRepository;
 
-  constructor(userRepository: UserRepository) {
+  constructor(userRepository: IUserRepository) {
     this.userRepository = userRepository;
   }
 
@@ -45,7 +46,7 @@ export class UserService implements IUserService {
       await EmailService.sendVerificationMail(newUser.email);
     }
 
-    return await this.userRepository.save(newUser as IUserDoc);
+    return await this.userRepository.createUser(name, email, hashedPassword, country, Role.CUSTOMER, false);  
   }
 
   async verifyEmail(
@@ -118,7 +119,7 @@ export class UserService implements IUserService {
 
     const newUser = User.build(newUserAttrs);
 
-    return await this.userRepository.save(newUser as IUserDoc);
+    return await this.userRepository.createUser(name, email, hashedPassword, "India", Role.CUSTOMER, true);
   }
 
   async forgotPassword(email: string): Promise<void> {

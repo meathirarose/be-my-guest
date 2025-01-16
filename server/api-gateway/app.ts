@@ -21,7 +21,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.options('/user-service/*', cors(corsOptions)); 
+app.options('*', cors(corsOptions)); 
 
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 
