@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, userInfo, onUpdatePro
 
   const handleSubmit = () => {
     onUpdateProfile(name, userInfo.email, country);
-    closeModal(); // Close modal after submission
+    closeModal(); 
   };
 
   return (

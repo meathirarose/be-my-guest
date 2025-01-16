@@ -9,11 +9,12 @@ import { verifyGoogleToken } from "../utils/authUtils";
 import { count } from "console";
 import { NotFoundError } from "../errors/NotFoundError";
 import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
+import { IUserService } from "../interfaces/IUserService";
 
 export class UserController implements IUserController{
-    private userService: UserService;
+    private userService: IUserService;
 
-    constructor(userService: UserService) {
+    constructor(userService: IUserService) {
         this.userService = userService;
     }
 

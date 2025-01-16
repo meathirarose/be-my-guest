@@ -55,6 +55,10 @@ const Header: React.FC = () => {
                   <span className="w-full ">Welcome,</span>
                 </li>
 
+                <li className="w-full pb-2 px-4">
+                  <span className="w-full ">Your Profile</span>
+                </li>
+
                 <li
                   className="w-full pb-2 px-4 flex items-center space-x-2 cursor-pointer"
                   onClick={handleLogout}

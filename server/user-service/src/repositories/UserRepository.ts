@@ -10,8 +10,8 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
         super(User);  
     }
 
-    async createUser(name: string, email: string, password: string, country: string): Promise<IUserDoc> {
-        const user = new this.model({ name, email, password, country });
+    async createUser(name: string, email: string, password: string, country: string, role: string, verified: boolean): Promise<IUserDoc> {
+        const user = new this.model({ name, email, password, country, role, verified });
         return await user.save();
     }
     
