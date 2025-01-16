@@ -277,11 +277,10 @@ export class UserController implements IUserController{
 
     public updateProfile = async (req: Request, res: Response): Promise<Response> => {
         try {
+
             const { name, email, country } = req.body;
-            console.log(req.body, "from the update profile controller---------------------------------");
 
             const user = await this.userService.updateProfile(name, email, country);
-            console.log(user, "from the update profile controller nn---------------------------------");
 
             return res.status(200).json({ message: "Profile updated successfully!", user });
 

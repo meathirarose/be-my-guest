@@ -2,13 +2,13 @@ import axios from "axios";
 import { logout } from "../redux/user/userSlice";
 import store from "../redux/store";
 
-const apiClient = axios.create({
+const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
 });
 
 // Response interceptor to handle token expiration
-apiClient.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -19,10 +19,10 @@ apiClient.interceptors.response.use(
       console.log("before---------------------------------------------");
 
       try {
-        console.log("star generating---------------------------------------");
+        console.log("start generating---------------------------------------");
 
         const response = await axios.post(
-          "http://localhost:4000/user-service/api/users/refresh-token",
+          `${import.meta.env.VITE_BASE_URL}/user-service/api/users/refresh-token`,
           {},
           {
             withCredentials: true,
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
         const newAccessToken = response.data.accessToken;
         console.log("new access token --------------------------------------", newAccessToken);
 
-        return apiClient(originalRequest);
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.log("refresh failed ------------------------------------------");
         store.dispatch(logout());
@@ -42,3 +42,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;

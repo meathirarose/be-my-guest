@@ -16,17 +16,19 @@ app.use(express.json());
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "",
-  method: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  credentials: true,
+};
 
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
 // Middleware
 app.use(bodyParser.json());
+
+app.options('*', cors(corsOptions)); 
 
 // Routes
 app.use('/api/users', userRoutes);
