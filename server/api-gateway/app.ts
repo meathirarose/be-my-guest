@@ -13,23 +13,17 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(morgan('tiny'));
 
-// const corsOptions = {
-//   origin: process.env.FRONTEND_URL || "",
-//   methods: ['GET', 'POST'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// };
-
-app.use(cookieParser());
-
-app.use(cors({
+const corsOptions = {
   origin: process.env.FRONTEND_URL || "",
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-}));
+};
 
-console.log("incoming request.............")
+app.use(cookieParser());
+
+app.use(cors(corsOptions));
+
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 
 const PORT = process.env.SERVER_PORT || 4000;
