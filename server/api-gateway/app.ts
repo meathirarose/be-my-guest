@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import proxy from 'express-http-proxy';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -12,16 +13,23 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(morgan('tiny'));
 
-const corsOptions = {
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL || "",
+//   methods: ['GET', 'POST'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true,
+// };
+
+app.use(cookieParser());
+
+app.use(cors({
   origin: process.env.FRONTEND_URL || "",
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-};
+}));
 
-app.use(cors(corsOptions));
-
-
+console.log("incoming request.............")
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 
 const PORT = process.env.SERVER_PORT || 4000;

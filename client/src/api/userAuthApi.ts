@@ -20,6 +20,7 @@ export const updateProfile = async (name: string, email: string, country: string
   }
 }
 
+
 // user signin
 export const signInUser = async (email: string, password: string) => {
   try {

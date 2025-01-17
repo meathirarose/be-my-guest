@@ -281,7 +281,7 @@ export class UserController implements IUserController{
 
     public updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-
+            console.log("getting--------------------------------------------------------")
             const { name, email, country } = req.body;
 
             if(!name || !email || !country)
