@@ -13,15 +13,14 @@ app.use(express.static('public'));
 app.use(morgan('tiny'));
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  origin: process.env.FRONTEND_URL || "",
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 
-app.options('*', cors(corsOptions)); 
 
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 

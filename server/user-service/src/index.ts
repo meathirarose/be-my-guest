@@ -1,34 +1,34 @@
-import mongoose from 'mongoose';
-import { app } from './app';
-import dotenv from 'dotenv';
+import mongoose from "mongoose";
+import { app } from "./app";
+import dotenv from "dotenv";
+import { DatabaseConnectionError } from "./errors/DatabaseConnectionError";
+import { NotFoundError } from "./errors/NotFoundError";
 
 dotenv.config();
-  
+
 const start = async () => {
-    console.log("Starting Up......!");
+  console.log("✨ Starting Up......!");
 
-    if(!process.env.JWT_SECRET){
-        throw new Error("JWT_SECRET must be declared");
-    }
+  if (!process.env.JWT_SECRET) {
+    throw new NotFoundError("JWT_SECRET must be declared");
+  }
 
-    if(!process.env.MONGO_URL){
-        throw new Error("MONGO_URL must be defined");
-    }
+  if (!process.env.MONGO_URL) {
+    throw new NotFoundError("MONGO_URL must be defined");
+  }
 
-    try {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("✅ Connected to MongoDB successfully..!");
+  } catch (error) {
+    throw new DatabaseConnectionError();
+  }
 
-        await mongoose.connect(process.env.MONGO_URL);
-        console.log("Connected to MongoDB successfully..!");
+  const PORT = process.env.PORT || 3000;
 
-    } catch (error) {
-        console.error("Error connecting to MongoDB", error);
-    }
-
-    const PORT = process.env.PORT || 3000;
-
-    app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 };
 
 start();

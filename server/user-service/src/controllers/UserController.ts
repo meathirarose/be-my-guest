@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
@@ -18,7 +18,7 @@ export class UserController implements IUserController{
         this.userService = userService;
     }
 
-    public registerUser = async (req: Request, res: Response): Promise<void> => {
+    public registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { error, value } = signUpValidationSchema.validate(req.body, { abortEarly: false });
 
@@ -30,22 +30,29 @@ export class UserController implements IUserController{
             }
 
             const { name, email, password, country } = value;
+            if(!value)
+                throw new NotFoundError("Missing credentials!");
 
             const user = await this.userService.registerUser(name, email, password, country);
+            if(!user)
+                throw new BadRequestError("Unable to create a user account");
             
-            res.status(201).json({ message: "User created successfully!", data: user });
+            res.status(201).json({ message: "Account created successfully!", data: user });
 
         } catch (error) {
-            console.error("Error:", error);
-            res.status(400).json({ message: error});
+            next(error)
         }
     };
 
-    public verifyEmail = async (req: Request, res: Response): Promise<void> => {
+    public verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { token } = req.query;
+            if(!token)
+                throw new NotFoundError("Missing validation credentials");
     
             const user = await this.userService.verifyEmail(token as string);
+            if(!user)
+                throw new NotFoundError("User not found");
        
             res.status(200).json({ 
                 status: "success", 
@@ -54,13 +61,12 @@ export class UserController implements IUserController{
             });
     
         } catch (error) {
-            console.error("Error:", error);
-            res.status(400).json({ message: error });
+            next(error);
         }
     };
     
 
-    public signInUser = async (req: Request, res: Response): Promise<void> => {
+    public signInUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
 
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
@@ -76,13 +82,13 @@ export class UserController implements IUserController{
             const { email, password } = value;
 
             if(!email || !password) {
-                throw new BadRequestError("Email and Password are required!");
+                throw new NotFoundError("Email and Password are required!");
             }
 
             const user = await this.userService.signInUser(email, password);
                 
             if (!user) {
-                throw new BadRequestError("User not found!");
+                throw new NotFoundError("User not found!");
             }
             
             const token = AuthService.generateToken( { 
@@ -110,7 +116,7 @@ export class UserController implements IUserController{
             });
 
             res.status(200).json({
-                message: "Login Successful!",
+                message: "Login Successfully",
                 user: {
                     id: user.id,
                     name: user.name,
@@ -121,17 +127,16 @@ export class UserController implements IUserController{
             });
 
         } catch (error) {
-            console.log(error);
-            res.status(400).json({ message: error });
+            next(error)
         }
     }
 
-    public refreshToken = async (req: Request, res: Response): Promise<Response> => {
+    public refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { refreshToken } = req.cookies;
 
             if (!refreshToken) {
-                throw new BadRequestError("Refresh token is missing!");
+                throw new NotFoundError("Refresh token is missing!");
             }
 
             const decoded = AuthService.verifyRefreshToken(refreshToken);
@@ -159,29 +164,29 @@ export class UserController implements IUserController{
             });
 
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ error: "Internal server error" });
+            next(error);
+            return;
         }
     }
 
-    public googleLogin = async (req: Request, res: Response): Promise<Response> => {
+    public googleLogin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { idToken } = req.body;
 
             if (!idToken) {
-                throw new BadRequestError("idToken is required!");
+                throw new NotFoundError("idToken is required!");
             }
 
             // Verify the Google token
             const payload = await verifyGoogleToken(idToken);
             if (!payload) {
-                throw new Error("Invalid Google token!");
+                throw new BadRequestError("Invalid Google token!");
             }
 
             const { name = "", email, sub: googleId } = payload;
 
             if (!email || !googleId) {
-                throw new Error("Google token is missing essential information!");
+                throw new NotFoundError("Google token is missing essential information!");
             }
 
             // Check if the user exists or create a new one
@@ -225,74 +230,78 @@ export class UserController implements IUserController{
                 },
             });
         } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: error });    
+            next(error);  
+            return; 
         }
     };
 
-    public forgotPassword = async (req: Request, res: Response): Promise<void> => {
+    public forgotPassword = async (req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
             const { email } = req.body;
 
             if(!email) {
-                throw new NotFoundError();
+                throw new NotFoundError("No account found with the provided email address.");
             }
 
             await this.userService.forgotPassword(email);
 
             res.status(200).json({ 
-                message: "Password reset link sent to your email!",
+                message: "A password reset link has been successfully sent to your email. Please follow the instructions to reset your password."
             });
 
         } catch (error) {
-            if (error instanceof NotFoundError) {
-                res.status(404).json({ message: error.message });
-            } else if (error instanceof BadRequestError) {
-                res.status(400).json({ message: error.message });
-            } else {
-                res.status(500).json({ message: "An unexpected error occurred." });
-            }
+            next(error);
         }
     }
 
-    public resetPassword = async (req: Request, res: Response): Promise<Response> => {
+    public resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { error, value } = resetPasswordValidationSchema.validate(req.body, { abortEarly: false });
 
             if (error) {
-                console.error(error);
                 const errorMessages = error.details.map((detail) => detail.message);
-                return res.status(400).json({ message: 'Validation error', error: errorMessages });
+                return res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
             }
             
             const { password, token } = value;
 
+            if(!password || !token) {
+                throw new NotFoundError("Required credentials are missing.")
+            }
+
             await this.userService.resetPassword(password, token);
             
-            return res.status(200).json({ message: 'Password updated successfully!' });
+            return res.status(200).json({ message: "Your password has been updated successfully. You can now log in with your new password."
+            });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'An error occurred while resetting the password.' });
+            next(error);
+            return;
         }
     };
 
-    public updateProfile = async (req: Request, res: Response): Promise<Response> => {
+    public updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
 
             const { name, email, country } = req.body;
 
+            if(!name || !email || !country)
+                throw new NotFoundError("Missing credentials!");
+
             const user = await this.userService.updateProfile(name, email, country);
+
+            if(!user) {
+                throw new NotFoundError("User not found")
+            }
 
             return res.status(200).json({ message: "Profile updated successfully!", user });
 
         } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: error });
+            next(error);
         }
     }
     
 
-    public logoutUser = async(req: Request, res: Response) => {
+    public logoutUser = async(req: Request, res: Response, next: NextFunction) => {
         try {
             res.clearCookie('accessToken',{
                 httpOnly: true,
@@ -301,8 +310,7 @@ export class UserController implements IUserController{
 
             return res.status(200).json({message: "Logout successful!"});
         } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: error });
+            next(error);
         }
     }
 

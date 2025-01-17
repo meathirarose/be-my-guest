@@ -9,6 +9,7 @@ import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../buttons/SubmitButton";
 import { loginValidationSchema } from "../../validations/loginValidation";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { message } from "antd";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -70,21 +71,20 @@ const LoginForm: React.FC = () => {
         const { user, token } = response.data;
 
         if(user?.role === "property-owner"){
-          showToast("info", "This email is not linked to this account. Please sign in with a different account.");
+          message.info("This email is not linked to this account. Please sign in with a different account.", 2);
         }else {
           dispatch(login({ user, token }));
-          showToast("success", "Sign-in successful!");
+          message.success(response?.data?.message,2);
         }
 
         navigate("/customer/home", { replace: true });
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message || "Sign-in failed. Please try again."
-          : "An unexpected error occurred.";
-
-      showToast("error", errorMessage);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      
+      if(err.response){
+        message.error(err?.response?.data?.errors[0]?.message, 2);
+      }
     } finally {
       setLoading(false);
     }

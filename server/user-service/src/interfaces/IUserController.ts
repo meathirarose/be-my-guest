@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export interface IUserController {
-    registerUser(req: Request, res: Response): Promise<void>;
-    verifyEmail(req: Request, res: Response): Promise<void>;
-    signInUser(req: Request, res: Response): Promise<void>;
-    refreshToken(req:Request,res:Response):Promise<Response>;
-    googleLogin(req:Request,res:Response):Promise<Response>;
-    forgotPassword(req:Request,res:Response):Promise<void>;
-    resetPassword(req:Request,res:Response):Promise<Response>;
-    updateProfile(req:Request,res:Response):Promise<Response>;
-    logoutUser(req:Request,res:Response):Promise<Response>;
+    registerUser(req: Request, res: Response, next: NextFunction): Promise<void>;
+    verifyEmail(req: Request, res: Response, next: NextFunction): Promise<void>;
+    signInUser(req: Request, res: Response, next: NextFunction): Promise<void>;
+    refreshToken(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
+    googleLogin(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
+    forgotPassword(req:Request,res:Response, next: NextFunction):Promise<void>;
+    resetPassword(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
+    updateProfile(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
+    logoutUser(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
 }

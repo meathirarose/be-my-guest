@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
   // Function to handle profile update
   const handleUpdateProfile = async (name: string, email: string, country: string) => {
     try {
-      const response = await updateProfile(name, email, country); // Call API to update profile
+      const response = await updateProfile(name, email, country); 
       console.log("Profile updated:", response);
       
       dispatch(updateUser({name, country}));

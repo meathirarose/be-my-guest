@@ -1,7 +1,7 @@
 import { IUserDoc } from "./IUserModel";
 
 export interface IUserService {
-    registerUser(name: string, email: string, password: string, country: string): Promise<IUserDoc>;
+    registerUser(name: string, email: string, password: string, country: string): Promise<IUserDoc | null>;
     verifyEmail(token: string): Promise<{ name: string; email: string; role: string } | null>;
     signInUser(email: string, password: string): Promise<IUserDoc>;
     forgotPassword(email: string): Promise<void>;

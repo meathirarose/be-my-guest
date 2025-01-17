@@ -16,9 +16,9 @@ app.use(express.json());
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  origin: process.env.FRONTEND_URL || "",
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
@@ -28,15 +28,13 @@ app.use(cors(corsOptions));
 // Middleware
 app.use(bodyParser.json());
 
-app.options('*', cors(corsOptions)); 
-
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/property-owners', propertyOwnerRoutes);
 
 app.all("*",()=>{
-  throw new NotFoundError();
-})
+  throw new NotFoundError("Sorry, the page you are looking for does not exist.");
+});
 
 //Error handler middleware
 app.use(errorHandler);

@@ -23,30 +23,34 @@ export class UserService implements IUserService {
     email: string,
     password: string,
     country: string
-  ): Promise<IUserDoc> {
-    const existingUser = await this.userRepository.findByEmail(email);
+  ): Promise<IUserDoc | null> {
+    try {
+      const existingUser = await this.userRepository.findByEmail(email);
 
-    if (existingUser) {
-      throw new BadRequestError("User with this email already exists.");
-    }
-
-    const hashedPassword = await bcryptjs.hash(password, 10);
-
-    const newUserAttrs: IUserAttrs = {
-      name,
-      email,
-      password: hashedPassword,
-      country,
-      role: Role.CUSTOMER,
-      verified: false,
-    };
-
-    const newUser = User.build(newUserAttrs);
-    if (newUser) {
-      await EmailService.sendVerificationMail(newUser.email);
-    }
-
-    return await this.userRepository.createUser(name, email, hashedPassword, country, Role.CUSTOMER, false);  
+      if (existingUser) {
+        throw new BadRequestError("User with this email already exists.");
+      }
+  
+      const hashedPassword = await bcryptjs.hash(password, 10);
+  
+      const newUserAttrs: IUserAttrs = {
+        name,
+        email,
+        password: hashedPassword,
+        country,
+        role: Role.CUSTOMER,
+        verified: false,
+      };
+  
+      const newUser = User.build(newUserAttrs);
+      if (newUser) {
+        await EmailService.sendVerificationMail(newUser.email);
+      }
+  
+      return await this.userRepository.createUser(name, email, hashedPassword, country, Role.CUSTOMER, false); 
+    } catch (error) {
+      console.error("Error in register user service:", error);
+      throw error;    }
   }
 
   async verifyEmail(
@@ -66,8 +70,6 @@ export class UserService implements IUserService {
       }
 
       await this.userRepository.update({ email }, { verified: true });
-
-      console.log("User verified successfully:", user);
 
       return {
         name: user.name,
@@ -117,7 +119,7 @@ export class UserService implements IUserService {
       verified: true,
     };
 
-    const newUser = User.build(newUserAttrs);
+    User.build(newUserAttrs);
 
     return await this.userRepository.createUser(name, email, hashedPassword, "India", Role.CUSTOMER, true);
   }
@@ -176,9 +178,7 @@ export class UserService implements IUserService {
 
   async updateProfile(name: string, email: string, country: string): Promise<IUserDoc> {
     try {
-      console.log(email, name, country, "ith user service nn details kittanundo")
       const user = await this.userRepository.findByEmail(email);
-      console.log("User found:----------------------------------------------------", user);
 
       if (!user) {
         throw new NotFoundError("User not found with this email");
@@ -188,8 +188,6 @@ export class UserService implements IUserService {
         { email },
         { name, country }
       );
-
-      console.log("User updated successfully:---------------------------------------------", updatedUser);
   
       if (!updatedUser) {
         throw new BadRequestError("Failed to update the user");
