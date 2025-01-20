@@ -13,6 +13,8 @@ import { updateUser } from "../../redux/user/userSlice";
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const userInfo = user.user;
+  console.log("redux nn olla user aanu-----------------profile page nn", user)
+  console.log("profile page nn userinfo------------------------", userInfo)
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -20,6 +22,7 @@ const Profile: React.FC = () => {
   const handleUpdateProfile = async (name: string, email: string, country: string) => {
     try {
       const response = await updateProfile(name, email, country); 
+      console.log("response from the profile update aakyt", response)
       console.log("Profile updated:", response);
       
       dispatch(updateUser({name, country}));

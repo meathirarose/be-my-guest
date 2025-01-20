@@ -17,7 +17,7 @@ const userRepository: IUserRepository = new UserRepository();
 const userService: IUserService = new UserService(userRepository);
 const userController: IUserController = new UserController(userService);
 
-router.post(
+router.patch(
   "/update-profile",
   currentUser,
   requireAuth,

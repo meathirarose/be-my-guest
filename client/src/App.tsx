@@ -8,6 +8,7 @@ import ConfirmVerifyEmail from "./shared/components/auth/ConfirmVerifyEmail";
 import AdminRoutes from "./routes/AdminRoutes";
 import ForgotPassword from "./shared/components/auth/ForgotPassword";
 import ResetPassword from "./shared/components/auth/ResetPassword";
+import Profile from "./pages/customer/Profile";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,8 @@ const App: React.FC = () => {
         <Route path="/success-verification" element={<ConfirmVerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/profile" element={<Profile />} />
+        
 
         {/* Customer-Specific Routes */}
         <Route path="/*" element={<CustomerRoutes />} />

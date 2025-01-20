@@ -75,6 +75,7 @@ const LoginForm: React.FC = () => {
 
       if (response && response.status === 200) {
         const { user, token } = response.data;
+        console.log(user, "sign in nn kittana user details---------------------------------------signin page")
 
         dispatch(loginHost({ user, token }));
         showToast("success", "Sign-in successful!");

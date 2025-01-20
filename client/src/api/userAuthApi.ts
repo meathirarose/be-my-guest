@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInterceptor";
 export const updateProfile = async (name: string, email: string, country: string) => {
   try {
     
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.patch(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/update-profile`,
       {
         name,

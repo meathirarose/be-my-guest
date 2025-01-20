@@ -79,8 +79,11 @@ export class PropertyOwnerController implements IPropertyOwnerController{
                 message: "Login Successful!",
                 user: {
                     id: user.id,
+                    name: user.name,
                     email: user.email,
+                    country: user.country,
                     role: user.role,
+                    token: token
                 }
             });
     

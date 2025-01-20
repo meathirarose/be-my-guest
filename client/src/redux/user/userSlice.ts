@@ -24,7 +24,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login(state, action: PayloadAction<{ user: User; token: string }>) {
-      console.log("login action dispatched", state.user, action.payload.user);
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isVerified = true;
@@ -35,6 +34,7 @@ const userSlice = createSlice({
       state.isVerified = false;
     },
     loginHost(state, action: PayloadAction<{ user: User; token: string }>) {
+      console.log("login action dispatched", state.user, action.payload.user);
       if (action.payload.user.role === "property-owner") {
         state.user = action.payload.user;
         state.token = action.payload.token;
