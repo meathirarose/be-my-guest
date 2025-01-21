@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IPropertyOwnerController } from "../interfaces/IPropertyOwnerController";
 import { PropertyOwnerService } from "../services/PropertyOwnerService";
-import { BadRequestError } from "../errors/BadRequestError";
+import { BadRequestError } from "@be-my-guest/common";
 import { AuthService } from "../utils/jwt";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";

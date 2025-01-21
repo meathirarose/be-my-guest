@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import dotenv from "dotenv";
-import { DatabaseConnectionError } from "@be-my-guest/common";
-import { NotFoundError } from "@be-my-guest/common";
+import { DatabaseConnectionError, NotFoundError } from "@be-my-guest/common";
 
 dotenv.config();
 
@@ -24,7 +23,7 @@ const start = async () => {
     throw new DatabaseConnectionError();
   }
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT;
 
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

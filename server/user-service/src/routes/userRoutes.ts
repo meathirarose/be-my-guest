@@ -1,15 +1,13 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import { UserController } from "../controllers/UserController";
 import { UserRepository } from "../repositories/UserRepository";
 import { UserService } from "../services/UserService";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { IUserService } from "../interfaces/IUserService";
 import { IUserController } from "../interfaces/IUserController";
-import { validateRequest } from "../middlewares/validateRequest";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
-import { currentUser } from "../middlewares/currentUser";
-import { requireAuth } from "../middlewares/requireAuth";
+import { currentUser, requireAuth, validateRequest } from "@be-my-guest/common";
 
 
 const router = express.Router();
@@ -21,7 +19,7 @@ router.patch(
   "/update-profile",
   currentUser,
   requireAuth,
-  userController.updateProfile
+  userController.updateProfile as RequestHandler
 );
 
 router.post(
@@ -46,12 +44,12 @@ router.post(
 router.post(
     "/refresh-token",
     currentUser, 
-    userController.refreshToken
+    userController.refreshToken as RequestHandler
 );
 
 router.post(
     "/google-login", 
-    userController.googleLogin
+    userController.googleLogin as RequestHandler
 );
 
 router.post(
@@ -61,12 +59,12 @@ router.post(
 
 router.post(
   "/reset-password",
-  userController.resetPassword
+  userController.resetPassword as RequestHandler
 );
 router.post(
   "/logout-customer",
   currentUser,   
-  userController.logoutUser
+  userController.logoutUser as RequestHandler
 );
 
 export default router;

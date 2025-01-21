@@ -1,13 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { UserService } from "../services/UserService";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
-import { BadRequestError } from "../errors/BadRequestError";
+import { BadRequestError, NotFoundError } from "@be-my-guest/common";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
 import { verifyGoogleToken } from "../utils/authUtils";
-import { count } from "console";
-import { NotFoundError } from "../errors/NotFoundError";
 import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
 import { IUserService } from "../interfaces/IUserService";
 

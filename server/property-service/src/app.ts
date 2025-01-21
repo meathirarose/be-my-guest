@@ -1,8 +1,6 @@
 import express from "express";
 import { errorHandler, NotFoundError } from "@be-my-guest/common";
 import bodyParser from "body-parser";
-import userRoutes from "./routes/userRoutes";
-import propertyOwnerRoutes from "./routes/propertyOwnerRoutes";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -28,9 +26,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.options('*', cors(corsOptions));  
 
-// Routes
-app.use("/api/users", userRoutes);
-app.use("/api/property-owners", propertyOwnerRoutes);
 
 app.all("*", () => {
   throw new NotFoundError(

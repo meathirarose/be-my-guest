@@ -1,11 +1,10 @@
 import bcryptjs from "bcryptjs";
-import { BadRequestError } from "../errors/BadRequestError";
+import { BadRequestError, NotFoundError } from "@be-my-guest/common";
 import { IPropertyOwnerService } from "../interfaces/IPropertyOwnerService";
 import { UserRepository } from "../repositories/UserRepository";
 import { IUserAttrs, IUserDoc, Role } from "../interfaces/IUserModel";
 import { User } from "../models/UserModel";
 import { EmailService } from "../utils/emailSender";
-import { NotFoundError } from "../errors/NotFoundError";
 
 export class PropertyOwnerService implements IPropertyOwnerService {
     private userRepository: UserRepository;

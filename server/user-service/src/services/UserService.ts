@@ -4,8 +4,8 @@ import { Role, IUserAttrs, IUserDoc } from "../interfaces/IUserModel";
 import { User } from "../models/UserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
-import { NotFoundError } from "../errors/NotFoundError";
-import { BadRequestError } from "../errors/BadRequestError";
+import { BadRequestError, NotFoundError } from "@be-my-guest/common";
+
 import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../interfaces/IUserRepository";
 
