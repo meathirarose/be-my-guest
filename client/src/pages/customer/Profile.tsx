@@ -48,10 +48,10 @@ const Profile: React.FC = () => {
 
           {/* User Information */}
           <div className="bg-white p-6 shadow-md rounded-md">
-            <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-700">Your Information</h3>
               <button
-                onClick={() => setIsModalOpen(true)} // Open the modal on button click
+                onClick={() => setIsModalOpen(true)} 
                 className="flex items-center space-x-2 px-4 py-2 bg-purple-700 text-white font-semibold rounded-md shadow-sm hover:bg-purple-800"
               >
                 <FiEdit className="text-xl" />

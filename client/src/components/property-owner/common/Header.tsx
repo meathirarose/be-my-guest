@@ -2,12 +2,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "../../../shared/components/ui/ProfileMenu";
 import { logoutUser } from "../../../api/userAuthApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/user/userSlice";
+import { RootState } from "../../../redux/store";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const user = useSelector((state: RootState) => state.user);
+  const userInfo = user.user;
 
   const handleClick = () => {
     navigate("/host/dashboard");
@@ -31,12 +35,12 @@ const Header: React.FC = () => {
 
       <div className="flex items-center">
         <ProfileMenu
-          username="Athira Rose John"
+          username={userInfo!.name}
           profilePic="https://i.pinimg.com/736x/f5/2e/90/f52e90f281f04dab12e1f8367db13c80.jpg"
           onLogout={handleLogout}
           onProfile={() => {
             console.log("Go to profile page");
-            navigate("/profile"); 
+            navigate("/host/profile"); 
           }}
         />
       </div>

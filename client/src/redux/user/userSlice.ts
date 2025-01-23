@@ -34,13 +34,14 @@ const userSlice = createSlice({
       state.isVerified = false;
     },
     loginHost(state, action: PayloadAction<{ user: User; token: string }>) {
-      console.log("login action dispatched", state.user, action.payload.user);
       if (action.payload.user.role === "property-owner") {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isVerified = true;
-      } else {
-        console.warn("Attempted to loginHost with a non-property-owner role");
+      } else if (action.payload.user.role === "admin") {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isVerified = true;
       }
     },
     updateUser(state, action: PayloadAction<{name: string, country: string}>) {
