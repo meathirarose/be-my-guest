@@ -19,6 +19,7 @@ export class AuthService {
             const decoded = jwt.verify(token, process.env.JWT_SECRET!);
             return decoded as JwtPayload;
         } catch (error) {
+            console.log(error)
             return null;
         }
     }
@@ -28,6 +29,7 @@ export class AuthService {
             const decoded = jwt.verify(token, process.env.REFRESH_SECRET!);
             return decoded as JwtPayload;
         } catch (error) {
+            console.log(error)
             return null;
         }
     }

@@ -1,51 +1,95 @@
-import React, { useState } from "react";
-import Sidebar from "../../components/property-owner/common/SideBar";
+import React from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import Sidebar from "../../components/admin/SideBar";
 import Header from "../../components/property-owner/common/Header";
-import SearchBar from "../../components/property-owner/dashboard/SearchBar";
-import PropertyList from "../../components/property-owner/dashboard/PropertyList";
 
-const AdminDashboard: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [properties, setProperties] = useState([
-    {
-      id: 1,
-      name: "Blue Origin Farms",
-      description: "Beautiful countryside property perfect for relaxation.",
-      dateAdded: "June 9, 2023",
-    },
-    {
-      id: 2,
-      name: "Green Valley Resort",
-      description: "A premium resort with stunning views and facilities.",
-      dateAdded: "July 15, 2023",
-    },
-  ]);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-  const handleDeleteProperty = (id: number) => {
-    setProperties(properties.filter((property) => property.id !== id));
+const Dashboard: React.FC = () => {
+  // Dummy data for stats
+  const totalUsers = 120;
+  const totalPropertyOwners = 45;
+  const totalBookings = 340;
+  const totalPayments = "$50,200";
+
+  // Pie chart data
+  const data = {
+    labels: ["Users", "Property Owners"],
+    datasets: [
+      {
+        data: [totalUsers, totalPropertyOwners],
+        backgroundColor: ["#6366f1", "#6b7280"], // Purple & Gray
+        hoverBackgroundColor: ["#4f46e5", "#4b5563"], // Darker Shades
+      },
+    ],
+  };
+
+  // ChartJS options
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   return (
     <div className="flex h-screen">
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col bg-gray-50">
+        {/* Header */}
         <Header />
-        <div className="flex-1 bg-gray-50 px-6 py-28">
-          <div className="flex justify-between items-center mb-6">
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
+
+        {/* Dashboard Content */}
+        <div className="p-6 mt-24"> 
+          <h2 className="text-2xl font-semibold text-purple-700 mb-6">
+            Admin Dashboard
+          </h2>
+
+          {/* Statistics Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {/* Total Users */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <p className="text-lg text-gray-600">Total Users</p>
+              <p className="text-3xl font-bold text-purple-700">{totalUsers}</p>
+            </div>
+
+            {/* Total Property Owners */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <p className="text-lg text-gray-600">Total Property Owners</p>
+              <p className="text-3xl font-bold text-purple-700">
+                {totalPropertyOwners}
+              </p>
+            </div>
+
+            {/* Total Bookings */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <p className="text-lg text-gray-600">Total Bookings</p>
+              <p className="text-3xl font-bold text-purple-700">
+                {totalBookings}
+              </p>
+            </div>
+
+            {/* Total Payments */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <p className="text-lg text-gray-600">Total Payments</p>
+              <p className="text-3xl font-bold text-purple-700">
+                {totalPayments}
+              </p>
+            </div>
           </div>
-          <PropertyList
-            properties={properties}
-            onDelete={handleDeleteProperty}
-            searchQuery={searchQuery}
-          />
+
+          {/* Pie Chart Section */}
+          <div className="bg-white shadow rounded-lg p-6 flex items-center">
+            <div className="w-60 h-60 mx-auto">
+              <Pie data={data} options={options} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default Dashboard;

@@ -1,7 +1,5 @@
 import bcryptjs from "bcryptjs";
-import { UserRepository } from "../repositories/UserRepository";
-import { Role, IUserAttrs, IUserDoc } from "../interfaces/IUserModel";
-import { User } from "../models/UserModel";
+import { Role, IUserDoc } from "../interfaces/IUserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
 import { BadRequestError, NotFoundError } from "@be-my-guest/common";

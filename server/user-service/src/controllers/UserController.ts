@@ -44,6 +44,7 @@ export class UserController implements IUserController{
     public verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { token } = req.query;
+            
             if(!token)
                 throw new NotFoundError("Missing validation credentials");
     

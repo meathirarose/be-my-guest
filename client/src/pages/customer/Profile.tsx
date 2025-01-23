@@ -13,8 +13,7 @@ import { updateUser } from "../../redux/user/userSlice";
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const userInfo = user.user;
-  console.log("redux nn olla user aanu-----------------profile page nn", user)
-  console.log("profile page nn userinfo------------------------", userInfo)
+
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
 

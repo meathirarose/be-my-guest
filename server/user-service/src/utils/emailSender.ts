@@ -1,6 +1,8 @@
 import nodeMailer from "nodemailer";
 import jwt from "jsonwebtoken";
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET || "email-secret-key";
 const EMAIL_EXPIRATION = "24h";

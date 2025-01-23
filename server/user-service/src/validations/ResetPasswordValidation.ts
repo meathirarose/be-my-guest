@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const resetPasswordValidationSchema = Joi.object({
     password: Joi.string().min(8)
-        .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]:;"'<>,.?/-]).+$/)
+        .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/-]).+$/)
         .required()
         .messages({
             'string.base': 'Password must be a string',

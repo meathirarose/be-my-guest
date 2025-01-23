@@ -49,14 +49,14 @@ const PropertyCard: React.FC = () => {
       {properties.map((property) => (
         <div
           key={property.id}
-          className="w-64 bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform"
+          className="w-56 bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform"
         >
           {/* Image Section */}
           <div className="relative">
             <img
               src={property.image}
               alt={property.location}
-              className="h-40 w-full object-cover"
+              className="h-32 w-full object-cover"
             />
             {property.badge && (
               <div className="absolute top-3 left-3 bg-red-500 text-white text-sm px-3 py-1 rounded-full">
@@ -66,7 +66,7 @@ const PropertyCard: React.FC = () => {
           </div>
 
           {/* Property Info */}
-          <div className="p-4">
+          <div className="p-2">
             <h3 className="text-lg font-semibold">{property.location}</h3>
             <p className="text-sm text-gray-600">Hosted by {property.host}</p>
             <p className="text-sm text-gray-600">{property.nights}</p>
