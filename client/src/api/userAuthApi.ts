@@ -75,7 +75,6 @@ export const VerifyEmail = async (token: string | null) => {
         import.meta.env.VITE_BASE_URL
       }/user-service/api/users/verify-email?token=${token}`
     );
-
     return response;
   } catch (error) {
     console.log(error);

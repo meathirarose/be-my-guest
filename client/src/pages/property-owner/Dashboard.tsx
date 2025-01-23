@@ -4,8 +4,10 @@ import Header from "../../components/property-owner/common/Header";
 import SearchBar from "../../components/property-owner/dashboard/SearchBar";
 import PropertyList from "../../components/property-owner/dashboard/PropertyList";
 import AddProperty from "../../components/property-owner/dashboard/AddProperty";
+import { useNavigate } from "react-router-dom";
 
 const PropertyOwnerDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [properties, setProperties] = useState([
     {
@@ -24,13 +26,7 @@ const PropertyOwnerDashboard: React.FC = () => {
 
 
   const handleAddProperty = () => {
-    const newProperty = {
-      id: properties.length + 1,
-      name: `New Property ${properties.length + 1}`,
-      description: "Description of the new property.",
-      dateAdded: new Date().toLocaleDateString(),
-    };
-    setProperties([...properties, newProperty]);
+    navigate('/host/host-property-start')
   };
 
   const handleDeleteProperty = (id: number) => {

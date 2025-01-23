@@ -5,7 +5,6 @@ import { User } from "../models/UserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
 import { BadRequestError, NotFoundError } from "@be-my-guest/common";
-
 import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../interfaces/IUserRepository";
 
@@ -18,44 +17,38 @@ export class UserService implements IUserService {
     this.userRepository = userRepository;
   }
 
-  public async registerUser(
-    name: string,
-    email: string,
-    password: string,
-    country: string
-  ): Promise<IUserDoc | null> {
+  async registerUser(name: string, email: string, password: string, country: string): Promise<IUserDoc> {
     try {
       const existingUser = await this.userRepository.findByEmail(email);
 
       if (existingUser) {
         throw new BadRequestError("User with this email already exists.");
       }
-  
+
       const hashedPassword = await bcryptjs.hash(password, 10);
-  
-      const newUserAttrs: IUserAttrs = {
+
+      const newUser = await this.userRepository.createUser(
         name,
         email,
-        password: hashedPassword,
+        hashedPassword,
         country,
-        role: Role.CUSTOMER,
-        verified: false,
-      };
-  
-      const newUser = User.build(newUserAttrs);
-      if (newUser) {
-        await EmailService.sendVerificationMail(newUser.email);
+        Role.CUSTOMER,
+        false
+      );
+
+      if (!newUser) {
+        throw new BadRequestError("Failed to create user");
       }
-  
-      return await this.userRepository.createUser(name, email, hashedPassword, country, Role.CUSTOMER, false); 
+
+      await EmailService.sendVerificationMail(newUser.email);
+      return newUser;
     } catch (error) {
       console.error("Error in register user service:", error);
-      throw error;    }
+      throw error;
+    }
   }
 
-  async verifyEmail(
-    token: string
-  ): Promise<{ name: string; email: string; role: string } | null> {
+  async verifyEmail(token: string): Promise<{ name: string; email: string; role: string } | null> {
     try {
       const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
 
@@ -98,30 +91,21 @@ export class UserService implements IUserService {
     return existingUser;
   }
 
-  async googleLogin(
-    name: string,
-    email: string,
-    googleId: string
-  ): Promise<IUserDoc> {
+  async googleLogin(name: string, email: string, googleId: string): Promise<IUserDoc> {
     const existingUser = await this.userRepository.findByEmail(email);
-
     if (existingUser) {
-      return existingUser;
+        return existingUser;
     }
-    const hashedPassword = await bcryptjs.hash(googleId, 10);
 
-    const newUserAttrs: IUserAttrs = {
-      name,
-      email,
-      password: hashedPassword,
-      country: "India",
-      role: Role.CUSTOMER,
-      verified: true,
-    };
-
-    User.build(newUserAttrs);
-
-    return await this.userRepository.createUser(name, email, hashedPassword, "India", Role.CUSTOMER, true);
+    const hashedGoogleId = await bcryptjs.hash(googleId, 10);
+    return await this.userRepository.createUser(
+        name,
+        email,
+        hashedGoogleId,
+        "India",
+        Role.CUSTOMER,
+        true
+    );
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -183,16 +167,16 @@ export class UserService implements IUserService {
       if (!user) {
         throw new NotFoundError("User not found with this email");
       }
-  
+
       const updatedUser = await this.userRepository.update(
         { email },
         { name, country }
       );
-  
+
       if (!updatedUser) {
         throw new BadRequestError("Failed to update the user");
       }
-  
+
       return updatedUser;
     } catch (error) {
       console.error("Error in verifyEmail service:", error);

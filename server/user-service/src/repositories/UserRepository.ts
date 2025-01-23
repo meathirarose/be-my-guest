@@ -1,4 +1,4 @@
-import { IUserDoc } from "../interfaces/IUserModel"; 
+import { IUserAttrs, IUserDoc, Role } from "../interfaces/IUserModel"; 
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { User } from "../models/UserModel";
 import { BaseRepository } from "./BaseRepository";
@@ -9,11 +9,11 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
     constructor() {
         super(User);  
     }
-
     async createUser(name: string, email: string, password: string, country: string, role: string, verified: boolean): Promise<IUserDoc> {
-        const user = new this.model({ name, email, password, country, role, verified });
-        return await user.save();
-    }
+        const attrs: IUserAttrs = { name, email, password, country, role: role as Role, verified };
+        const user = User.build(attrs);
+        return await this.save(user);
+    }    
     
     async findByEmail(email: string): Promise<IUserDoc | null> {
         return this.findOne({ email }); 

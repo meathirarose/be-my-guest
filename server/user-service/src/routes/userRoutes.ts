@@ -31,7 +31,6 @@ router.post(
 router.post(
   "/verify-email",
   currentUser,
-  requireAuth,
   userController.verifyEmail
 );
 

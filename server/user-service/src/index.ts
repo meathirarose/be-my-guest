@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
 import { app } from "./app";
 import dotenv from "dotenv";
-import { DatabaseConnectionError } from "@be-my-guest/common";
 import { NotFoundError } from "@be-my-guest/common";
+import connectToDatabase from "./config/dbConfig";
 
 dotenv.config();
 
@@ -17,12 +16,7 @@ const start = async () => {
     throw new NotFoundError("MONGO_URL must be defined");
   }
 
-  try {
-    await mongoose.connect(process.env.MONGO_URL);
-    console.log("✅ Connected to MongoDB successfully..!");
-  } catch (error) {
-    throw new DatabaseConnectionError();
-  }
+  await connectToDatabase();
 
   const PORT = process.env.PORT || 3000;
 

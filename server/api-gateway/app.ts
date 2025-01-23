@@ -24,11 +24,6 @@ app.use(cookieParser());
 
 app.use(cors(corsOptions));
 
-// app.use((req, res, next) => {
-//   console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
-//   next();
-// });
-
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 
 const PORT = process.env.SERVER_PORT || 4000;
