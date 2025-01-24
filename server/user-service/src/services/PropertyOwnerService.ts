@@ -43,23 +43,36 @@ export class PropertyOwnerService implements IPropertyOwnerService {
         return await this.userRepository.save(newUser as IUserDoc);
     }
 
-        async signInPropertyOwner(
-            email: string, 
-            password: string
-        ): Promise<IUserDoc> {
-    
-            const existingUser = await this.userRepository.findByEmail(email);
-    
-            if (!existingUser) {
-                throw new NotFoundError();
-            }
-    
-            const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
-    
-            if(!passwordMatch) {
-                throw new BadRequestError("Invalid email or Password.!");
-            }
-    
-            return existingUser;
+    async signInPropertyOwner(email: string, password: string): Promise<IUserDoc> {
+
+        const existingUser = await this.userRepository.findByEmail(email);
+
+        if (!existingUser) {
+            throw new NotFoundError();
         }
+
+        const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
+
+        if(!passwordMatch) {
+            throw new BadRequestError("Invalid email or Password.!");
+        }
+
+        return existingUser;
+    }
+
+    async fetchAllPropertyOwners(): Promise<IUserDoc[] | null> {
+        try {
+          
+          const propertyOwners = await this.userRepository.fetchAllPropertyOwners(Role.PROPERTY_OWNER);
+    
+          if(!propertyOwners || propertyOwners.length === 0)
+            throw new NotFoundError("No Property Owners found");
+    
+          return propertyOwners;
+    
+        } catch (error) {
+          console.error("Error in verifyEmail service:", error);
+          throw error;
+        }
+      }
 }

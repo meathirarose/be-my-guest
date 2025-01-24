@@ -15,12 +15,6 @@ const userRepository: IUserRepository = new UserRepository();
 const userService: IUserService = new UserService(userRepository);
 const userController: IUserController = new UserController(userService);
 
-router.patch(
-  "/update-profile",
-  currentUser,
-  requireAuth,
-  userController.updateProfile as RequestHandler
-);
 
 router.post(
   "/register",
@@ -41,25 +35,40 @@ router.post(
 );
 
 router.post(
-    "/refresh-token",
-    currentUser, 
-    userController.refreshToken as RequestHandler
+  "/refresh-token",
+  currentUser, 
+  userController.refreshToken as RequestHandler
 );
 
 router.post(
-    "/google-login", 
-    userController.googleLogin as RequestHandler
+  "/google-login", 
+  userController.googleLogin as RequestHandler
 );
 
 router.post(
-    "/forgot-password", 
-    userController.forgotPassword
+  "/forgot-password", 
+  userController.forgotPassword
 );
 
 router.post(
   "/reset-password",
   userController.resetPassword as RequestHandler
 );
+
+router.patch(
+  "/update-profile",
+  currentUser,
+  requireAuth,
+  userController.updateProfile as RequestHandler
+);
+
+router.get(
+  "/fetch-customers",
+  currentUser,
+  requireAuth,
+  userController.fetchAllCustomers as RequestHandler
+)
+
 router.post(
   "/logout-customer",
   currentUser,   

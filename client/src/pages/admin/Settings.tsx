@@ -4,7 +4,6 @@ import Header from "../../components/property-owner/common/Header";
 import { Tabs } from "antd"; 
 import { AndroidOutlined } from "@ant-design/icons"; 
 import { User2 } from "lucide-react"; 
- 
 import ProfileTab from "../../components/admin/dashboard-settings/Profile"; 
 import PasswordTab from "../../components/admin/dashboard-settings/Password"; 
  

@@ -170,52 +170,52 @@ export class UserController implements IUserController{
     public googleLogin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { idToken } = req.body;
-
+    
             if (!idToken) {
                 throw new NotFoundError("idToken is required!");
             }
-
+    
             // Verify the Google token
             const payload = await verifyGoogleToken(idToken);
             if (!payload) {
                 throw new BadRequestError("Invalid Google token!");
             }
-
-            const { name = "", email, sub: googleId } = payload;
-
+    
+            const { name = "", email, sub: googleId, picture = "" } = payload;
+    
             if (!email || !googleId) {
                 throw new NotFoundError("Google token is missing essential information!");
             }
-
+    
             // Check if the user exists or create a new one
-            const user = await this.userService.googleLogin(name, email, googleId);
-
+            const user = await this.userService.googleLogin(name, email, googleId, picture);
+    
             // Generate tokens
             const token = AuthService.generateToken({
                 id: user.id,
                 email: user.email,
                 role: user.role,
             });
-
+    
             const refreshToken = AuthService.generateRefreshToken({
                 id: user.id,
                 email: user.email,
                 role: user.role,
             });
-
+    
             // Set cookies
             res.cookie("accessToken", token, {
                 httpOnly: true,
                 sameSite: "strict",
                 maxAge: 60 * 60 * 1000, // 1 hour
             });
-
+    
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 sameSite: "strict",
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             });
-
+    
             return res.status(200).json({
                 message: "Login Successful!",
                 user: {
@@ -224,6 +224,7 @@ export class UserController implements IUserController{
                     name: user.name,
                     country: user.country,
                     role: user.role,
+                    profileImage: user.profileImage, 
                     token: token,
                 },
             });
@@ -232,6 +233,7 @@ export class UserController implements IUserController{
             return; 
         }
     };
+    
 
     public forgotPassword = async (req: Request, res: Response, next: NextFunction ): Promise<void> => {
         try {
@@ -279,11 +281,9 @@ export class UserController implements IUserController{
 
     public updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            console.log("getting--------------------------------------------------------")
             const { name, email, country, profileImage } = req.body;
-            console.log(profileImage, "profile image avdnn vitte kittanundo ivde.............")
 
-            if(!name || !email || !country)
+            if(!name || !email || !country || !profileImage)
                 throw new NotFoundError("Missing credentials!");
 
             const user = await this.userService.updateProfile(name, email, country, profileImage);
@@ -299,6 +299,20 @@ export class UserController implements IUserController{
         }
     }
     
+    public fetchAllCustomers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            
+            const customers = await this.userService.fetchAllCustomers();
+
+            if(!customers || customers.length === 0)
+                throw new NotFoundError("No customers found.");
+
+            res.status(200).json({ message: "All customers are fetched", data: customers });
+
+        } catch (error) {
+            next(error)
+        }
+    }
 
     public logoutUser = async(req: Request, res: Response, next: NextFunction) => {
         try {

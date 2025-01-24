@@ -74,10 +74,11 @@ export class UserService implements IUserService {
   }
 
   async signInUser(email: string, password: string): Promise<IUserDoc> {
+    
     const existingUser = await this.userRepository.findByEmail(email);
 
     if (!existingUser) {
-      throw new NotFoundError();
+      throw new NotFoundError("User not found with this email");
     }
 
     const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
@@ -161,7 +162,6 @@ export class UserService implements IUserService {
   async updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc> {
     try {
       const user = await this.userRepository.findByEmail(email);
-      console.log(profileImage, "kittanundo---------------------------")
 
       if (!user) {
         throw new NotFoundError("User not found with this email");
@@ -169,7 +169,7 @@ export class UserService implements IUserService {
 
       const updatedUser = await this.userRepository.update(
         { email },
-        { name, country, profileImage }
+        { name, country, profileImage },
       );
 
       if (!updatedUser) {
@@ -182,4 +182,22 @@ export class UserService implements IUserService {
       throw error;
     }
   }
+
+  async fetchAllCustomers(): Promise<IUserDoc[] | null> {
+    try {
+      
+      const customers = await this.userRepository.fetchAllCustomers(Role.CUSTOMER);
+
+      if(!customers || customers.length === 0)
+        throw new NotFoundError("No customers found");
+
+      return customers;
+
+    } catch (error) {
+      console.error("Error in verifyEmail service:", error);
+      throw error;
+    }
+  }
+
+
 }

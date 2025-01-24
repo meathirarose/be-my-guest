@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { IPropertyOwnerController } from "../interfaces/IPropertyOwnerController";
 import { PropertyOwnerService } from "../services/PropertyOwnerService";
-import { BadRequestError } from "@be-my-guest/common";
+import { BadRequestError, NotFoundError } from "@be-my-guest/common";
 import { AuthService } from "../utils/jwt";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
@@ -13,7 +13,7 @@ export class PropertyOwnerController implements IPropertyOwnerController{
         this.propertyOwnerService = propertyOwnerService;
     }
 
-    public registerPropertyOwner = async (req: Request, res: Response): Promise<void> => {
+    public registerPropertyOwner = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
         try {
 
@@ -32,12 +32,11 @@ export class PropertyOwnerController implements IPropertyOwnerController{
             res.status(201).json({ message: "Property-Owner registered successfully!", data: user });
             
         } catch (error) {
-            console.error("Error:", error);
-            res.status(400).json({ message: error});
+            next(error)
         }
     }
 
-    public signInPropertyOwner = async (req: Request, res: Response): Promise<void> => {
+    public signInPropertyOwner = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
     
             // Validation for input
@@ -83,13 +82,28 @@ export class PropertyOwnerController implements IPropertyOwnerController{
                     email: user.email,
                     country: user.country,
                     role: user.role,
-                    token: token
+                    token: token,
+                    profileImage: user.profileImage
                 }
             });
     
         } catch (error) {
-            console.log(error);
-            res.status(400).json({ message: error });
+            next(error);
+        }
+    }
+
+    public fetchAllPropertyOwners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            
+            const propertyOwners = await this.propertyOwnerService.fetchAllPropertyOwners();
+
+            if(!propertyOwners || propertyOwners.length === 0)
+                throw new NotFoundError("No Property Owners found.");
+
+            res.status(200).json({ message: "All Property Owners are fetched", data: propertyOwners });
+
+        } catch (error) {
+            next(error)
         }
     }
     

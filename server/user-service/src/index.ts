@@ -1,7 +1,8 @@
 import { app } from "./app";
 import dotenv from "dotenv";
 import { NotFoundError } from "@be-my-guest/common";
-import connectToDatabase from "./config/dbConfig";
+import connectDatabase from "./config/dbConfig";
+import { connectRabbitMQ } from "./config/rabbitmq";
 
 dotenv.config();
 
@@ -16,7 +17,13 @@ const start = async () => {
     throw new NotFoundError("MONGO_URL must be defined");
   }
 
-  await connectToDatabase();
+  if (!process.env.RABBITMQ_URL) {
+    throw new NotFoundError("RABBITMQ_URL must be defined");
+  }
+
+  await connectDatabase();
+
+  await connectRabbitMQ();
 
   const PORT = process.env.PORT || 3000;
 

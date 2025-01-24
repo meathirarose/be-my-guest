@@ -1,5 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { JwtPayloadInput } from '../interfaces/IJwtPayloadInput';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export class AuthService {
     static generateToken(user: JwtPayloadInput): string {

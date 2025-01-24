@@ -2,26 +2,6 @@ import axios from "axios";
 import axiosInstance from "./axiosInterceptor";
 import { message } from "antd";
 
-export const updateProfile = async (name: string, email: string, country: string, profileImage: string) => {
-  try {
-    
-    const response = await axiosInstance.patch(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/update-profile`,
-      {
-        name,
-        email,
-        country,
-        profileImage
-      },
-      { withCredentials: true }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error during updating profile:", error);
-    throw error;
-  }
-}
-
 // user signin
 export const signInUser = async (email: string, password: string) => {
   try {
@@ -176,35 +156,88 @@ export const resetPassword = async (password: string, confirmPassword: string, t
   }
 }
 
+//updating the profile
+export const updateProfile = async (name: string, email: string, country: string, profileImage: string) => {
+  try {
+    
+    const response = await axiosInstance.patch(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/update-profile`,
+      {
+        name,
+        email,
+        country,
+        profileImage
+      },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error during updating profile:", error);
+    throw error;
+  }
+}
+
 export const uploadImageToCloudinary = async (
   selectedFile: File,
   uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET as string || "EMPLOYEE_PHOTO",
   cloudName = import.meta.env.VITE_CLOUDINARY_NAME,
-  setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>
+  setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>,
+  folder = "be-my-guest/profile-images" 
 ): Promise<string | null> => {
+  if (!selectedFile) {
+    message.error("No file selected or uploaded");
+    return null;
+  }
 
-    if(!selectedFile){
-      message.error("No file selected or uploaded");
-      return null;
-    }
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("upload_preset", uploadPreset);
-    try {
-      if (setIsUploading) setIsUploading(true); 
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("upload_preset", uploadPreset);
+  formData.append("folder", folder); 
 
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        formData
-      );
+  try {
+    if (setIsUploading) setIsUploading(true);
 
-      return response.data.secure_url;
-    } catch (error) {
-      console.error("Error uploading image to Cloudinary:", error);
-      return null;
-    }finally {
-      if (setIsUploading) setIsUploading(false); 
-    }
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      formData
+    );
+
+    return response.data.secure_url;
+  } catch (error) {
+    console.error("Error uploading image to Cloudinary:", error);
+    return null;
+  } finally {
+    if (setIsUploading) setIsUploading(false);
+  }
+};
+
+
+export const fetchAllCustomers = async () => {
+  try {
+    console.log("fetch customers il varanundo?---------------------------------------")
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-customers`,
+      { withCredentials: true }
+    );
+    console.log(response, "response kittanundo?-------------------------------------fetch all customers");
+    return response.data;
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error;
+  }
+}
+
+export const fetchAllPropertyOwners = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/fetch-property-owners`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error;
+  }
 }
 
 export const logoutUser = async () => {

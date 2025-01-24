@@ -10,5 +10,6 @@ const propertyOwnerController = new PropertyOwnerController(propertyOwnerService
 
 router.post("/register-host", propertyOwnerController.registerPropertyOwner);
 router.post("/signin-host", propertyOwnerController.signInPropertyOwner);
+router.get("/fetch-property-owners", propertyOwnerController.fetchAllPropertyOwners);
 
 export default router;

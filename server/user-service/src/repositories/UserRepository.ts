@@ -23,6 +23,14 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
         return this.findOne({ phoneNumber }); 
     }
 
+    async fetchAllCustomers(role: string): Promise<IUserDoc[]> {
+        return await this.findAll({ role });
+    }       
+
+    async fetchAllPropertyOwners(role: string): Promise<IUserDoc[]> {
+        return await this.findAll({ role });
+    }
+
     async update(
         filter: FilterQuery<IUserDoc>,  
         update: Partial<IUserDoc>        

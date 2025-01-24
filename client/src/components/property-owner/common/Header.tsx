@@ -39,7 +39,7 @@ const Header: React.FC = () => {
           profilePic={userInfo?.profileImage}
           onLogout={handleLogout}
           onProfile={() => {
-            navigate("/host/profile"); 
+            navigate("/profile"); 
           }}
         />
       </div>

@@ -56,7 +56,7 @@ const Header: React.FC = () => {
           >
             <FaBars className="text-lg mr-2" />
             <img
-              src={contactImage}
+              src={user.user?.profileImage || contactImage}
               alt="Contact"
               className="w-6 h-6 rounded-full"
             />

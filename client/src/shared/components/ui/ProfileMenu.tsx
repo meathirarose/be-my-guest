@@ -29,7 +29,6 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ username, profilePic, onLogou
                 className="w-10 h-10 rounded-full object-cover"
               />
             </div>
-            <p>Admin</p>
             <ChevronDown className="h-4 w-4 text-purple-800" />
           </button>
         </DropdownMenuTrigger>

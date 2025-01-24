@@ -19,8 +19,8 @@ const Dashboard: React.FC = () => {
     datasets: [
       {
         data: [totalUsers, totalPropertyOwners],
-        backgroundColor: ["#6366f1", "#6b7280"], // Purple & Gray
-        hoverBackgroundColor: ["#4f46e5", "#4b5563"], // Darker Shades
+        backgroundColor: ["#6366f1", "#6b7280"], 
+        hoverBackgroundColor: ["#4f46e5", "#4b5563"],
       },
     ],
   };

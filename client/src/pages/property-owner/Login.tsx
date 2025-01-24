@@ -13,6 +13,7 @@ import { loginValidationSchema } from "../../validations/loginValidation";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { SocialLoginButton } from "../../components/buttons/SocialLoginButtons";
+import axios from "axios";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -85,12 +86,19 @@ const LoginForm: React.FC = () => {
         }
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message || "Sign-in failed. Please try again."
-          : "An unexpected error occurred.";
-
-      showToast("error", errorMessage);
+      if (axios.isAxiosError(err)) {
+        const errorMessage =
+          err.response?.data?.errors?.[0]?.message || err.response?.data?.error[0] ||
+          "Sign-in failed. Please try again.";
+        console.log(
+          "Error message from login page of property owner:",
+          errorMessage
+        );
+        showToast("error", errorMessage);
+      } else {
+        console.error("Unexpected error:", err);
+        showToast("error", "An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

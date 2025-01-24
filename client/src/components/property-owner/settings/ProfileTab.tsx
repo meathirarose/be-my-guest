@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import Header from "../../components/customer/Header";
-import Footer from "../../shared/components/layout/Footer";
-import Sidebar from "../../components/customer/profile/SideBar";
-import { updateProfile, uploadImageToCloudinary } from "../../api/userAuthApi";
-import { updateUser } from "../../redux/user/userSlice";
 import { message } from "antd";
 import { Pencil } from "lucide-react";
+import { RootState } from "../../../redux/store";
+import { updateProfile, uploadImageToCloudinary } from "../../../api/userAuthApi";
+import { updateUser } from "../../../redux/user/userSlice";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -68,10 +65,8 @@ const Profile: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header />
 
-      <div className="flex flex-1 pt-24 pb-4">
-        <Sidebar />
+      <div className="flex flex-1 pb-4">
 
         <main className="flex-1 bg-white p-8 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-8">
@@ -153,7 +148,6 @@ const Profile: React.FC = () => {
         </main>
       </div>
 
-      <Footer />
     </div>
   );
 };

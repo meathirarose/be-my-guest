@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Table, Avatar } from "antd";
 import Header from "../../components/property-owner/common/Header";
 import Sidebar from "../../components/admin/SideBar";
-import { fetchAllCustomers } from "../../api/userAuthApi";
+import { fetchAllPropertyOwners } from "../../api/userAuthApi";
 
-const Customers: React.FC = () => {
-  const [customers, setCustomers] = useState([]);
+const PropertyOwners: React.FC = () => {
+  const [host, setHost] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchCustomersData = async () => {
+    const fetchHostData = async () => {
       try {
         setLoading(true);
-        const response = await fetchAllCustomers();
-        console.log(response, "response from the customers page----------------------")
-        setCustomers(response.data);
+        const response = await fetchAllPropertyOwners();
+        console.log(response, "response from the property page----------------------")
+        setHost(response.data);
       } catch (error) {
         console.error("Error fetching customers:", error);
       } finally {
@@ -22,7 +22,7 @@ const Customers: React.FC = () => {
       }
     };
 
-    fetchCustomersData();
+    fetchHostData();
   }, []);
 
   const columns = [
@@ -69,7 +69,7 @@ const Customers: React.FC = () => {
             List Customers
           </h2>
           <Table
-            dataSource={customers}
+            dataSource={host}
             columns={columns}
             rowKey="_id"
             pagination={false}
@@ -82,4 +82,4 @@ const Customers: React.FC = () => {
   );
 };
 
-export default Customers;
+export default PropertyOwners;

@@ -6,103 +6,51 @@ import {
   DollarCircleOutlined,
   MessageOutlined,
   QuestionCircleOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
-import { SidebarFooter } from "../../ui/sidebar";
-import { Button } from "../../ui/button";
-import { ChevronUp, User2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../../ui/dropdown-menu";
-import { logoutUser } from "../../../api/userAuthApi";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../redux/user/userSlice";
-import { RootState } from "../../../redux/store";
 
-const Sidebar:React.FC = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+interface MenuItem {
+  icon: React.ReactNode;
+  label: string;
+  route: string;
+}
 
-    const user = useSelector((state: RootState) => state.user);
-    const userInfo = user.user;
+const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
 
-    const handleLogout = async () => {
-      try {
-        await logoutUser();
-        dispatch(logout());
-        navigate("/signin");
-      } catch (error) {
-        console.error("Error during logout:", error);
-      }
-    };
-
-    const handleProfile = () => {
-      navigate('/profile');
-    }
+  // Define menu items
+  const menuItems: MenuItem[] = [
+    { icon: <DashboardOutlined className="text-2xl" />, label: "Dashboard", route: "/host/dashboard" },
+    { icon: <HomeOutlined className="text-2xl" />, label: "Properties", route: "/host/add-property-start" },
+    { icon: <CalendarOutlined className="text-2xl" />, label: "Bookings", route: "/host/bookings" },
+    { icon: <DollarCircleOutlined className="text-2xl" />, label: "Payments", route: "/host/payments" },
+    { icon: <MessageOutlined className="text-2xl" />, label: "Chats", route: "/host/chats" },
+    { icon: <SettingOutlined className="text-2xl" />, label: "Settings", route: "/host/settings" },
+    { icon: <QuestionCircleOutlined className="text-2xl" />, label: "Help", route: "/host/help" },
+  ];
 
   return (
-    <div className="w-64 bg-gray-200 text-white flex flex-col h-full">
+    <div className="w-64 text-white flex flex-col h-full">
+      {/* Sidebar Header */}
       <div className="text-2xl font-bold py-8 px-9">
         <span className="text-purple-700">Be My</span>{" "}
         <span className="text-black">Guest</span>
       </div>
-      <ul className="flex-1 space-y-6 px-6 py-4">
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <DashboardOutlined className="text-2xl" />
-          <span>Dashboard</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <HomeOutlined className="text-2xl" />
-          <span>Properties</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <CalendarOutlined className="text-2xl" />
-          <span>Bookings</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <DollarCircleOutlined className="text-2xl" />
-          <span>Payments</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <MessageOutlined className="text-2xl" />
-          <span>Chats</span>
-        </li>
-        <li className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer">
-          <QuestionCircleOutlined className="text-2xl" />
-          <span>Help</span>
-        </li>
-      </ul>
 
-      <SidebarFooter>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="w-full justify-between">
-              <div className="flex items-center gap-2">
-                <User2 className="h-4 w-4 text-purple-800" />
-                <div>
-                  <p className="font-semibold text-purple-800">{userInfo?.name}</p>
-                </div>
-              </div>
-              <ChevronUp className="h-4 w-4 text-purple-800" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent 
-            className="w-60" 
-            align="start"
-            side="top"
+      {/* Map through menu items */}
+      <ul className="flex-1 space-y-6 px-6 py-4">
+        {menuItems.map((item, index) => (
+          <li
+            key={index}
+            className="flex items-center space-x-4 text-gray-900 hover:text-white py-2 px-3 rounded-lg hover:bg-purple-800 cursor-pointer"
+            onClick={() => navigate(item.route)} 
           >
-            <DropdownMenuItem className="cursor-pointer" onClick={handleProfile}>
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarFooter>
+            {item.icon}
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

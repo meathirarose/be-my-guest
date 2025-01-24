@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import AdminDashboard from "../pages/admin/Dashboard";
 import PropertyList from "../pages/admin/Properties";
 import CustomerList from "../pages/admin/Customers";
+import PropertyOwnerList from "../pages/admin/PropertyOwners";
 import Settings from "../pages/admin/Settings";
 
 const CustomerRoutes: React.FC = () => (
@@ -11,6 +12,7 @@ const CustomerRoutes: React.FC = () => (
     <Route path="/dashboard" element={<AdminDashboard />} />
     <Route path="/properties" element={<PropertyList />} />
     <Route path="/customers" element={<CustomerList />} />
+    <Route path="/property-owners" element={<PropertyOwnerList />} />
     <Route path="/settings" element={<Settings />} />
   </Routes>
 );
