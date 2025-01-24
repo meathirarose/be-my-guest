@@ -39,7 +39,6 @@ const Header: React.FC = () => {
           profilePic={userInfo?.profileImage}
           onLogout={handleLogout}
           onProfile={() => {
-            console.log("Go to profile page");
             navigate("/host/profile"); 
           }}
         />

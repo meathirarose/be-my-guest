@@ -15,14 +15,23 @@ const Profile: React.FC = () => {
   const [editedName, setEditedName] = useState(userInfo?.name || "");
   const [editedCountry, setEditedCountry] = useState(userInfo?.country || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(userInfo?.profileImage || "");
   const [isUploading, setIsUploading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.files && e.target.files[0])
-      setSelectedFile(e.target.files[0]);
-  }
+    if(e.target.files && e.target.files[0]){
+      const file = e.target.files[0];
+      setSelectedFile(file);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result as string);
+      }
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleProfileImageClick = () => {
     fileInputRef?.current?.click();
@@ -56,6 +65,7 @@ const Profile: React.FC = () => {
     setEditedName(userInfo?.name || "");
     setEditedCountry(userInfo?.country || "");
     setSelectedFile(null);
+    setPreviewImage(userInfo?.profileImage || "");
   };
 
   return (
@@ -82,7 +92,7 @@ const Profile: React.FC = () => {
         <div className="flex items-center space-x-4 mb-4">
           <div className="relative">
             <img
-              src={userInfo?.profileImage}
+              src={previewImage || ""}
               alt={`${userInfo?.name || "User"} profile`}
               className="w-24 h-24 rounded-full object-cover border-2 border-purple-500"
               onClick={handleProfileImageClick}
