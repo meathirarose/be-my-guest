@@ -34,6 +34,9 @@ const userSchema: Schema = new Schema<IUserDoc>({
     createdAt: {
         type: Date,
         default: Date.now()
+    },
+    profileImage: {
+        type: String,
     }
 }, {
     toJSON: {

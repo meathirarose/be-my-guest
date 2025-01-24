@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 
 interface ProfileMenuProps {
   username: string;
-  profilePic: string;
+  profilePic?: string;
   onLogout: () => void;
   onProfile: () => void;
 }

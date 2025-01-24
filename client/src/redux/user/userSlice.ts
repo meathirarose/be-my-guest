@@ -5,6 +5,7 @@ interface User {
   email: string;
   role: "customer" | "property-owner" | "admin";
   country?: string;
+  profileImage?: string;
 }
 
 interface UserState {
@@ -44,10 +45,11 @@ const userSlice = createSlice({
         state.isVerified = true;
       }
     },
-    updateUser(state, action: PayloadAction<{name: string, country: string}>) {
+    updateUser(state, action: PayloadAction<{name: string, country: string, profileImage: string}>) {
       if(state.user){
         state.user.name = action.payload.name;
         state.user.country = action.payload.country;
+        state.user.profileImage = action.payload.profileImage;
       }
     }
   },

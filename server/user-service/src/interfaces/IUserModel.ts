@@ -11,11 +11,12 @@ export interface IUserAttrs {
     name: string;
     email: string;
     country: string;
-    phoneNumber?: number,
+    phoneNumber?: number;
     password: string;
     role: Role;
-    verified?: boolean,
+    verified?: boolean;
     createdAt?: Date;
+    profileImage?: string; 
 }
 
 export interface IUserDoc extends mongoose.Document {
@@ -23,11 +24,12 @@ export interface IUserDoc extends mongoose.Document {
     name: string;
     email: string;
     country: string;
-    phoneNumber: number,
+    phoneNumber: number;
     password: string;
     role: Role;
     verified: boolean,
     createdAt: Date;
+    profileImage?: string; 
 }
 
 export interface IUserModel extends mongoose.Model<IUserDoc> {

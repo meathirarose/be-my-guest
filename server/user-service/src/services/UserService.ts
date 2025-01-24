@@ -158,9 +158,10 @@ export class UserService implements IUserService {
     }
   }
 
-  async updateProfile(name: string, email: string, country: string): Promise<IUserDoc> {
+  async updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc> {
     try {
       const user = await this.userRepository.findByEmail(email);
+      console.log(profileImage, "kittanundo---------------------------")
 
       if (!user) {
         throw new NotFoundError("User not found with this email");
@@ -168,7 +169,7 @@ export class UserService implements IUserService {
 
       const updatedUser = await this.userRepository.update(
         { email },
-        { name, country }
+        { name, country, profileImage }
       );
 
       if (!updatedUser) {

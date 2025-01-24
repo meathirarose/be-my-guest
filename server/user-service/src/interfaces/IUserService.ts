@@ -7,5 +7,5 @@ export interface IUserService {
     forgotPassword(email: string): Promise<void>;
     resetPassword(token: string, password: string): Promise<void>;
     googleLogin(email: string, name: string, googleId: string): Promise<IUserDoc>;
-    updateProfile(name: string, email: string, country: string): Promise<IUserDoc>;
+    updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc>;
 }

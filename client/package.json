@@ -25,6 +25,7 @@
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "joi": "^17.13.3",
     "jwt-decode": "^4.0.0",

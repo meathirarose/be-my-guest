@@ -280,12 +280,13 @@ export class UserController implements IUserController{
     public updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             console.log("getting--------------------------------------------------------")
-            const { name, email, country } = req.body;
+            const { name, email, country, profileImage } = req.body;
+            console.log(profileImage, "profile image avdnn vitte kittanundo ivde.............")
 
             if(!name || !email || !country)
                 throw new NotFoundError("Missing credentials!");
 
-            const user = await this.userService.updateProfile(name, email, country);
+            const user = await this.userService.updateProfile(name, email, country, profileImage);
 
             if(!user) {
                 throw new NotFoundError("User not found")

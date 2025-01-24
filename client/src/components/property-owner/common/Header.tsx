@@ -36,7 +36,7 @@ const Header: React.FC = () => {
       <div className="flex items-center">
         <ProfileMenu
           username={userInfo!.name}
-          profilePic="https://i.pinimg.com/736x/f5/2e/90/f52e90f281f04dab12e1f8367db13c80.jpg"
+          profilePic={userInfo?.profileImage}
           onLogout={handleLogout}
           onProfile={() => {
             console.log("Go to profile page");
