@@ -4,7 +4,7 @@ interface AddPropertyProps {
   onAdd: () => void;
 }
 
-const AddProperty: React.FC<AddPropertyProps> = ({ onAdd }) => {
+const AddPropertyButton: React.FC<AddPropertyProps> = ({ onAdd }) => {
   return (
     <div>
           <button
@@ -18,4 +18,4 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onAdd }) => {
   );
 };
 
-export default AddProperty;
+export default AddPropertyButton;

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/property-owner/common/SideBar";
-import Header from "../../components/property-owner/common/Header";
 import SearchBar from "../../components/property-owner/dashboard/SearchBar";
 import PropertyList from "../../components/property-owner/dashboard/PropertyList";
-import AddProperty from "../../components/property-owner/dashboard/AddProperty";
+import AddPropertyButton from "../../components/buttons/AddPropertyButton";
 import { useNavigate } from "react-router-dom";
 
-const PropertyOwnerDashboard: React.FC = () => {
+const Properties: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [properties, setProperties] = useState([
@@ -24,37 +22,28 @@ const PropertyOwnerDashboard: React.FC = () => {
     },
   ]);
 
-
   const handleAddProperty = () => {
-    navigate('/host/host-property-start')
+    console.log('Navigating to Add Property');
+    navigate("/host/dashboard/properties/add-property-start");
   };
-
+  
   const handleDeleteProperty = (id: number) => {
     setProperties(properties.filter((property) => property.id !== id));
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="flex-1 bg-gray-50 px-6 py-28">
-          <div className="flex justify-between items-center mb-6">
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
-            <AddProperty onAdd={handleAddProperty} />
-          </div>
-          <PropertyList
-            properties={properties}
-            onDelete={handleDeleteProperty}
-            searchQuery={searchQuery}
-          />
-        </div>
+    <div className="flex-1 bg-gray-50 ">
+      <div className="flex justify-between items-center mb-6">
+        <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <AddPropertyButton onAdd={handleAddProperty} />
       </div>
+      <PropertyList
+        properties={properties}
+        onDelete={handleDeleteProperty}
+        searchQuery={searchQuery}
+      />
     </div>
   );
 };
 
-export default PropertyOwnerDashboard;
+export default Properties;

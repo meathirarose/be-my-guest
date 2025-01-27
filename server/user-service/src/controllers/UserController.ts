@@ -121,6 +121,7 @@ export class UserController implements IUserController{
                     email: user.email,
                     country: user.country,
                     role: user.role,
+                    profileImage: user.profileImage
                 }
             });
 

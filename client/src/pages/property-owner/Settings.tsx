@@ -1,71 +1,58 @@
-import React, { useState } from "react";
-import Sidebar from "../../components/property-owner/common/SideBar";
-import Header from "../../components/property-owner/common/Header";
+import React from "react";
 import { Tabs } from "antd";
+import { useLocation, Link } from "react-router-dom";
 import { AndroidOutlined } from "@ant-design/icons";
 import { User2, Calendar, RefreshCcw } from "lucide-react"; 
-import ProfileTab from "../../components/property-owner/settings/ProfileTab";
-import PasswordTab from "../../components/property-owner/settings/PasswordTab";
-import BookingsTab from "../../components/property-owner/settings/BookingsTab";
-import RefundsTab from "../../components/property-owner/settings/RefundsTab";
+import { Outlet } from "react-router-dom";
 
 const HostSettings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("1");
-
-  const handleTabChange = (key: string) => {
-    setActiveTab(key);
-  };
+  const location = useLocation();
+  const activeTab = location.pathname.split("/").pop();
 
   const tabs = [
     {
-      key: "1",
+      key: "profile",
       label: "Profile",
       icon: <User2 className="inline-block align-middle mr-4" size={16} />,
-      component: <ProfileTab />,
+      path: "/host/dashboard/settings/profile",
     },
     {
-      key: "2",
+      key: "password",
       label: "Password",
       icon: <AndroidOutlined className="inline-block align-middle mr-4" style={{ fontSize: 16 }} />,
-      component: <PasswordTab />,
+      path: "/host/dashboard/settings/password",
     },
     {
-      key: "3",
+      key: "bookings",
       label: "Bookings",
       icon: <Calendar className="inline-block align-middle mr-4" size={16} />, 
-      component: <BookingsTab />, 
+      path: "/host/dashboard/settings/bookings",
     },
     {
-      key: "4",
+      key: "refunds",
       label: "Refunds",
       icon: <RefreshCcw className="inline-block align-middle mr-4" size={16} />, 
-      component: <RefundsTab />, 
+      path: "/host/dashboard/settings/refunds",
     },
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="flex-1 bg-gray-50 px-10 py-28 overflow-y-auto">
-          <h1 className="text-2xl font-bold mb-6">Settings</h1>
-          <Tabs
-            activeKey={activeTab}
-            onChange={handleTabChange}
-            items={tabs.map((tab) => ({
-              key: tab.key,
-              label: (
-                <span className="flex items-center">
-                  {tab.icon}
-                  {tab.label}
-                </span>
-              ),
-              children: tab.component,
-            }))}
-          />
-        </div>
-      </div>
+    <div className="flex-1 overflow-auto">
+      <h1 className="text-2xl font-bold">Settings</h1>
+      <Tabs
+        activeKey={activeTab}
+        onChange={() => {}}
+        items={tabs.map((tab) => ({
+          key: tab.key,
+          label: (
+            <Link to={tab.path} className="flex items-center">
+              {tab.icon}
+              {tab.label}
+            </Link>
+          ),
+        }))}
+      />
+      <Outlet />
     </div>
   );
 };

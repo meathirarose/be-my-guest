@@ -22,11 +22,11 @@ const Sidebar: React.FC = () => {
   // Define menu items
   const menuItems: MenuItem[] = [
     { icon: <DashboardOutlined className="text-2xl" />, label: "Dashboard", route: "/host/dashboard" },
-    { icon: <HomeOutlined className="text-2xl" />, label: "Properties", route: "/host/add-property-start" },
+    { icon: <HomeOutlined className="text-2xl" />, label: "Properties", route: "properties" },
     { icon: <CalendarOutlined className="text-2xl" />, label: "Bookings", route: "/host/bookings" },
     { icon: <DollarCircleOutlined className="text-2xl" />, label: "Payments", route: "/host/payments" },
     { icon: <MessageOutlined className="text-2xl" />, label: "Chats", route: "/host/chats" },
-    { icon: <SettingOutlined className="text-2xl" />, label: "Settings", route: "/host/settings" },
+    { icon: <SettingOutlined className="text-2xl" />, label: "Settings", route: "settings" },
     { icon: <QuestionCircleOutlined className="text-2xl" />, label: "Help", route: "/host/help" },
   ];
 

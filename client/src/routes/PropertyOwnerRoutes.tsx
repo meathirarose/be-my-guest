@@ -1,17 +1,24 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import PropertyOwnerLanding from "../pages/property-owner/Landing";
 import PropertyOwnerSignUp from "../pages/property-owner/SignUp";
 import PropertyOwnerSignIn from "../pages/property-owner/Login";
 import PropertyOwnerDashboard from "../pages/property-owner/Dashboard";
 import PrivateRouteForPropertyOwner from "./PrivateRouteForPropertyOwner";
-// import PropertyHostingStep1 from "../pages/property-owner/host-property/Step-1";
-// import PropertyHostingStep2 from "../pages/property-owner/host-property/Step-1.1";
-// import PropertyHostingStep3 from "../pages/property-owner/host-property/Step-1.2";
-// import PropertyHostingStep4 from "../pages/property-owner/host-property/Step-1.3";
 import PublicRoute from "./PublicRoute";
-import AddProperty from "../components/property-owner/property/AddProperty";
 import HostSettings from "../pages/property-owner/Settings";
+import DashboardLayout from "../layouts/DashboardLayout";
+import ProfileTab from "../components/property-owner/settings/ProfileTab";
+import PasswordTab from "../components/property-owner/settings/PasswordTab";
+import BookingsTab from "../components/property-owner/settings/BookingsTab";
+import RefundsTab from "../components/property-owner/settings/RefundsTab";
+import Properties from "../pages/property-owner/Property";
+import AddPropertyPage from "../components/property-owner/property/AddProperty";
+import AddPropertyStep1 from "../components/property-owner/property/AddPropertyStep1";
+import AddPropertyStep2 from "../components/property-owner/property/AddPropertyStep2";
+import AddPropertyStep3 from "../components/property-owner/property/AddPropertyStep3";
+import AddPropertyStep4 from "../components/property-owner/property/AddPropertyStep4";
+import AddPropertyStep5 from "../components/property-owner/property/AddPropertyStep5";
 
 const PropertyOwnerRoutes: React.FC = () => (
   <Routes>
@@ -24,13 +31,27 @@ const PropertyOwnerRoutes: React.FC = () => (
 
     {/* Private Routes */}
     <Route element={<PrivateRouteForPropertyOwner />}>
-      <Route path="/dashboard" element={<PropertyOwnerDashboard />} />
-      <Route path="/add-property-start" element={<AddProperty />} />
-      <Route path="/settings" element={<HostSettings />} />
-      {/* <Route path="/host-property-step1" element={<PropertyHostingStep1 />} />
-      <Route path="/host-property-step1.1" element={<PropertyHostingStep2 />} />
-      <Route path="/host-property-step1.2" element={<PropertyHostingStep3 />} />
-      <Route path="/host-property-step1.3" element={<PropertyHostingStep4 />} /> */}
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<PropertyOwnerDashboard />} />
+        <Route path="settings" element={<HostSettings />}>
+          <Route index element={<Navigate to="profile" />} />
+          <Route path="profile" element={<ProfileTab />} />
+          <Route path="password" element={<PasswordTab />} />
+          <Route path="bookings" element={<BookingsTab />} />
+          <Route path="refunds" element={<RefundsTab />} />
+        </Route>
+        <Route path="properties" element={<Properties />} />
+        <Route
+          path="properties/add-property-start"
+          element={<AddPropertyPage />}
+        >
+          <Route path="step-1" element={<AddPropertyStep1 />} />
+          <Route path="step-2" element={<AddPropertyStep2 />} />
+          <Route path="step-3" element={<AddPropertyStep3 />} />
+          <Route path="step-4" element={<AddPropertyStep4 />} />
+          <Route path="step-5" element={<AddPropertyStep5 />} />
+        </Route>
+      </Route>
     </Route>
   </Routes>
 );
