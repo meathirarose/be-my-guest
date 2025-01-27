@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Avatar } from "antd";
-import Header from "../../components/property-owner/common/Header";
-import Sidebar from "../../components/admin/SideBar";
+import Header from "../../components/common/Header";
+import Sidebar from "../../components/common/SideBar";
 import { fetchAllCustomers } from "../../api/userAuthApi";
 
 const Customers: React.FC = () => {

@@ -84,7 +84,7 @@ const PropertyOwnerDashboard: React.FC = () => {
                 fill="#8884d8"
                 label
               >
-                {revenueData.map((entry, index) => {
+                {revenueData.map((_entry, index) => {
                   return (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   );

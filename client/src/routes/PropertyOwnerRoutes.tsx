@@ -7,18 +7,18 @@ import PropertyOwnerDashboard from "../pages/property-owner/Dashboard";
 import PrivateRouteForPropertyOwner from "./PrivateRouteForPropertyOwner";
 import PublicRoute from "./PublicRoute";
 import HostSettings from "../pages/property-owner/Settings";
-import DashboardLayout from "../layouts/DashboardLayout";
-import ProfileTab from "../components/property-owner/settings/ProfileTab";
-import PasswordTab from "../components/property-owner/settings/PasswordTab";
-import BookingsTab from "../components/property-owner/settings/BookingsTab";
-import RefundsTab from "../components/property-owner/settings/RefundsTab";
+import DashboardLayout from "../layouts/HostDashboardLayout";
+import ProfileTab from "../components/property-owner/dashboard-settings/ProfileTab";
+import PasswordTab from "../components/property-owner/dashboard-settings/PasswordTab";
+import BookingsTab from "../components/property-owner/dashboard-settings/BookingsTab";
+import RefundsTab from "../components/property-owner/dashboard-settings/RefundsTab";
 import Properties from "../pages/property-owner/Property";
-import AddPropertyPage from "../components/property-owner/property/AddProperty";
-import AddPropertyStep1 from "../components/property-owner/property/AddPropertyStep1";
-import AddPropertyStep2 from "../components/property-owner/property/AddPropertyStep2";
-import AddPropertyStep3 from "../components/property-owner/property/AddPropertyStep3";
-import AddPropertyStep4 from "../components/property-owner/property/AddPropertyStep4";
-import AddPropertyStep5 from "../components/property-owner/property/AddPropertyStep5";
+import AddPropertyPage from "../components/property-owner/dashboard-property/AddProperty";
+import AddPropertyStep1 from "../components/property-owner/dashboard-property/AddPropertyStep1";
+import AddPropertyStep2 from "../components/property-owner/dashboard-property/AddPropertyStep2";
+import AddPropertyStep3 from "../components/property-owner/dashboard-property/AddPropertyStep3";
+import AddPropertyStep4 from "../components/property-owner/dashboard-property/AddPropertyStep4";
+import AddPropertyStep5 from "../components/property-owner/dashboard-property/AddPropertyStep5";
 
 const PropertyOwnerRoutes: React.FC = () => (
   <Routes>

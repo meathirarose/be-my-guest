@@ -1,6 +1,6 @@
 import React, { useState } from "react"; 
-import Sidebar from "../../components/admin/SideBar"; 
-import Header from "../../components/property-owner/common/Header"; 
+import Sidebar from "../../components/common/SideBar"; 
+import Header from "../../components/common/Header"; 
 import { Tabs } from "antd"; 
 import { AndroidOutlined } from "@ant-design/icons"; 
 import { User2 } from "lucide-react"; 

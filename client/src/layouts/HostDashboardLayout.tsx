@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/property-owner/common/SideBar";
-import Header from "../components/property-owner/common/Header";
+import Sidebar from "../components/common/SideBar";
+import Header from "../components/common/Header";
 
 
 const DashboardLayout: React.FC = () => {

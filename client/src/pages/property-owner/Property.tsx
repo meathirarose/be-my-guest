@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SearchBar from "../../components/property-owner/dashboard/SearchBar";
-import PropertyList from "../../components/property-owner/dashboard/PropertyList";
+import SearchBar from "../../components/common/SearchBar";
+import PropertyList from "../../components/common/PropertyList";
 import AddPropertyButton from "../../components/buttons/AddPropertyButton";
 import { useNavigate } from "react-router-dom";
 

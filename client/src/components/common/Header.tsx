@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ProfileMenu from "../../../shared/components/ui/ProfileMenu";
-import { logoutUser } from "../../../api/userAuthApi";
+import ProfileMenu from "../../shared/components/ui/ProfileMenu";
+import { logoutUser } from "../../api/userAuthApi";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../redux/user/userSlice";
-import { RootState } from "../../../redux/store";
+import { logout } from "../../redux/user/userSlice";
+import { RootState } from "../../redux/store";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

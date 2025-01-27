@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/admin/SideBar";
-import Header from "../../components/property-owner/common/Header";
-import SearchBar from "../../components/property-owner/dashboard/SearchBar";
-import PropertyList from "../../components/property-owner/dashboard/PropertyList";
+import Sidebar from "../../components/common/SideBar";
+import Header from "../../components/common/Header";
+import SearchBar from "../../components/common/SearchBar";
+import PropertyList from "../../components/common/PropertyList";
 
 const AdminDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");

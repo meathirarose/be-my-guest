@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/customer/Header";
 import Footer from "../../shared/components/layout/Footer";
-import Sidebar from "../../components/customer/profile/SideBar";
+import Sidebar from "../../components/common/SideBar";
 import { updateProfile, uploadImageToCloudinary } from "../../api/userAuthApi";
 import { updateUser } from "../../redux/user/userSlice";
 import { message } from "antd";
@@ -159,3 +159,4 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
