@@ -7,7 +7,7 @@ import { User2 } from "lucide-react";
 import ProfileTab from "../../components/admin/dashboard-settings/Profile"; 
 import PasswordTab from "../../components/admin/dashboard-settings/Password"; 
  
-const AdminDashboard: React.FC = () => { 
+const AdminSettings: React.FC = () => { 
   const [activeTab, setActiveTab] = useState("1"); 
  
   const handleTabChange = (key: string) => { 
@@ -56,4 +56,4 @@ const AdminDashboard: React.FC = () => {
   ); 
 }; 
  
-export default AdminDashboard;
+export default AdminSettings;

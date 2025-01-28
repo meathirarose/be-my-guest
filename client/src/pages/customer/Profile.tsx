@@ -8,6 +8,7 @@ import { updateProfile, uploadImageToCloudinary } from "../../api/userAuthApi";
 import { updateUser } from "../../redux/user/userSlice";
 import { message } from "antd";
 import { Pencil } from "lucide-react";
+import InputField from "../../shared/components/ui/InputField";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -74,68 +75,83 @@ const Profile: React.FC = () => {
         <Sidebar />
 
         <main className="flex-1 bg-white p-8 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-8">
+          <div className="mb-10">
             <h3 className="text-2xl font-semibold text-gray-800">Your Profile</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex flex-col items-center mb-6 md:mb-0">
-              <div className="relative">
-                <img
-                  src={previewImage || ""}
-                  alt={`${userInfo?.name || "User"} profile`}
-                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-600 shadow-md cursor-pointer"
-                  onClick={handleProfileImageClick}
-                />
-                <button
-                  className="absolute bottom-0 right-0 bg-purple-600 text-white rounded-full p-2 shadow-md hover:bg-purple-700 transition-colors"
-                  onClick={handleProfileImageClick}
-                >
-                  <Pencil size={18} />
-                </button>
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleImageChange}
-                hidden
+          <div className="flex flex-col items-start mb-2 ">
+            {/* Profile Image Section */}
+            <div className="relative mb-4">
+              <img
+                src={previewImage || ""}
+                alt={`${userInfo?.name || "User"} profile`}
+                className="w-28 h-28 rounded-full object-cover border-4 border-purple-600 shadow-md cursor-pointer"
+                onClick={handleProfileImageClick}
               />
+              <button
+                className="absolute bottom-0 right-0 bg-purple-600 text-white rounded-full p-2 shadow-md hover:bg-purple-700 transition-colors"
+                onClick={handleProfileImageClick}
+              >
+                <Pencil size={18} />
+              </button>
             </div>
+            <InputField
+              type="file"
+              name=""
+              placeholder=""
+              value=""
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              hidden={true}
+            />
+          </div> 
+           
 
-            <div className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <label className="w-1/3 text-gray-600 font-medium">Full Name</label>
-                <input
+          {/* Profile Details Section */}
+          <div className="space-y-2 items-center ml-5">
+            <div className="flex items-center w-full">
+              <label className="w-1/3 text-gray-600 font-medium">Full Name</label>
+              <div className="w-2/3">
+                <InputField
                   type="text"
+                  name="name"
+                  placeholder="Full Name"
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  className="w-2/3 p-4 border-2 border-gray-300 rounded-md bg-gray-50 text-gray-800 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 transition-all"
                 />
               </div>
-              <div className="flex items-center space-x-4">
-                <label className="w-1/3 text-gray-600 font-medium">Email Address</label>
-                <input
+            </div>
+            <div className="flex items-center space-x-2 mr-5 w-full">
+              <label className="w-1/3 text-gray-600 font-medium">Email Address</label>
+              <div className="w-2/3">
+                <InputField
                   type="email"
+                  name="email"
+                  placeholder="Email"
                   value={editedEmail}
                   onChange={(e) => setEditedEmail(e.target.value)}
-                  disabled
-                  className="w-2/3 p-4 border-2 border-gray-300 rounded-md bg-gray-50 text-gray-800 cursor-not-allowed"
+                  disabled={true}
                 />
               </div>
-              <div className="flex items-center space-x-4">
-                <label className="w-1/3 text-gray-600 font-medium">Country</label>
-                <input
+            </div>
+            <div className="flex items-center space-x-2 w-full">
+              <label className="w-1/3 text-gray-600 font-medium">Country</label>
+              <div className="w-2/3">
+                <InputField
                   type="text"
+                  name="country"
+                  placeholder="Country"
                   value={editedCountry}
                   onChange={(e) => setEditedCountry(e.target.value)}
-                  className="w-2/3 p-4 border-2 border-gray-300 rounded-md bg-gray-50 text-gray-800 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 transition-all"
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-8 flex justify-end space-x-6">
+
+          {/* Buttons */}
+          <div className="mt-8 flex justify-start space-x-6">
             <button
               onClick={handleUpdateProfile}
               className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-lg hover:bg-purple-700 transition-colors"

@@ -1,15 +1,37 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FiEdit, FiBookOpen, FiMessageSquare, FiRefreshCcw } from "react-icons/fi";
-import { HomeOutlined, CalendarOutlined, DollarCircleOutlined, MessageOutlined, QuestionCircleOutlined, SettingOutlined, } from "@ant-design/icons";
-import { Calendar1, FileQuestion, HandCoins, HousePlus, LayoutDashboard, MessagesSquare, School, Users, Wrench,} from "lucide-react";
+import {
+  FiEdit,
+  FiBookOpen,
+  FiMessageSquare,
+  FiRefreshCcw,
+} from "react-icons/fi";
+import {
+  HomeOutlined,
+  CalendarOutlined,
+  DollarCircleOutlined,
+  MessageOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import {
+  Calendar1,
+  FileQuestion,
+  HandCoins,
+  HousePlus,
+  LayoutDashboard,
+  MessagesSquare,
+  School,
+  Users,
+  Wrench,
+} from "lucide-react";
 import { RootState } from "../../redux/store";
 
 interface MenuItem {
   label: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: React.ComponentType<any>; 
+  icon: React.ComponentType<any>;
   route: string;
 }
 
@@ -20,7 +42,7 @@ const Sidebar: React.FC = () => {
 
   // Define menu items for each role
   const customerMenu: MenuItem[] = [
-    { label: "Your Profile", icon: FiEdit, route: "/customer/profile" },
+    { label: "Your Profile", icon: FiEdit, route: "/profile" },
     { label: "Bookings", icon: FiBookOpen, route: "/bookings" },
     { label: "Refunds", icon: FiRefreshCcw, route: "/refunds" },
     { label: "Messages", icon: FiMessageSquare, route: "/messages" },
@@ -60,7 +82,11 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="w-64 bg-white shadow-xl text-white flex flex-col min-h-screen border-r-2 border-gray-200">
-      <ul className="flex-1 space-y-6 px-6 py-28">
+      <ul
+        className={`flex-1 space-y-6 px-6 ${
+          role === "customer" ? "py-6" : "py-28"
+        }`}
+      >
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.route;

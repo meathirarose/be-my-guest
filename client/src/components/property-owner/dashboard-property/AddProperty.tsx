@@ -27,13 +27,17 @@ const AddPropertyPage: React.FC = () => {
 
   const handleNext = () => {
     if (activeStep < steps.length) {
-      navigate(`/host/dashboard/properties/add-property-start/step-${activeStep + 1}`);
+      navigate(
+        `/host/dashboard/properties/add-property-start/step-${activeStep + 1}`
+      );
     }
   };
 
   const handlePrevious = () => {
     if (activeStep > 1) {
-      navigate(`/host/dashboard/properties/add-property-start/step-${activeStep - 1}`);
+      navigate(
+        `/host/dashboard/properties/add-property-start/step-${activeStep - 1}`
+      );
     }
   };
 
@@ -45,18 +49,22 @@ const AddPropertyPage: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col">
-      <div className="flex-1 bg-gray-50 px-6 ">
+      <div className="flex-1 bg-purple-50 px-6 ">
         <Tabs
           activeKey={activeStep.toString()}
-          onChange={(key) => navigate(`/host/dashboard/properties/add-property-start/step-${key}`)}
+          onChange={(key) =>
+            navigate(
+              `/host/dashboard/properties/add-property-start/step-${key}`
+            )
+          }
+          centered
+          tabBarGutter={32}
+          type="card"
           tabBarStyle={{
-            marginBottom: 24,
             fontWeight: 500,
             fontSize: 16,
           }}
-          tabBarGutter={32}
-          centered
-          type="card"
+          className="custom-tabs"
         >
           {steps.map((step) => (
             <TabPane tab={step.label} key={step.id.toString()}>
@@ -73,18 +81,19 @@ const AddPropertyPage: React.FC = () => {
           ))}
         </Tabs>
         {/* Navigation Buttons */}
-        <div className="mt-8 flex justify-between">
+        <div className="mb-6 mt-6 flex justify-between">
           <Button
             disabled={activeStep === 1}
             onClick={handlePrevious}
-            className="bg-gray-300 disabled:opacity-50"
+            className="bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-50"
           >
             Previous
           </Button>
+
           <Button
-            type="primary"
             disabled={activeStep === steps.length}
             onClick={handleNext}
+            className="bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-50"
           >
             Next
           </Button>
