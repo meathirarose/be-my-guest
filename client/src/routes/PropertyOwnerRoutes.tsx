@@ -19,6 +19,8 @@ import AddPropertyStep2 from "../components/property-owner/dashboard-property/Ad
 import AddPropertyStep3 from "../components/property-owner/dashboard-property/AddPropertyStep3";
 import AddPropertyStep4 from "../components/property-owner/dashboard-property/AddPropertyStep4";
 import AddPropertyStep5 from "../components/property-owner/dashboard-property/AddPropertyStep5";
+import AddPropertyStep6 from "../components/property-owner/dashboard-property/AddPropertyStep6";
+import AddPropertyStep7 from "../components/property-owner/dashboard-property/AddPropertyStep7";
 
 const PropertyOwnerRoutes: React.FC = () => (
   <Routes>
@@ -50,6 +52,8 @@ const PropertyOwnerRoutes: React.FC = () => (
           <Route path="step-3" element={<AddPropertyStep3 />} />
           <Route path="step-4" element={<AddPropertyStep4 />} />
           <Route path="step-5" element={<AddPropertyStep5 />} />
+          <Route path="step-6" element={<AddPropertyStep6 />} />
+          <Route path="step-7" element={<AddPropertyStep7 />} />
         </Route>
       </Route>
     </Route>

@@ -4,7 +4,6 @@ import contactImage from "../../../assets/customer-images/contact-image.png";
 import { Link } from 'react-router-dom';
 
 const MenuButton: React.FC = () => {
-  // State to toggle the menu visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -30,7 +29,6 @@ const MenuButton: React.FC = () => {
       {isMenuOpen && (
         <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-48 border border-gray-300">
           <ul className="space-y-3 p-5">
-            {/* Each list item now takes up the full width of the menu */}
             <li className="w-full pb-2">
               <Link to="/customer/login" className="w-full ">Login</Link>
             </li>
@@ -38,7 +36,14 @@ const MenuButton: React.FC = () => {
               <Link to="/customer/signup" className="w-full ">SignUp</Link>
             </li>
             <li className="w-full pb-2">
-              <Link to="/host/host-landing" className="w-full ">Host an Experience</Link>
+              <a
+                href="/host/host-landing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                Host an Experience
+              </a>
             </li>
             <li className="w-full pb">
               <Link to="/" className="w-full ">Landing Page</Link>

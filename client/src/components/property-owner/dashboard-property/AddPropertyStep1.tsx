@@ -2,7 +2,7 @@ import React from "react";
 
 const AddPropertyStep1: React.FC = () => {
   return (
-    <div className="flex items-start justify-start bg-purple-50 px-4 py-8">
+    <div className="flex items-start justify-start  px-4 py-8">
       <div className="w-full max-w-6xl bg-white p-12 rounded-2xl shadow-lg flex">
         {/* Left Section */}
         <div className="w-1/2 pr-10">

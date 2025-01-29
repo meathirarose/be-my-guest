@@ -6,6 +6,8 @@ import AddPropertyStep2 from "./AddPropertyStep2";
 import AddPropertyStep3 from "./AddPropertyStep3";
 import AddPropertyStep4 from "./AddPropertyStep4";
 import AddPropertyStep5 from "./AddPropertyStep5";
+import AddPropertyStep6 from "./AddPropertyStep6";
+import AddPropertyStep7 from "./AddPropertyStep7";
 
 const { TabPane } = Tabs;
 
@@ -14,15 +16,23 @@ const AddPropertyPage: React.FC = () => {
   const location = useLocation();
 
   // Extract the current step from the URL
-  const currentStep = location.pathname.split("/").pop();
-  const activeStep = currentStep ? parseInt(currentStep.split("-")[1]) : 1;
+  const getCurrentStep = () => {
+    const pathParts = location.pathname.split("/");
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart === "add-property-start") return "1";
+    return lastPart.split("-")[1] || "1";
+  };
+
+  const activeStep = parseInt(getCurrentStep());
 
   const steps = [
     { id: 1, label: "Get Started" },
-    { id: 2, label: "Step 1: Tell us about your place" },
-    { id: 3, label: "Step 2: Make it shine" },
-    { id: 4, label: "Step 3: Add engaging local activities" },
-    { id: 5, label: "Step 4: Publish & Go Live" },
+    { id: 2, label: "Step 1: Basic Details" },
+    { id: 3, label: "Step 2: Location" },
+    { id: 4, label: "Step 3: Rooms & Spaces" },
+    { id: 5, label: "Step 4: Photos & Videos" },
+    { id: 6, label: "Step 5: Pricing & Availability" },
+    { id: 7, label: "Step 5: Publish & Live" },
   ];
 
   const handleNext = () => {
@@ -42,14 +52,17 @@ const AddPropertyPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!currentStep) {
-      navigate("/host/dashboard/properties/add-property-start/step-1");
+    // If we're at the root add-property-start URL, redirect to step-1
+    if (location.pathname === "/host/dashboard/properties/add-property-start") {
+      navigate("/host/dashboard/properties/add-property-start/step-1", {
+        replace: true,
+      });
     }
-  }, [currentStep, navigate]);
+  }, [location.pathname, navigate]);
 
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="flex-1 bg-purple-50 px-6 ">
+    <div className="flex-1 flex flex-col ">
+      <div className="flex-1">
         <Tabs
           activeKey={activeStep.toString()}
           onChange={(key) =>
@@ -58,11 +71,10 @@ const AddPropertyPage: React.FC = () => {
             )
           }
           centered
-          tabBarGutter={32}
           type="card"
           tabBarStyle={{
             fontWeight: 500,
-            fontSize: 16,
+            fontSize: 14,
           }}
           className="custom-tabs"
         >
@@ -75,11 +87,14 @@ const AddPropertyPage: React.FC = () => {
                   {step.id === 3 && <AddPropertyStep3 />}
                   {step.id === 4 && <AddPropertyStep4 />}
                   {step.id === 5 && <AddPropertyStep5 />}
+                  {step.id === 6 && <AddPropertyStep6 />}
+                  {step.id === 7 && <AddPropertyStep7 />}
                 </>
               )}
             </TabPane>
           ))}
         </Tabs>
+
         {/* Navigation Buttons */}
         <div className="mb-6 mt-6 flex justify-between">
           <Button
