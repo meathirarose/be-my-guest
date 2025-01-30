@@ -5,7 +5,7 @@ import InputField from "../../shared/components/ui/InputField";
 import { showToast } from "../../shared/utils/toastUtils"; 
 import { SubmitButton } from "../buttons/SubmitButton";
 import { LinkText } from "../../shared/components/ui/LinkText";
-import { signUpValidationSchema } from "../../validations/signupValidation";
+import { signUpValidationSchema } from "../../validations/user/signup";
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();

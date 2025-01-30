@@ -5,7 +5,7 @@ import { SubmitButton } from "../../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../utils/toastUtils";
 import { resetPassword } from "../../../api/userAuthApi";
-import { resetPasswordValidationSchema } from "../../../validations/resetPasswordValidation";
+import { resetPasswordValidationSchema } from "../../../validations/user/resetPassword";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();

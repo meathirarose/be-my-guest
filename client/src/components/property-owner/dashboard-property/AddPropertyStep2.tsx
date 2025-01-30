@@ -1,26 +1,62 @@
 import React, { useState } from "react";
-import { Select } from "antd";
+import { message, Select } from "antd";
 import InputField from "../../../shared/components/ui/InputField";
+import { sendPropertyBasicInfo } from "../../../api/listPropertyApi";
+import { useNavigate } from "react-router-dom";
+import { basicInfoValidationSchema } from "../../../validations/property/basicInfo";
 
 const AddPropertyStep2: React.FC = () => {
+  const navigate = useNavigate();
   const [propertyDetails, setPropertyDetails] = useState({
     propertyName: "",
     buildYear: "",
-    bookingSince: "",
-    hostingType: "individually",
     liveAtProperty: false,
-    email: "",
-    mobile: "",
-    whatsapp: false,
-    landline: "",
+    contactEmail: "",
+    contactMobile: "",
+    contactLandline: "",
   });
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const years = Array.from({ length: 74 }, (_, i) => (2024 - i).toString());
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPropertyDetails((prev) => ({ ...prev, [name]: value }));
+    if(errors[name]){
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: ""}));
+    }
   };
+
+  const validateForm = () => {
+    const { error } = basicInfoValidationSchema.validate(propertyDetails, { abortEarly: false });
+    if(!error) return true;
+
+    const validationErrors: { [key: string]:string } = {};
+    error.details.forEach((err) => {
+      validationErrors[err.path[0] as string] = err.message;
+    });
+
+    setErrors(validationErrors);
+    return false;
+
+  }
+
+  // Submit Form Data
+  const handleSubmit = async () => {
+    console.log("property details aanu step 2 nn---------------------------------", propertyDetails)
+    if(!validateForm()) return;
+    try {
+      const response = await sendPropertyBasicInfo(propertyDetails);
+      console.log("Property details submitted successfully:===========================", response.data);
+      message.success("Property details submitted successfully");
+      navigate("/host/dashboard/properties/add-property-start/step-3")
+    } catch (error) {
+      console.error("Failed to submit property details:", error);
+      message.error("Failed to submit property details")
+    }
+  };
+  
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -51,6 +87,7 @@ const AddPropertyStep2: React.FC = () => {
             value={propertyDetails.propertyName}
             onChange={handleInputChange}
           />
+          {errors.propertyName && <p className="text-red-500 text-xs">{errors.propertyName}</p>}
         </div>
 
         {/* Build Year */}
@@ -68,6 +105,7 @@ const AddPropertyStep2: React.FC = () => {
             popupClassName="rounded-xl border border-gray-300 shadow-lg"
             bordered={false}
           />
+          {errors.buildYear && <p className="text-red-500 text-xs">{errors.buildYear}</p>}
         </div>
 
         {/* Live at Property */}
@@ -105,6 +143,7 @@ const AddPropertyStep2: React.FC = () => {
               <span className="text-sm">Yes</span>
             </label>
           </div>
+          {errors.liveAtProperty && <p className="text-red-500 text-xs">{errors.liveAtProperty}</p>}
         </div>
 
         {/* Contact Details */}
@@ -127,11 +166,12 @@ const AddPropertyStep2: React.FC = () => {
             </div>
             <InputField
               type="email"
-              name="email"
+              name="contactEmail"
               placeholder="Enter email"
-              value={propertyDetails.email}
+              value={propertyDetails.contactEmail}
               onChange={handleInputChange}
             />
+            {errors.contactEmail && <p className="text-red-500 text-xs">{errors.contactEmail}</p>}
           </div>
 
           {/* Mobile */}
@@ -150,13 +190,15 @@ const AddPropertyStep2: React.FC = () => {
                 value="+91"
                 onChange={() => {}}
               />
+              
               <InputField
                 type="tel"
-                name="mobile"
+                name="contactMobile"
                 placeholder="Enter mobile number"
-                value={propertyDetails.mobile}
+                value={propertyDetails.contactMobile}
                 onChange={handleInputChange}
               />
+              {errors.contactMobile && <p className="text-red-500 text-xs">{errors.contactMobile}</p>}
             </div>
           </div>
 
@@ -167,12 +209,23 @@ const AddPropertyStep2: React.FC = () => {
             </label>
             <InputField
               type="tel"
-              name="landline"
+              name="contactLandline"
               placeholder="Eg: 0124-66573533"
-              value={propertyDetails.landline}
+              value={propertyDetails.contactLandline}
               onChange={handleInputChange}
-            />
+            />          
+            {errors.contactLandline && <p className="text-red-500 text-xs">{errors.contactLandline}</p>}
           </div>
+        </div>
+
+        {/* 🟢 Submit Button */}
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={handleSubmit}
+            className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-xl"
+          >
+            Save Changes
+          </button>
         </div>
       </div>
     </div>

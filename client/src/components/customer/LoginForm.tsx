@@ -7,7 +7,7 @@ import { showToast } from "../../shared/utils/toastUtils";
 import InputField from "../../shared/components/ui/InputField";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../buttons/SubmitButton";
-import { loginValidationSchema } from "../../validations/loginValidation";
+import { loginValidationSchema } from "../../validations/user/login";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { message } from "antd";
 

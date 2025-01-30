@@ -4,7 +4,7 @@ import InputField from "../ui/InputField";
 import { SubmitButton } from "../../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../utils/toastUtils";
-import { forgotPasswordEmailValidationSchema } from "../../../validations/forgotPasswordEmailValidation";
+import { forgotPasswordEmailValidationSchema } from "../../../validations/user/forgotPasswordEmail";
 import { forgotPassword } from "../../../api/userAuthApi";
 
 const ForgotPassword: React.FC = () => {

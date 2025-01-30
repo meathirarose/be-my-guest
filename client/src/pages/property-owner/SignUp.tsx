@@ -8,7 +8,7 @@ import InputField from "../../shared/components/ui/InputField";
 import { showToast } from "../../shared/utils/toastUtils";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../../components/buttons/SubmitButton";
-import { signUpValidationSchema } from "../../validations/signupValidation";
+import { signUpValidationSchema } from "../../validations/user/signup";
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({

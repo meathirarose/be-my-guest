@@ -12,14 +12,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.log("original request---------------------------------------------",originalRequest);
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.log("before---------------------------------------------");
 
       try {
-        console.log("start generating---------------------------------------");
 
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/user-service/api/users/refresh-token`,
@@ -33,7 +30,6 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        console.log("refresh failed ------------------------------------------");
         store.dispatch(logout());
         return Promise.reject(refreshError);
       }

@@ -9,7 +9,7 @@ import InputField from "../../shared/components/ui/InputField";
 import Header from "../../shared/components/layout/Header";
 import Footer from "../../shared/components/layout/Footer";
 import bg_signin from "../../assets/property-owner-images/bg-signin.jpg";
-import { loginValidationSchema } from "../../validations/loginValidation";
+import { loginValidationSchema } from "../../validations/user/login";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../../components/buttons/SubmitButton";
 import { SocialLoginButton } from "../../components/buttons/SocialLoginButtons";

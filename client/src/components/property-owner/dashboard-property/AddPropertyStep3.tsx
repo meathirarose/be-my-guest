@@ -17,6 +17,8 @@ const AddPropertyStep3: React.FC = () => {
     setLocationDetails((prev) => ({ ...prev, [name]: value }));
   };
 
+  
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       {/* Basic Info Section */}
