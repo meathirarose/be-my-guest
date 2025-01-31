@@ -1,8 +1,7 @@
-import { NotFoundError } from "@be-my-guest/common";
+import { BadRequestError, NotFoundError } from "@be-my-guest/common";
 import { IBasicInfoDoc } from "../../models/interface/IBasicInfoModel";
 import { IBasicInfoRepository } from "../../repositories/interface/IBasicInfoRepository";
 import { IBasicInfoService } from "../interface/IBasicInfoService";
-
 
 export class BasicInfoService implements IBasicInfoService {
     private basicInfoRepository: IBasicInfoRepository;
@@ -13,10 +12,18 @@ export class BasicInfoService implements IBasicInfoService {
 
     async addBasicInfo(data: IBasicInfoDoc): Promise<IBasicInfoDoc | null> {
         try {
+            const existingInfo = await this.basicInfoRepository.findByCriteria({
+                contactEmail: data.contactEmail,
+                propertyName: data.propertyName
+            });
+            console.log("contain existing info?-------------------------------------->", existingInfo);
+
+            if (existingInfo) {
+                throw new BadRequestError("A record with the same contact email and property name already exists.");
+            }
             
-            console.log("console nu munne------------------------------------------------------------>");
             const response = await this.basicInfoRepository.saveBasicInfo(data);
-            console.log("response from basicInfo service----------------------------------------->",response);
+            console.log("get response?--------------------------------------------------------->", response);
             if (!response) throw new NotFoundError("Failed to save basic info");
             return response;
 
@@ -26,4 +33,14 @@ export class BasicInfoService implements IBasicInfoService {
         }
     }
 
+    async findByCriteria(criteria: Partial<IBasicInfoDoc>): Promise<IBasicInfoDoc | null> {
+        try {
+            const result = await this.basicInfoRepository.findByCriteria(criteria);
+            console.log("got any result?---------------------------------------------------------->",result)
+            return result;
+        } catch (error) {
+            console.error("Error in find by criteria service:", error);
+            throw error;
+        }
+    }
 }

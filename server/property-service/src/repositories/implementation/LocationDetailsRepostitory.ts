@@ -11,6 +11,10 @@ export class LocationDetailsRepository extends BaseRepository<ILocationDetailsDo
         this.locationDetailsModel = locationDetailsModel;
     }
 
+    async saveLocationDetails(data: ILocationDetailsDoc): Promise<ILocationDetailsDoc> {
+        return await this.save(data);
+    }
+
     async findByPropertyId(propertyId: string): Promise<ILocationDetailsDoc | null> {
         return await this.locationDetailsModel.findOne({ propertyId });
     }

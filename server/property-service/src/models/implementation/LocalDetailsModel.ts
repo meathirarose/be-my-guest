@@ -41,9 +41,9 @@ const localityDetailsSchema: Schema = new Schema<ILocationDetailsDoc>(
 );
 
 localityDetailsSchema.statics.build = (attrs: ILocationDetailsAttrs) => {
-    return new LocalDetails(attrs);
+    return new LocationDetails(attrs);
 };
   
-const LocalDetails = mongoose.model<ILocationDetailsDoc, ILocationDetailsModel>("LocalDetail", localityDetailsSchema);
+const LocationDetails = mongoose.model<ILocationDetailsDoc, ILocationDetailsModel>("LocationDetail", localityDetailsSchema);
   
-export { LocalDetails };
+export { LocationDetails };

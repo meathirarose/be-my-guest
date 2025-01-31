@@ -13,7 +13,6 @@ export class BasicInfoController implements IBasicInfoController {
 
     public basicInfo = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            console.log("starting basic info in controller=========>")
             const { error, value } = basicInfoValidationSchema.validate(req.body, { abortEarly: false });
 
             if (error) {
@@ -23,14 +22,11 @@ export class BasicInfoController implements IBasicInfoController {
             }
             
             const propertyDetails = value;
-            console.log("property details in controller=========>", propertyDetails);
 
             if (!value) {
                 throw new NotFoundError("Missing Credentials!");
             }
-            console.log("before basic info from controller=====================>")
             const basicInfo = await this.basicInfoService.addBasicInfo(propertyDetails);
-            console.log("basic info from controller=================>", basicInfo);
             if (!basicInfo) {
                 throw new BadRequestError("Unable to add the basic information");
             }

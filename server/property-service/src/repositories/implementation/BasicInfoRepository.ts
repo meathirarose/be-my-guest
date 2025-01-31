@@ -15,8 +15,20 @@ export class BasicInfoRepository extends BaseRepository<IBasicInfoDoc> implement
         return await this.save(data);
     }
 
+    async findAny(): Promise<IBasicInfoDoc | null> {
+        return await this.findOne({});
+    }    
+
+    async findByEmail(email: string): Promise<IBasicInfoDoc | null> {
+        return this.findOne({ contactEmail: email }); 
+    }
+
     async findByPropertyName(name: string): Promise<IBasicInfoDoc | null> {
         const query: FilterQuery<IBasicInfoDoc> = { propertyName: name };
         return await this.findOne(query);
     }
+
+    async findByCriteria(criteria: Partial<IBasicInfoDoc>): Promise<IBasicInfoDoc | null> {
+        return await this.model.findOne(criteria as FilterQuery<IBasicInfoDoc>);
+      }
 }

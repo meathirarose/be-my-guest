@@ -44,7 +44,6 @@ const AddPropertyStep2: React.FC = () => {
 
   // Submit Form Data
   const handleSubmit = async () => {
-    console.log("property details aanu step 2 nn---------------------------------", propertyDetails)
     if(!validateForm()) return;
     try {
       const response = await sendPropertyBasicInfo(propertyDetails);
@@ -53,7 +52,7 @@ const AddPropertyStep2: React.FC = () => {
       navigate("/host/dashboard/properties/add-property-start/step-3")
     } catch (error) {
       console.error("Failed to submit property details:", error);
-      message.error("Failed to submit property details")
+      message.error("Failed to submit property details");
     }
   };
   
