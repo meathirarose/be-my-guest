@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-export interface IPropertyController {
+export interface IBasicInfoController {
     basicInfo(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

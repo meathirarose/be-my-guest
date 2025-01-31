@@ -27,6 +27,8 @@ app.use(cors(corsOptions));
 app.use(currentUser);
 
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
+console.log("ndhan ini ivde prasnm connect cheyyan pattanille...ivde api- gateway lum pattanilla..?");
+console.log("nnapne env variable kittanundonn nokka", process.env.PROPERTY_SERVICE_URL);
 app.use('/property-service', proxy(`${process.env.PROPERTY_SERVICE_URL}`));
 
 const PORT = process.env.SERVER_PORT || 4000;

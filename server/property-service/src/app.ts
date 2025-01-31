@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import listPropertyRoutes from "./routes/listPropertyRoutes";
+import basicInfoRoutes from "./routes/basicInfoRoutes";
+import locationDetailsRoutes from "./routes/locationDetailsRoutes";
 
 dotenv.config();
 
@@ -27,7 +28,8 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.options('*', cors(corsOptions));  
 
-app.use("/api/property", listPropertyRoutes);
+app.use("/api/basic-info",basicInfoRoutes);
+app.use("/api/location-details",locationDetailsRoutes);
 
 app.all("*", () => {
   throw new NotFoundError(
