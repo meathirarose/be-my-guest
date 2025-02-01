@@ -18,6 +18,21 @@ interface LocationDetails {
   city: string;
 }
 
+interface RoomsAndSpaces {
+  bedrooms: number;
+  bathrooms: number;
+  livingRoom: number;
+  lobbyLounge: number;
+  helpersRoom: number;
+  swimmingPool: number;
+  parking: number;
+  driversRoom: number;
+  terrace: number;
+  garden: number;
+  diningArea: number;
+  kitchenAvailable: boolean;
+}
+
 export const sendPropertyBasicInfo = async (
   propertyDetails: PropertyDetails
 ) => {
@@ -45,7 +60,6 @@ export const sendPropertyLocation = async (
   locationDetails: LocationDetails
 ) => {
   try {
-    console.log("front end api il ndhelum pransm ondo.......................?");
     const response = await axios.post(
       `${
         import.meta.env.VITE_BASE_URL
@@ -53,10 +67,29 @@ export const sendPropertyLocation = async (
       locationDetails,
       { withCredentials: true }
     );
-    console.log("send property location from list property api====>", response);
     return response;
   } catch (error) {
     console.error("Error sending location details:", error);
     throw error;
   }
 };
+
+export const sendRoomsAndSpaces = async (
+  roomsAndSpaces: RoomsAndSpaces
+
+) => {
+  try {
+    const response = await axios.post(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/rooms-spaces/add-rooms-spaces`,
+      roomsAndSpaces,
+      { withCredentials: true }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error sending information about rooms and spaces :", error);
+    throw error;
+  }
+};
+

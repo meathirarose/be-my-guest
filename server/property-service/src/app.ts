@@ -1,17 +1,15 @@
 import express from "express";
 import { errorHandler, NotFoundError } from "@be-my-guest/common";
-import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import basicInfoRoutes from "./routes/basicInfoRoutes";
 import locationDetailsRoutes from "./routes/locationDetailsRoutes";
+import roomsAndSpacesRouetes from "./routes/roomsAndSpacesRoutes"
 
 dotenv.config();
 
 const app = express();
-
-app.use(express.json());
 
 // CORS Configuration
 const corsOptions = {
@@ -23,13 +21,11 @@ const corsOptions = {
 
 app.use(cookieParser());
 app.use(cors(corsOptions));
-
-// Middleware
-app.use(bodyParser.json());
-app.options('*', cors(corsOptions));  
+app.use(express.json()); 
 
 app.use("/api/basic-info",basicInfoRoutes);
 app.use("/api/location-details",locationDetailsRoutes);
+app.use("/api/rooms-spaces", roomsAndSpacesRouetes);
 
 app.all("*", () => {
   throw new NotFoundError(

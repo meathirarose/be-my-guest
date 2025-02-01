@@ -17,7 +17,6 @@ const start = async () => {
   }
 
   await connectToDatabase();
-  console.log("ndhan ini ivde prasnm connect cheyyan pattanille.....?");
 
   const PORT = process.env.PORT || 3000;
 

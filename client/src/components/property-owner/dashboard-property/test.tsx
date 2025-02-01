@@ -1,10 +1,7 @@
-import { message } from "antd";
 import React, { useState } from "react";
 import { sendRoomsAndSpaces } from "../../../api/listPropertyApi";
-import { useNavigate } from "react-router-dom";
 
 const AddPropertyStep4: React.FC = () => {
-  const navigate = useNavigate();
   const [kitchenAvailable, setKitchenAvailable] = useState(false);
   const [counts, setCounts] = useState<{ [key: string]: number }>({
     "Bedrooms": 0,
@@ -40,15 +37,17 @@ const AddPropertyStep4: React.FC = () => {
         diningArea: counts["Dining Area"],
         kitchenAvailable,
       };
-
+  
       const response = await sendRoomsAndSpaces(roomsAndSpaces);
-      message.success(response?.data?.message);
-      navigate("/host/dashboard/properties/add-property-start/step-5")
+  
+      console.log("Data sent successfully:", response.data);
+      alert("Rooms & Spaces added successfully!");
     } catch (error) {
       console.error("Error sending information about rooms and spaces:", error);
-      message.error("Failed to add rooms & spaces.")
+      alert("Failed to add rooms & spaces.");
     }
-  }
+  };
+  
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -125,15 +124,14 @@ const AddPropertyStep4: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-xl"
-          >
-            Save Changes
-          </button>
-        </div>
       </div>
+
+      <button
+        onClick={handleSubmit}
+        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+      >
+        Submit
+      </button>
     </div>
   );
 };

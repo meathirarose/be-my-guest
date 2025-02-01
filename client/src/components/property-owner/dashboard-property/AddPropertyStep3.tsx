@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import InputField from "../../../shared/components/ui/InputField";
 import { sendPropertyLocation } from "../../../api/listPropertyApi";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const AddPropertyStep3: React.FC = () => {
+  const navigate = useNavigate();
+
   const [locationDetails, setLocationDetails] = useState({
     houseName: "",
     locality: "",
@@ -21,12 +24,10 @@ const AddPropertyStep3: React.FC = () => {
 
     // Submit Form Data
     const handleSubmit = async () => {
-      console.log("property details aanu step 2 nn---------------------------------", locationDetails)
-
       try {
         const response = await sendPropertyLocation(locationDetails);
-        console.log("Property details submitted successfully:===========================", response.data);
-        message.success(response.data.message);
+        message.success(response?.data?.message);
+        navigate("/host/dashboard/properties/add-property-start/step-4")
       } catch (error) {
         console.error("Failed to submit property details:", error);
         message.error("Failed to submit property details")

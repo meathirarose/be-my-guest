@@ -1,6 +1,5 @@
 import express from "express";
 import { errorHandler, NotFoundError } from "@be-my-guest/common";
-import bodyParser from "body-parser";
 import userRoutes from "./routes/userRoutes";
 import propertyOwnerRoutes from "./routes/propertyOwnerRoutes";
 import cors from "cors";
@@ -10,8 +9,6 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
-
-app.use(express.json());
 
 // CORS Configuration
 const corsOptions = {
@@ -23,10 +20,7 @@ const corsOptions = {
 
 app.use(cookieParser());
 app.use(cors(corsOptions));
-
-// Middleware
-app.use(bodyParser.json());
-app.options('*', cors(corsOptions));  
+app.use(express.json());
 
 // Routes
 app.use("/api/users", userRoutes);
