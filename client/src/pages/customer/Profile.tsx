@@ -4,11 +4,12 @@ import { RootState } from "../../redux/store";
 import Header from "../../components/customer/Header";
 import Footer from "../../shared/components/layout/Footer";
 import Sidebar from "../../components/common/SideBar";
-import { updateProfile, uploadImageToCloudinary } from "../../api/userAuthApi";
+import { updateProfile } from "../../api/userAuthApi";
 import { updateUser } from "../../redux/user/userSlice";
 import { message } from "antd";
 import { Pencil } from "lucide-react";
 import InputField from "../../shared/components/ui/InputField";
+import { uploadMediaToCloudinary } from "../../api/cloudinaryApi";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -20,7 +21,9 @@ const Profile: React.FC = () => {
   const [editedEmail, setEditedEmail] = useState(userInfo?.email || "");
   const [editedCountry, setEditedCountry] = useState(userInfo?.country || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(userInfo?.profileImage || "");
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    userInfo?.profileImage || ""
+  );
   const [isUploading, setIsUploading] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -44,18 +47,31 @@ const Profile: React.FC = () => {
 
   const handleUpdateProfile = async () => {
     try {
+      setIsUploading(true);
+
       let imageurl = userInfo?.profileImage || "";
 
       if (selectedFile) {
-        const uploadedUrl = await uploadImageToCloudinary(selectedFile, undefined, undefined, setIsUploading);
+        const uploadedUrl = await uploadMediaToCloudinary(
+          selectedFile,
+          "be-my-guest/profile-images"
+        );
         if (uploadedUrl) imageurl = uploadedUrl;
       }
 
       await updateProfile(editedName, editedEmail, editedCountry, imageurl);
-      dispatch(updateUser({ name: editedName, country: editedCountry, profileImage: imageurl }));
+      dispatch(
+        updateUser({
+          name: editedName,
+          country: editedCountry,
+          profileImage: imageurl,
+        })
+      );
       message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
+    }finally {
+      setIsUploading(false);
     }
   };
 
@@ -76,7 +92,9 @@ const Profile: React.FC = () => {
 
         <main className="flex-1 bg-white p-8 rounded-lg shadow-md">
           <div className="mb-10">
-            <h3 className="text-2xl font-semibold text-gray-800">Your Profile</h3>
+            <h3 className="text-2xl font-semibold text-gray-800">
+              Your Profile
+            </h3>
           </div>
 
           <div className="flex flex-col items-start mb-2 ">
@@ -105,13 +123,14 @@ const Profile: React.FC = () => {
               onChange={handleImageChange}
               hidden={true}
             />
-          </div> 
-           
+          </div>
 
           {/* Profile Details Section */}
           <div className="space-y-2 items-center ml-5">
             <div className="flex items-center w-full">
-              <label className="w-1/3 text-gray-600 font-medium">Full Name</label>
+              <label className="w-1/3 text-gray-600 font-medium">
+                Full Name
+              </label>
               <div className="w-2/3">
                 <InputField
                   type="text"
@@ -123,7 +142,9 @@ const Profile: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2 mr-5 w-full">
-              <label className="w-1/3 text-gray-600 font-medium">Email Address</label>
+              <label className="w-1/3 text-gray-600 font-medium">
+                Email Address
+              </label>
               <div className="w-2/3">
                 <InputField
                   type="email"
@@ -148,7 +169,6 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
-
 
           {/* Buttons */}
           <div className="mt-8 flex justify-start space-x-6">
@@ -175,4 +195,3 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
-

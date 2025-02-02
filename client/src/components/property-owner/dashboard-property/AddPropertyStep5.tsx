@@ -38,9 +38,9 @@ const AddPropertyStep3: React.FC = () => {
             htmlFor="fileInput"
             className="cursor-pointer text-blue-500 hover:underline"
           >
-            Click to upload or drag and drop images/videos
+            Click to upload images/videos
           </label>
-          <p className="text-xs text-gray-500 mt-2">(PNG, JPG, MP4, and other media formats supported)</p>
+          <p className="text-xs text-gray-500 mt-2">(only PNG, JPG, MP4 media formats supported)</p>
         </div>
 
         {/* Preview Section */}
@@ -51,7 +51,7 @@ const AddPropertyStep3: React.FC = () => {
               {files.map((file, index) => (
                 <div key={index} className="relative border rounded p-2">
                   {file.type.startsWith("image") ? (
-                    <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-20 object-cover rounded" />
+                    <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-44 object-cover rounded" />
                   ) : (
                     <video controls className="w-full h-20 rounded">
                       <source src={URL.createObjectURL(file)} type={file.type} />

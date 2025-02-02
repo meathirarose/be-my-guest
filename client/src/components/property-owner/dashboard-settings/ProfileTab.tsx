@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 import { Pencil } from "lucide-react";
 import { RootState } from "../../../redux/store";
-import { updateProfile, uploadImageToCloudinary } from "../../../api/userAuthApi";
+import { updateProfile } from "../../../api/userAuthApi";
 import { updateUser } from "../../../redux/user/userSlice";
+import { uploadMediaToCloudinary } from "../../../api/cloudinaryApi";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -40,10 +41,11 @@ const Profile: React.FC = () => {
 
   const handleUpdateProfile = async () => {
     try {
+      setIsUploading(true);
       let imageurl = userInfo?.profileImage || "";
 
       if (selectedFile) {
-        const uploadedUrl = await uploadImageToCloudinary(selectedFile, undefined, undefined, setIsUploading);
+        const uploadedUrl = await uploadMediaToCloudinary(selectedFile, "be-my-guest/profile-images");
         if (uploadedUrl) imageurl = uploadedUrl;
       }
 
@@ -52,6 +54,8 @@ const Profile: React.FC = () => {
       message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
+    }finally {
+      setIsUploading(false);
     }
   };
 

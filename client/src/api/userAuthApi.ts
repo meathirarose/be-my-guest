@@ -214,12 +214,10 @@ export const uploadImageToCloudinary = async (
 
 export const fetchAllCustomers = async () => {
   try {
-    console.log("fetch customers il varanundo?---------------------------------------")
     const response = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-customers`,
       { withCredentials: true }
     );
-    console.log(response, "response kittanundo?-------------------------------------fetch all customers");
     return response.data;
   } catch (error) {
     console.error("Error during logout:", error);
