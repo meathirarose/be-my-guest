@@ -1,54 +1,54 @@
-import { message } from "antd";
-import React, { useState } from "react";
-import { sendRoomsAndSpaces } from "../../../api/listPropertyApi";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
-const AddPropertyStep4: React.FC = () => {
-  const navigate = useNavigate();
-  const [kitchenAvailable, setKitchenAvailable] = useState(false);
-  const [counts, setCounts] = useState<{ [key: string]: number }>({
-    "Bedrooms": 0,
-    "Bathrooms": 0,
-    "Living Room": 0,
-    "Lobby Lounge": 0,
-    "Helpers Room": 0,
-    "Swimming Pool": 0,
-    "Parking": 0,
-    "Drivers Room": 0,
-    "Terrace": 0,
-    "Garden": 0,
-    "Dining Area": 0,
-  });
+interface PropertyData {
+  bedrooms: number,
+  bathrooms: number,
+  livingRoom: number,
+  lobbyLounge: number,
+  helpersRoom: number,
+  swimmingPool: number,
+  parking: number, 
+  driversRoom: number,
+  terrace: number,
+  garden: number,
+  diningArea: number,
+  kitchenAvailable: boolean,
+}
 
-  const handleCountChange = (label: string, delta: number) => {
-    setCounts((prev) => ({ ...prev, [label]: Math.max(0, prev[label] + delta) }));
+interface Step4Props {
+  data: PropertyData;
+  onChange: (data: Partial<PropertyData>) => void;
+}
+
+const AddPropertyStep4: React.FC<Step4Props> = ({ data, onChange }) => {
+  const handleCountChange = (name: string, delta: number) => {
+    const currentValue = data[name as keyof typeof data] as number;
+    onChange({ [name]: Math.max(0, currentValue + delta) });
   };
 
-  const handleSubmit = async () => {
-    try {
-      const roomsAndSpaces = {
-        bedrooms: counts["Bedrooms"],
-        bathrooms: counts["Bathrooms"],
-        livingRoom: counts["Living Room"],
-        lobbyLounge: counts["Lobby Lounge"],
-        helpersRoom: counts["Helpers Room"],
-        swimmingPool: counts["Swimming Pool"],
-        parking: counts["Parking"],
-        driversRoom: counts["Drivers Room"],
-        terrace: counts["Terrace"],
-        garden: counts["Garden"],
-        diningArea: counts["Dining Area"],
-        kitchenAvailable,
-      };
-
-      const response = await sendRoomsAndSpaces(roomsAndSpaces);
-      message.success(response?.data?.message);
-      navigate("/host/dashboard/properties/add-property-start/step-5")
-    } catch (error) {
-      console.error("Error sending information about rooms and spaces:", error);
-      message.error("Failed to add rooms & spaces.")
-    }
+  const handleKitchenChange = (value: boolean) => {
+    onChange({ kitchenAvailable: value });
   }
+
+  const roomTypes = [
+    "bedrooms",
+    "bathrooms",
+    "livingRoom",
+    "lobbyLounge",
+    "helpersRoom",
+    "swimmingPool",
+    "parking",
+    "driversRoom",
+    "terrace",
+    "garden",
+    "diningArea"
+  ];
+
+  const formatLabel = (key: string) => {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase());
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -58,19 +58,21 @@ const AddPropertyStep4: React.FC = () => {
           Please add all the rooms & spaces of your property.
         </p>
 
-        {Object.keys(counts).slice(0, 2).map((label) => (
-          <div key={label} className="flex justify-between items-center py-2 border-b border-gray-200">
-            <span className="text-gray-700">{label}</span>
+        {roomTypes.slice(0, 2).map((roomType) => (
+          <div key={roomType} className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-gray-700">{formatLabel(roomType)}</span>
             <div className="flex items-center">
               <button
-                onClick={() => handleCountChange(label, -1)}
+                onClick={() => handleCountChange(roomType, -1)}
                 className="px-3 py-1 border rounded-l bg-gray-100"
               >
                 -
               </button>
-              <span className="px-4 py-1 border-t border-b">{counts[label].toString().padStart(2, '0')}</span>
+              <span className="px-4 py-1 border-t border-b">
+              {data[roomType as keyof typeof data].toString().padStart(2, '0')}
+              </span>
               <button
-                onClick={() => handleCountChange(label, 1)}
+                onClick={() => handleCountChange(roomType, 1)}
                 className="px-3 py-1 border rounded-r bg-gray-100"
               >
                 +
@@ -83,14 +85,14 @@ const AddPropertyStep4: React.FC = () => {
           <span className="text-gray-700">Kitchen</span>
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => setKitchenAvailable(false)}
-              className={`px-4 py-1 border rounded ${!kitchenAvailable ? "bg-gray-200" : "bg-white"}`}
+              onClick={() => handleKitchenChange(false)}
+              className={`px-4 py-1 border rounded ${!data.kitchenAvailable ? "bg-gray-200" : "bg-white"}`}
             >
               No
             </button>
             <button
-              onClick={() => setKitchenAvailable(true)}
-              className={`px-4 py-1 border rounded ${kitchenAvailable ? "bg-gray-200" : "bg-white"}`}
+              onClick={() => handleKitchenChange(true)}
+              className={`px-4 py-1 border rounded ${data.kitchenAvailable ? "bg-gray-200" : "bg-white"}`}
             >
               Yes
             </button>
@@ -104,19 +106,21 @@ const AddPropertyStep4: React.FC = () => {
           Add the other spaces available in your property (Excluding bedrooms & bathrooms)
         </p>
         <div className="divide-y">
-          {Object.keys(counts).slice(2).map((label) => (
-            <div key={label} className="flex justify-between items-center py-2 border-b border-gray-200">
-              <span className="text-gray-700">{label}</span>
+          {roomTypes.slice(2).map((roomType) => (
+            <div key={roomType} className="flex justify-between items-center py-2 border-b border-gray-200">
+              <span className="text-gray-700">{formatLabel(roomType)}</span>
               <div className="flex items-center">
                 <button
-                  onClick={() => handleCountChange(label, -1)}
+                  onClick={() => handleCountChange(roomType, -1)}
                   className="px-3 py-1 border rounded-l bg-gray-100"
                 >
                   -
                 </button>
-                <span className="px-4 py-1 border-t border-b">{counts[label].toString().padStart(2, '0')}</span>
+                <span className="px-4 py-1 border-t border-b">
+                  {data[roomType as keyof typeof data].toString().padStart(2, '0')}
+                </span>
                 <button
-                  onClick={() => handleCountChange(label, 1)}
+                  onClick={() => handleCountChange(roomType, 1)}
                   className="px-3 py-1 border rounded-r bg-gray-100"
                 >
                   +
@@ -125,14 +129,7 @@ const AddPropertyStep4: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-xl"
-          >
-            Save Changes
-          </button>
-        </div>
+        
       </div>
     </div>
   );

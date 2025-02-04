@@ -1,36 +1,87 @@
-import axios from "axios";
+interface Step5Props {
+  files: File[];
+  onChange: (files: File[]) => void;
+}
 
-export const uploadMediaToCloudinary = async (
-  selectedFile: File,
-  folder: string, 
-  uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "DEFAULT_PRESET",
-  cloudName = import.meta.env.VITE_CLOUDINARY_NAME,
-  setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>
-): Promise<string | null> => {
-  if (!selectedFile) {
-    console.error("No file selected or uploaded");
-    return null;
-  }
+const AddPropertyStep5: React.FC<Step5Props> = ({ files, onChange }) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      onChange([...files, ...Array.from(event.target.files)]);
+    }
+  };
 
-  const formData = new FormData();
-  formData.append("file", selectedFile);
-  formData.append("upload_preset", uploadPreset);
-  formData.append("folder", folder);
+  const handleRemoveFile = (index: number) => {
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    onChange(newFiles);
+  };
 
-  const isImage = selectedFile.type.startsWith("image");
-  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${isImage ? "image" : "video"}/upload`;
+  return (
+    <div className="max-w-3xl mx-auto p-6">
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-4 border border-gray-400">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-800">
+            Upload Photos and Videos
+          </h2>
+          <p className="text-xs text-gray-600">
+            Adding high-quality photos to your listing can make a big difference. Properties with good images <br/> 
+            are likely to get more clicks from users interested in booking a property.
+          </p>
+          <div className="border-b border-gray-200 my-4"></div>
+        </div>
 
-  try {
-    if (setIsUploading) setIsUploading(true);
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <input
+            type="file"
+            multiple
+            accept="image/*,video/*"
+            className="hidden"
+            id="fileInput"
+            onChange={handleFileUpload}
+          />
+          <label
+            htmlFor="fileInput"
+            className="cursor-pointer text-blue-500 hover:underline"
+          >
+            Click to upload images/videos
+          </label>
+          <p className="text-xs text-gray-500 mt-2">
+            (only PNG, JPG, MP4 media formats supported)
+          </p>
+        </div>
 
-    const response = await axios.post(uploadUrl, formData);
-    return response.data.secure_url;
-  } catch (error) {
-    console.error("Error uploading media to Cloudinary:", error);
-    return null;
-  } finally {
-    if (setIsUploading) setIsUploading(false);
-  }
+        {files.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-semibold">Uploaded Files</h3>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {files.map((file, index) => (
+                <div key={index} className="relative border rounded p-2">
+                  {file.type.startsWith("image") ? (
+                    <img 
+                      src={URL.createObjectURL(file)} 
+                      alt="Preview" 
+                      className="w-full h-44 object-cover rounded" 
+                    />
+                  ) : (
+                    <video controls className="w-full h-20 rounded">
+                      <source src={URL.createObjectURL(file)} type={file.type} />
+                    </video>
+                  )}
+                  <button
+                    onClick={() => handleRemoveFile(index)}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                  <p className="text-xs text-center mt-1">{file.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
-
+export default AddPropertyStep5;

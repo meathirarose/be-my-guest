@@ -1,38 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import InputField from "../../../shared/components/ui/InputField";
-import { sendPropertyLocation } from "../../../api/listPropertyApi";
-import { message } from "antd";
-import { useNavigate } from "react-router-dom";
 
-const AddPropertyStep3: React.FC = () => {
-  const navigate = useNavigate();
+interface PropertyData {
+  houseName: string,
+  locality: string,
+  pincode: string, 
+  country: string,
+  state: string, 
+  city: string,
+}
 
-  const [locationDetails, setLocationDetails] = useState({
-    houseName: "",
-    locality: "",
-    pincode: "",
-    country: "",
-    state: "",
-    city: "",
-  });
+interface Step3Props {
+  data: PropertyData;
+  onChange: (data: Partial<PropertyData>) => void;
+}
 
+const AddPropertyStep3: React.FC<Step3Props> = ({ data, onChange }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLocationDetails((prev) => ({ ...prev, [name]: value }));
+    onChange(({ [name]: value }));
   };
-
-    // Submit Form Data
-    const handleSubmit = async () => {
-      try {
-        const response = await sendPropertyLocation(locationDetails);
-        message.success(response?.data?.message);
-        navigate("/host/dashboard/properties/add-property-start/step-4")
-      } catch (error) {
-        console.error("Failed to submit property details:", error);
-        message.error("Failed to submit property details")
-      }
-    };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -58,7 +46,7 @@ const AddPropertyStep3: React.FC = () => {
             type="text"
             name="houseName"
             placeholder="Please add details"
-            value={locationDetails.houseName}
+            value={data.houseName}
             onChange={handleInputChange}
           />
         </div>
@@ -73,7 +61,7 @@ const AddPropertyStep3: React.FC = () => {
             type="text"
             name="locality"
             placeholder="Enter property name"
-            value={locationDetails.locality}
+            value={data.locality}
             onChange={handleInputChange}
           />
         </div>
@@ -88,14 +76,14 @@ const AddPropertyStep3: React.FC = () => {
               type="text"
               name="pincode"
               placeholder="Enter Pincode"
-              value={locationDetails.pincode}
+              value={data.pincode}
               onChange={handleInputChange}
             />
             <InputField
               type="text"
               name="country"
               placeholder="Enter Country"
-              value={locationDetails.country}
+              value={data.country}
               onChange={handleInputChange}
             />
           </div>
@@ -111,7 +99,7 @@ const AddPropertyStep3: React.FC = () => {
             type="text"
             name="state"
             placeholder="Enter property name"
-            value={locationDetails.state}
+            value={data.state}
             onChange={handleInputChange}
           />
         </div>
@@ -125,19 +113,11 @@ const AddPropertyStep3: React.FC = () => {
             type="text"
             name="city"
             placeholder="Enter property name"
-            value={locationDetails.city}
+            value={data.city}
             onChange={handleInputChange}
           />
         </div>
-        {/* 🟢 Submit Button */}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-xl"
-          >
-            Save Changes
-          </button>
-        </div>
+        
       </div>
     </div>
   );
