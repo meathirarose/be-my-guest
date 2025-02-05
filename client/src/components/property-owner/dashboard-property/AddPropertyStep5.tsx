@@ -3,72 +3,72 @@ import { uploadMediaToCloudinary } from '../../../api/cloudinaryApi';
 import { Spin, message } from 'antd'; 
 
 interface Step5Props {
-  data: File[];
-  onChange: (files: File[]) => void;
+  data: string[]; 
+  onChange: (urls: string[]) => void; 
 }
 
 interface UploadedFile {
   file: File;
-  url?: string;
+  url: string;
+  type:string;
   uploading: boolean;
   error?: string;
 }
 
-const AddPropertyStep5: React.FC<Step5Props> = ({ data, onChange }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(
-    data.map(file => ({ file, uploading: false }))
-  );
-
+const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
       const newUploadedFiles: UploadedFile[] = files.map(file => ({
         file,
-        uploading: false
+        url: '', 
+        uploading: true,
+        type:""
       }));
 
       setUploadedFiles(prev => [...prev, ...newUploadedFiles]);
-
+      
       // Upload each file to Cloudinary
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileIndex = uploadedFiles.length + i;
 
-        setUploadedFiles(prev => prev.map((f, index) => 
-          index === fileIndex ? { ...f, uploading: true } : f
-        ));
-
         try {
           const cloudinaryUrl = await uploadMediaToCloudinary(
             file,
             'property-listings',
-            undefined,
-            undefined,
-            undefined
           );
-
+          
           if (cloudinaryUrl) {
-            setUploadedFiles(prev => prev.map((f, index) => 
-              index === fileIndex ? { 
-                ...f, 
-                uploading: false, 
-                url: cloudinaryUrl 
-              } : f
-            ));
-
-            // Update parent component with successful uploads
-            const successfulFiles = uploadedFiles.filter(f => f.url).map(f => f.file);
-            onChange([...successfulFiles, file]);
+            setUploadedFiles(prev => {
+              const updated = prev.map((f, index) => 
+                index === fileIndex ? { 
+                  ...f, 
+                  uploading: false, 
+                  url: cloudinaryUrl.secure_url,
+                  type:cloudinaryUrl.resource_type
+                  
+                } : f
+              );
+              // Get all URLs and notify parent
+              const allUrls = updated.filter(f => f.url && !f.error).map(f => f.url);
+              onChange(allUrls);
+              return updated;
+            });
+            
           } else {
             throw new Error('Upload failed');
           }
         } catch (error) {
-          console.log(error, "An error occured during upload!")
+          console.error("Upload error:", error);
           setUploadedFiles(prev => prev.map((f, index) => 
             index === fileIndex ? { 
               ...f, 
               uploading: false, 
-              error: 'Upload failed' 
+              error: 'Upload failed',
+              url: '' 
             } : f
           ));
           message.error(`Failed to upload ${file.name}`);
@@ -76,13 +76,16 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data, onChange }) => {
       }
     }
   };
-
+  
   const handleRemoveFile = (index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    const remainingFiles = uploadedFiles
-      .filter((_, i) => i !== index)
-      .map(f => f.file);
-    onChange(remainingFiles);
+    setUploadedFiles(prev => {
+      const newFiles = prev.filter((_, i) => i !== index);
+      const urls = newFiles
+        .filter(f => f.url && !f.error)
+        .map(f => f.url);
+      onChange(urls);
+      return newFiles;
+    });
   };
 
   return (
@@ -133,7 +136,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data, onChange }) => {
                     <div className="w-full h-44 flex items-center justify-center bg-red-50 text-red-500">
                       Upload Failed
                     </div>
-                  ) : uploadedFile.file.type.startsWith("image") ? (
+                  ) : uploadedFile.type == "image" ? (
                     <img 
                       src={uploadedFile.url || URL.createObjectURL(uploadedFile.file)} 
                       alt="Preview" 

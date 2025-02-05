@@ -1,40 +1,18 @@
-import { Document, Model, FilterQuery, UpdateQuery, RootFilterQuery } from "mongoose";
-import { IBaseRepository } from "../interface/IBaseRepository";
+import { Model, Document } from "mongoose";
 
-export class BaseRepository<T extends Document> implements IBaseRepository<T> {
-    protected model: Model<T>;
+export class BaseRepository<T extends Document> {
+  private model: Model<T>;
 
-    constructor(model: Model<T>) {
-        this.model = model;
-    }
+  constructor(model: Model<T>) {
+    this.model = model;
+  }
 
-    async save(item: Partial<T>): Promise<T> {
-        const newItem = new this.model(item);
-        return await newItem.save();
-    }
+  async create(data: Partial<T>): Promise<T> {
+    const newDocument = new this.model(data);
+    return await newDocument.save();
+  }
 
-    async findOne(query: FilterQuery<T>): Promise<T | null> {
-        return await this.model.findOne(query);
-    }
-
-    async findById(id: string): Promise<T | null> {
-        return await this.model.findById(id);
-    }
-
-    async findAll(filter: FilterQuery<T> = {}): Promise<T[]> {
-        return await this.model.find(filter);
-    }
-
-    async findByCriteria(criteria: Partial<T>): Promise<T | null> {
-        return await this.model.findOne(criteria as RootFilterQuery<T>);
-      }
-      
-
-    async update(filter: FilterQuery<T>, item: UpdateQuery<T>): Promise<T | null> {
-        return await this.model.findOneAndUpdate(filter, item, { new: true });
-    }
-
-    async delete(id: string): Promise<T | null> {
-        return await this.model.findByIdAndDelete(id);
-    }
+  async findAllProperties(): Promise<T[] | null> {
+    return await this.model.find().exec(); 
+  }
 }

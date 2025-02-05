@@ -7,7 +7,8 @@ export const uploadMediaToCloudinary = async (
     "DEFAULT_PRESET",
   cloudName = import.meta.env.VITE_CLOUDINARY_NAME,
   setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>
-): Promise<string | null> => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any | null> => {
   if (!selectedFile) {
     console.error("No file selected or uploaded");
     return null;
@@ -27,7 +28,7 @@ export const uploadMediaToCloudinary = async (
     if(setIsUploading) setIsUploading(true);
 
     const response = await axios.post(uploadUrl, formData);
-    return response.data.secure_url;
+    return response.data
     
   } catch (error) {
     console.error("Error uploading media to Cloudinary:", error);

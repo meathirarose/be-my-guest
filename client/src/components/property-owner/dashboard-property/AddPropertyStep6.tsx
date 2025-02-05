@@ -7,13 +7,12 @@ interface PropertyData {
 }
 
 interface Step6Props {
-  data: PropertyData,
+  data: PropertyData;
   onChange: (data: Partial<PropertyData>) => void;
 }
 
-const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange}) => {
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     onChange({ [name]: value });
   };
@@ -27,7 +26,7 @@ const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange}) => {
             Property Pricing and Availability
           </h2>
           <p className="text-sm text-gray-600">
-            Please provide the pricing details and availability of your property
+            Please provide the pricing details and availability of your property.
           </p>
           <div className="border-b border-gray-200 my-4"></div>
         </div>
@@ -46,18 +45,22 @@ const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange}) => {
           />
         </div>
 
-        {/* Availability */}
+        {/* Availability Dropdown */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Availability (e.g. Available, Booked, Not Available)
+            Availability Status
           </label>
-          <InputField
-            type="text"
+          <select
             name="availability"
-            placeholder="Enter availability status"
             value={data.availability}
             onChange={handleInputChange}
-          />
+            className="w-full p-2 border rounded-md focus:ring focus:ring-indigo-200"
+          >
+            <option value="">Select availability</option>
+            <option value="Available">Available</option>
+            <option value="Booked">Booked</option>
+            <option value="Not Available">Not Available</option>
+          </select>
         </div>
       </div>
     </div>

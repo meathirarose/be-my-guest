@@ -1,6 +1,6 @@
 import axios from "axios";
 
-interface PropertyDetails {
+interface PropertyBasicInfo {
   propertyName: string;
   buildYear: string;
   liveAtProperty: boolean;
@@ -9,7 +9,7 @@ interface PropertyDetails {
   contactLandline: string;
 }
 
-interface LocationDetails {
+interface PropertyLocation {
   houseName: string;
   locality: string;
   pincode: string;
@@ -33,21 +33,36 @@ interface RoomsAndSpaces {
   kitchenAvailable: boolean;
 }
 
-export const sendPropertyBasicInfo = async (
-  propertyDetails: PropertyDetails
-) => {
+interface PropertyPricing {
+  price: string;
+  availability: string;
+}
+
+interface PropertyFormData {
+  basicInfo: PropertyBasicInfo;
+  location: PropertyLocation;
+  roomsAndSpaces: RoomsAndSpaces;
+  mediaUrls: string[];
+  pricing: PropertyPricing;
+}
+
+export const listProperty = async (propertyData: PropertyFormData) => {
   try {
     const response = await axios.post(
-      `${
-        import.meta.env.VITE_BASE_URL
-      }/property-service/api/basic-info/add-basic-info`,
-      propertyDetails,
-      { withCredentials: true }
+      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/list-property`,
+      propertyData, 
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
+    
     if (response.status === 200) {
-      console.log(response.data, "Success!");
+      console.log('Property listed successfully:', response.data);
     } else {
-      console.error("Error from backend", response);
+      console.error('Error from backend:', response);
     }
     return response;
   } catch (error) {
@@ -56,40 +71,17 @@ export const sendPropertyBasicInfo = async (
   }
 };
 
-export const sendPropertyLocation = async (
-  locationDetails: LocationDetails
-) => {
+export const fetchAllProperties = async () => {
   try {
-    const response = await axios.post(
-      `${
-        import.meta.env.VITE_BASE_URL
-      }/property-service/api/location-details/add-location-details`,
-      locationDetails,
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/fetch-properties`,
       { withCredentials: true }
     );
+    console.log("response from the list property api===================================>", response);
     return response;
   } catch (error) {
-    console.error("Error sending location details:", error);
+    console.error("Error getting property details:", error);
     throw error;
   }
-};
-
-export const sendRoomsAndSpaces = async (
-  roomsAndSpaces: RoomsAndSpaces
-
-) => {
-  try {
-    const response = await axios.post(
-      `${
-        import.meta.env.VITE_BASE_URL
-      }/property-service/api/rooms-spaces/add-rooms-spaces`,
-      roomsAndSpaces,
-      { withCredentials: true }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error sending information about rooms and spaces :", error);
-    throw error;
-  }
-};
+}
 

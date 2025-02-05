@@ -1,7 +1,5 @@
-import { message } from "antd";
 import React from "react";
 
-// Define interfaces for the form data structure
 interface PropertyBasicInfo {
   propertyName: string;
   buildYear: string;
@@ -44,7 +42,7 @@ interface PropertyFormData {
   basicInfo: PropertyBasicInfo;
   location: PropertyLocation;
   roomsAndSpaces: RoomsAndSpaces;
-  media: File[];
+  mediaUrls: string[];
   pricing: PropertyPricing;
 }
 
@@ -57,10 +55,9 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
   const handlePublish = async () => {
     try {
       await onChange();
-      message.success("Property published successfully!")
+      console.log("property published successfully from the last step");
     } catch (error) {
       console.error('Error publishing property:', error);
-      message.error('Failed to publish property');
     }
   };
 
@@ -154,7 +151,7 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
           <h3 className="text-sm font-medium text-gray-700">Media Files</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Number of files: </strong> {data.media.length}
+              <strong>Number of files: </strong> {data.mediaUrls.length}
             </div>
           </div>
         </div>

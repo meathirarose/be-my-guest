@@ -1,6 +1,5 @@
 import axios from "axios";
 import axiosInstance from "./axiosInterceptor";
-import { message } from "antd";
 
 // user signin
 export const signInUser = async (email: string, password: string) => {
@@ -177,41 +176,6 @@ export const updateProfile = async (name: string, email: string, country: string
   }
 }
 
-export const uploadImageToCloudinary = async (
-  selectedFile: File,
-  uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET as string || "EMPLOYEE_PHOTO",
-  cloudName = import.meta.env.VITE_CLOUDINARY_NAME,
-  setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>,
-  folder = "be-my-guest/profile-images" 
-): Promise<string | null> => {
-  if (!selectedFile) {
-    message.error("No file selected or uploaded");
-    return null;
-  }
-
-  const formData = new FormData();
-  formData.append("file", selectedFile);
-  formData.append("upload_preset", uploadPreset);
-  formData.append("folder", folder); 
-
-  try {
-    if (setIsUploading) setIsUploading(true);
-
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      formData
-    );
-
-    return response.data.secure_url;
-  } catch (error) {
-    console.error("Error uploading image to Cloudinary:", error);
-    return null;
-  } finally {
-    if (setIsUploading) setIsUploading(false);
-  }
-};
-
-
 export const fetchAllCustomers = async () => {
   try {
     const response = await axios.get(
@@ -227,7 +191,7 @@ export const fetchAllCustomers = async () => {
 
 export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
   try {
-    const response =  await axios.patch(
+    const response =  await axiosInstance.patch(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/${userId}/update-status`, 
       { isBlocked },
       { withCredentials: true }

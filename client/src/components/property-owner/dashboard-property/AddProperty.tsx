@@ -8,6 +8,7 @@ import AddPropertyStep4 from "./AddPropertyStep4";
 import AddPropertyStep5 from "./AddPropertyStep5";
 import AddPropertyStep6 from "./AddPropertyStep6";
 import AddPropertyStep7 from "./AddPropertyStep7";
+import { listProperty } from "../../../api/listPropertyApi";
 
 const { TabPane } = Tabs;
 
@@ -53,7 +54,7 @@ interface PropertyFormData {
   basicInfo: PropertyBasicInfo,
   location: PropertyLocation,
   roomsAndSpaces: RoomsAndSpaces,
-  media: File[],
+  mediaUrls: string[], 
   pricing: PropertyPricing,
 }
 
@@ -93,7 +94,7 @@ const AddPropertyPage: React.FC = () => {
       diningArea: 0,
       kitchenAvailable: false,
     },
-    media: [],
+    mediaUrls: [],
     pricing: {
       price: "",
       availability: "",
@@ -141,10 +142,10 @@ const AddPropertyPage: React.FC = () => {
     }));
   };
 
-  const updateMedia = (files: File[]) => {
+  const updateMedia = (urls: string[]) => { 
     setFormData(prev => ({
       ...prev,
-      media: files,
+      mediaUrls: urls, 
     }));
   };
 
@@ -157,28 +158,13 @@ const AddPropertyPage: React.FC = () => {
 
   const handleFinalSubmit = async () => {
     try {
-      const submitData = new FormData();
 
-      submitData.append('basicInfo', JSON.stringify(formData.basicInfo));
-      submitData.append('location', JSON.stringify(formData.location));
-      submitData.append('roomsAndSpaces', JSON.stringify(formData.roomsAndSpaces));
-      submitData.append('pricing', JSON.stringify(formData.pricing));
+      const response = await listProperty(formData);
 
-      formData.media.forEach((file, index) => {
-        submitData.append(`media_${index}`, file);
-      });
-
-      const response = await fetch('/api/property/list-property', {
-        method: 'POST',
-        body: submitData,
-    });
-
-    if( response.ok){
-      message.success('Property listed successfully');
-      navigate('/host/dashboard/properties');
-    }else{
-      throw new Error('Failed to submit property');
-    }
+      if( response.status === 200){
+        message.success('Property listed successfully');
+        navigate('/host/dashboard/properties');
+      }
     } catch (error) {
       console.error('Error submitting property:', error);
       message.error('Failed to submit property');
@@ -234,8 +220,8 @@ const AddPropertyPage: React.FC = () => {
                   {step.id === 1 && <AddPropertyStep1 />}
                   {step.id === 2 && (<AddPropertyStep2 data={formData.basicInfo} onChange={updateBasicInfo}/>)}                  
                   {step.id === 3 && (<AddPropertyStep3 data={formData.location} onChange={updateLocation}/>)}                  
-                  {step.id === 5 && (<AddPropertyStep4 data={formData.roomsAndSpaces} onChange={updateRoomsAndSpaces}/>)}                  
-                  {step.id === 4 && (<AddPropertyStep5 data={formData.media} onChange={updateMedia}/>)}                  
+                  {step.id === 4 && (<AddPropertyStep4 data={formData.roomsAndSpaces} onChange={updateRoomsAndSpaces}/>)}                  
+                  {step.id === 5 && (<AddPropertyStep5 data={formData.mediaUrls} onChange={updateMedia}/>)}                  
                   {step.id === 6 && (<AddPropertyStep6 data={formData.pricing} onChange={updatePricing}/>)}                  
                   {step.id === 7 && (<AddPropertyStep7 data={formData} onChange={handleFinalSubmit}/>)}                  
                 </>

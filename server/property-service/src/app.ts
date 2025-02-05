@@ -3,9 +3,7 @@ import { errorHandler, NotFoundError } from "@be-my-guest/common";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import basicInfoRoutes from "./routes/basicInfoRoutes";
-import locationDetailsRoutes from "./routes/locationDetailsRoutes";
-import roomsAndSpacesRouetes from "./routes/roomsAndSpacesRoutes"
+import propertyRoutes from "./routes/propertyRoutes";
 
 dotenv.config();
 
@@ -23,9 +21,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json()); 
 
-app.use("/api/basic-info",basicInfoRoutes);
-app.use("/api/location-details",locationDetailsRoutes);
-app.use("/api/rooms-spaces", roomsAndSpacesRouetes);
+app.use("/api/properties", propertyRoutes);
 
 app.all("*", () => {
   throw new NotFoundError(
