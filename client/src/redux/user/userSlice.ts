@@ -6,6 +6,7 @@ interface User {
   role: "customer" | "property-owner" | "admin";
   country?: string;
   profileImage?: string;
+  isBlocked: boolean;
 }
 
 interface UserState {
@@ -51,9 +52,14 @@ const userSlice = createSlice({
         state.user.country = action.payload.country;
         state.user.profileImage = action.payload.profileImage;
       }
+    },
+    userStatus(state, action: PayloadAction<{isBlocked: boolean}>) {
+      if(state.user){
+        state.user.isBlocked = action.payload.isBlocked;
+      }
     }
   },
 });
 
-export const { login, logout, loginHost, updateUser } = userSlice.actions;
+export const { login, logout, loginHost, updateUser, userStatus } = userSlice.actions;
 export default userSlice.reducer;

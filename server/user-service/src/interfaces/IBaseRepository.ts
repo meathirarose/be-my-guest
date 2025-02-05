@@ -7,4 +7,5 @@ export interface IBaseRepository<T> {
     findOne(query: FilterQuery<T>): Promise<T | null>;  
     update(query: FilterQuery<T>, item: Partial<T>): Promise<T | null>;  
     delete(id: string): Promise<T | null>;  
+    findByIdAndUpdate(id: string, updateData: Partial<T>): Promise<T | null>;
 }

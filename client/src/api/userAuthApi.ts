@@ -220,7 +220,21 @@ export const fetchAllCustomers = async () => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error during logout:", error);
+    console.error("Error during fetching all customers:", error);
+    throw error;
+  }
+}
+
+export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
+  try {
+    const response =  await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/${userId}/update-status`, 
+      { isBlocked },
+      { withCredentials: true }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during updating the user status:", error);
     throw error;
   }
 }

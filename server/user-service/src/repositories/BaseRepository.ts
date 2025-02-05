@@ -24,6 +24,11 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
         return await this.model.findById(id);
     }
 
+    // Find document by ID and update
+    async findByIdAndUpdate(id: string, updateData: Partial<T>): Promise<T | null> {
+        return await this.model.findByIdAndUpdate(id, updateData, { new: true });
+    }
+
     // Find all documents
     async findAll(filter: FilterQuery<T> = {}): Promise<T[]> {
         return await this.model.find(filter);

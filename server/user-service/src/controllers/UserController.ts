@@ -66,7 +66,6 @@ export class UserController implements IUserController{
 
     public signInUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
@@ -85,9 +84,9 @@ export class UserController implements IUserController{
 
             const user = await this.userService.signInUser(email, password);
                 
-            if (!user) {
-                throw new NotFoundError("User not found!");
-            }
+            if (!user) throw new NotFoundError("User not found!");
+
+            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
             
             const token = AuthService.generateToken( { 
                 id: user.id, 
@@ -134,15 +133,11 @@ export class UserController implements IUserController{
         try {
             const { refreshToken } = req.cookies;
 
-            if (!refreshToken) {
-                throw new NotFoundError("Refresh token is missing!");
-            }
+            if (!refreshToken) throw new NotFoundError("Refresh token is missing!");
 
             const decoded = AuthService.verifyRefreshToken(refreshToken);
 
-            if (!decoded) {
-                throw new BadRequestError("Invalid refresh token!");
-            }
+            if (!decoded) throw new BadRequestError("Invalid refresh token!");
 
             // Generate new access token
             const newAccessToken = AuthService.generateToken({ 
@@ -172,24 +167,23 @@ export class UserController implements IUserController{
         try {
             const { idToken } = req.body;
     
-            if (!idToken) {
-                throw new NotFoundError("idToken is required!");
-            }
+            if (!idToken) throw new NotFoundError("idToken is required!");
     
             // Verify the Google token
             const payload = await verifyGoogleToken(idToken);
-            if (!payload) {
-                throw new BadRequestError("Invalid Google token!");
-            }
+            
+            if (!payload) throw new BadRequestError("Invalid Google token!");
     
             const { name = "", email, sub: googleId, picture = "" } = payload;
     
-            if (!email || !googleId) {
-                throw new NotFoundError("Google token is missing essential information!");
-            }
+            if (!email || !googleId)  throw new NotFoundError("Google token is missing essential information!");
     
             // Check if the user exists or create a new one
             const user = await this.userService.googleLogin(name, email, googleId, picture);
+
+            if (!user) throw new NotFoundError("User not found!");
+
+            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
     
             // Generate tokens
             const token = AuthService.generateToken({
@@ -289,9 +283,9 @@ export class UserController implements IUserController{
 
             const user = await this.userService.updateProfile(name, email, country, profileImage);
 
-            if(!user) {
-                throw new NotFoundError("User not found")
-            }
+            if (!user) throw new NotFoundError("User not found!");
+
+            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
 
             return res.status(200).json({ message: "Profile updated successfully!", user });
 
@@ -312,6 +306,29 @@ export class UserController implements IUserController{
 
         } catch (error) {
             next(error)
+        }
+    }
+
+    public updateUserStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { isBlocked } = req.body;
+            const { userId } = req.params;
+
+            if(typeof isBlocked !== "boolean") {
+                res.status(400).json({ message: "Invalid status value. Must be boolean." });
+                return;
+            }
+
+            const updatedUser = await this.userService.updateUserStatus(userId, isBlocked);
+            if (!updatedUser) {
+                res.status(404).json({ message: "User not found" });
+                return;
+              }
+        
+              res.status(200).json({ message: "User status updated successfully", user: updatedUser });
+
+        } catch (error) {
+            next(error);
         }
     }
 

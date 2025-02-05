@@ -69,6 +69,13 @@ router.get(
   userController.fetchAllCustomers as RequestHandler
 )
 
+router.patch(
+  "/:userId/update-status",
+  currentUser, 
+  requireAuth,
+  userController.updateUserStatus as RequestHandler
+)
+
 router.post(
   "/logout-customer",
   currentUser,   

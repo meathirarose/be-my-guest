@@ -9,4 +9,5 @@ export interface IUserService {
     googleLogin(email: string, name: string, googleId: string, picture?: string): Promise<IUserDoc>;
     fetchAllCustomers(): Promise<IUserDoc[] | null>;
     updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc>;
+    updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null>;
 }

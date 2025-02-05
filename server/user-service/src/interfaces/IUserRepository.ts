@@ -8,4 +8,5 @@ export interface IUserRepository {
     fetchAllCustomers(role: string): Promise<IUserDoc[]>;
     fetchAllPropertyOwners(role: string): Promise<IUserDoc[]>;
     update(filter: FilterQuery<IUserDoc>, update: Partial<IUserDoc>, options?: QueryOptions): Promise<IUserDoc | null>;
+    updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null>;
 }

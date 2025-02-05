@@ -194,10 +194,18 @@ export class UserService implements IUserService {
       return customers;
 
     } catch (error) {
-      console.error("Error in verifyEmail service:", error);
+      console.error("Error in fetching all customers:", error);
       throw error;
     }
   }
 
+  async updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null> {
+    try {
+      return await this.userRepository.updateUserStatus(userId, isBlocked);
+    } catch (error) {
+      console.error("Error in updating the user status :", error);
+      throw error;
+    }
+  }
 
 }

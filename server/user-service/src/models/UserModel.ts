@@ -37,6 +37,10 @@ const userSchema: Schema = new Schema<IUserDoc>({
     },
     profileImage: {
         type: String,
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false,
     }
 }, {
     toJSON: {

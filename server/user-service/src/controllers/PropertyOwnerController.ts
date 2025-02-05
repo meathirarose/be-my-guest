@@ -57,9 +57,9 @@ export class PropertyOwnerController implements IPropertyOwnerController{
     
             const user = await this.propertyOwnerService.signInPropertyOwner(email, password);
     
-            if (!user) {
-                throw new BadRequestError("User not found!");
-            }
+            if (!user) throw new NotFoundError("User not found!");
+
+            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
     
             // If user is found, generate the token
             const token = AuthService.generateToken({

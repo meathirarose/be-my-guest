@@ -37,4 +37,8 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
     ): Promise<IUserDoc | null> {
         return this.model.findOneAndUpdate(filter, update, { new: true });
     }
+
+    async updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null> {
+        return await this.findByIdAndUpdate(userId, { isBlocked });
+    }
 }

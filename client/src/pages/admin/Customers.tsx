@@ -1,29 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Table, Avatar } from "antd";
+import { Table, Switch, message } from "antd";
+import { Avatar } from "antd";
 import Header from "../../components/common/Header";
 import Sidebar from "../../components/common/SideBar";
-import { fetchAllCustomers } from "../../api/userAuthApi";
+import { fetchAllCustomers, updateUserStatus } from "../../api/userAuthApi";
+import { useDispatch } from "react-redux";
+import { userStatus } from "../../redux/user/userSlice";
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  country: string;
+  profileImage?: string;
+  isBlocked: boolean;
+}
 
 const Customers: React.FC = () => {
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCustomersData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchAllCustomers();
-        console.log(response, "response from the customers page----------------------")
-        setCustomers(response.data);
-      } catch (error) {
-        console.error("Error fetching customers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCustomersData();
   }, []);
+
+  const fetchCustomersData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchAllCustomers();
+      setCustomers(response.data);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      message.error("Failed to fetch customers");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (userId: string, newStatus: boolean) => {
+    try {
+      setLoading(true);
+      await updateUserStatus(userId, newStatus);
+      // Update local state
+      setCustomers(prevCustomers =>
+        prevCustomers.map(customer =>
+          customer.id === userId
+            ? { ...customer, isBlocked: newStatus }
+            : customer
+        )
+      );
+      dispatch(userStatus({ isBlocked: newStatus }));      
+      message.success(`User ${newStatus ? 'blocked' : 'unblocked'} successfully`);
+    } catch (error) {
+      console.error("Error updating user status: error endhada paray", error);
+      message.error("Failed to update user status");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns = [
     {
@@ -32,10 +67,9 @@ const Customers: React.FC = () => {
       key: "profileImage",
       render: (profileImage: string | undefined) => (
         <Avatar
+          className="h-10 w-10"
           src={profileImage}
           alt="Profile"
-          size="large"
-          style={{ backgroundColor: "#f56a00" }}
         >
           {!profileImage && "N/A"}
         </Avatar>
@@ -44,10 +78,10 @@ const Customers: React.FC = () => {
     {
       title: "Name & Email",
       key: "name",
-      render: (_: string, record: { name: string; email: string }) => (
-        <div>
-          <div className="font-medium text-lg text-purple-700">{record.name}</div>
-          <div className="text-gray-500 text-sm">{record.email}</div>
+      render: (_: string, record: Customer) => (
+        <div className="flex flex-col">
+          <span className="font-medium">{record.name}</span>
+          <span className="text-sm text-gray-500">{record.email}</span>
         </div>
       ),
     },
@@ -55,28 +89,55 @@ const Customers: React.FC = () => {
       title: "Country",
       dataIndex: "country",
       key: "country",
-      render: (country: string) => <span className="text-gray-700">{country}</span>,
+      render: (country: string) => country,
+    },
+    {
+      title: "Status",
+      key: "status",
+      render: (_: string, record: Customer) => (
+        <span className={`px-2 py-1 rounded-full text-sm ${
+          record.isBlocked 
+            ? 'bg-red-100 text-red-800'
+            : 'bg-green-100 text-green-800'
+        }`}>
+          {record.isBlocked ? 'Blocked' : 'Active'}
+        </span>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_: string, record: Customer) => (
+        <Switch
+          checked={!record.isBlocked}
+          onChange={(checked: boolean) => handleStatusChange(record.id, !checked)}
+          className={`${!record.isBlocked ? 'bg-green-500' : 'bg-red-500'}`}
+        />
+      ),
     },
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <div className="p-6 mt-24">
-          <h2 className="text-2xl font-semibold text-purple-700 mb-6">
-            List Customers
-          </h2>
-          <Table
-            dataSource={customers}
-            columns={columns}
-            rowKey="_id"
-            pagination={false}
-            loading={loading}
-            bordered
-          />
-        </div>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+          <div className="container mx-auto px-6 mt-24 py-8">
+            <h3 className="text-gray-700 text-3xl font-medium mb-6">
+              List Customers
+            </h3>
+            <div className="bg-white rounded-2xl shadow">
+              <Table
+                columns={columns}
+                dataSource={customers}
+                loading={loading}
+                rowKey="id"
+                className="w-full"
+              />
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );

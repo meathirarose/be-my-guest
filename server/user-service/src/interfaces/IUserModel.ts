@@ -17,6 +17,7 @@ export interface IUserAttrs {
     verified?: boolean;
     createdAt?: Date;
     profileImage?: string; 
+    isBlocked?: boolean;
 }
 
 export interface IUserDoc extends mongoose.Document {
@@ -30,6 +31,7 @@ export interface IUserDoc extends mongoose.Document {
     verified: boolean,
     createdAt: Date;
     profileImage?: string; 
+    isBlocked?: boolean;
 }
 
 export interface IUserModel extends mongoose.Model<IUserDoc> {
