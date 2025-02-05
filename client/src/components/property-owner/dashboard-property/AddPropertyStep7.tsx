@@ -1,24 +1,67 @@
+import { message } from "antd";
 import React from "react";
 
-const AddPropertyStep7: React.FC = () => {
-  // Assuming you are passing the data as props, or it could be fetched from a global state (e.g., Redux)
-  const locationDetails = {
-    houseName: "Sample House",
-    locality: "Sample Locality",
-    pincode: "123456",
-    country: "Country Name",
-    state: "State Name",
-    city: "City Name",
-  };
+// Define interfaces for the form data structure
+interface PropertyBasicInfo {
+  propertyName: string;
+  buildYear: string;
+  liveAtProperty: boolean;
+  contactEmail: string;
+  contactMobile: string;
+  contactLandline: string;
+}
 
-  const pricingDetails = {
-    price: "1000",
-    availability: "Available",
-  };
+interface PropertyLocation {
+  houseName: string;
+  locality: string;
+  pincode: string;
+  country: string;
+  state: string;
+  city: string;
+}
 
-  const handlePublish = () => {
-    // Handle the publish logic here
-    alert("Property details published!");
+interface RoomsAndSpaces {
+  bedrooms: number;
+  bathrooms: number;
+  livingRoom: number;
+  lobbyLounge: number;
+  helpersRoom: number;
+  swimmingPool: number;
+  parking: number;
+  driversRoom: number;
+  terrace: number;
+  garden: number;
+  diningArea: number;
+  kitchenAvailable: boolean;
+}
+
+interface PropertyPricing {
+  price: string;
+  availability: string;
+}
+
+interface PropertyFormData {
+  basicInfo: PropertyBasicInfo;
+  location: PropertyLocation;
+  roomsAndSpaces: RoomsAndSpaces;
+  media: File[];
+  pricing: PropertyPricing;
+}
+
+interface Step7Props {
+  data: PropertyFormData;
+  onChange: () => Promise<void>;
+}
+
+const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
+  const handlePublish = async () => {
+    try {
+      await onChange();
+      message.success("Property published successfully!")
+    } catch (error) {
+      console.error('Error publishing property:', error);
+      message.error('Failed to publish property');
+    }
   };
 
   return (
@@ -33,27 +76,62 @@ const AddPropertyStep7: React.FC = () => {
           <div className="border-b border-gray-200 my-4"></div>
         </div>
 
+        {/* Basic Info Review */}
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-gray-700">Basic Information</h3>
+          <div className="space-y-2 mt-2">
+            <div>
+              <strong>Property Name: </strong> {data.basicInfo.propertyName}
+            </div>
+            <div>
+              <strong>Build Year: </strong> {data.basicInfo.buildYear}
+            </div>
+            <div>
+              <strong>Contact Email: </strong> {data.basicInfo.contactEmail}
+            </div>
+            <div>
+              <strong>Contact Mobile: </strong> {data.basicInfo.contactMobile}
+            </div>
+          </div>
+        </div>
+
         {/* Location Details Review */}
         <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-700">Location Details</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>House Name: </strong> {locationDetails.houseName}
+              <strong>House Name: </strong> {data.location.houseName}
             </div>
             <div>
-              <strong>Locality: </strong> {locationDetails.locality}
+              <strong>Locality: </strong> {data.location.locality}
             </div>
             <div>
-              <strong>Pincode: </strong> {locationDetails.pincode}
+              <strong>Pincode: </strong> {data.location.pincode}
             </div>
             <div>
-              <strong>Country: </strong> {locationDetails.country}
+              <strong>Country: </strong> {data.location.country}
             </div>
             <div>
-              <strong>State: </strong> {locationDetails.state}
+              <strong>State: </strong> {data.location.state}
             </div>
             <div>
-              <strong>City: </strong> {locationDetails.city}
+              <strong>City: </strong> {data.location.city}
+            </div>
+          </div>
+        </div>
+
+        {/* Rooms & Spaces Review */}
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-gray-700">Rooms & Spaces</h3>
+          <div className="space-y-2 mt-2">
+            <div>
+              <strong>Bedrooms: </strong> {data.roomsAndSpaces.bedrooms}
+            </div>
+            <div>
+              <strong>Bathrooms: </strong> {data.roomsAndSpaces.bathrooms}
+            </div>
+            <div>
+              <strong>Living Rooms: </strong> {data.roomsAndSpaces.livingRoom}
             </div>
           </div>
         </div>
@@ -63,10 +141,20 @@ const AddPropertyStep7: React.FC = () => {
           <h3 className="text-sm font-medium text-gray-700">Pricing & Availability</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Price per Night: </strong> ₹{pricingDetails.price}
+              <strong>Price per Night: </strong> ₹{data.pricing.price}
             </div>
             <div>
-              <strong>Availability: </strong> {pricingDetails.availability}
+              <strong>Availability: </strong> {data.pricing.availability}
+            </div>
+          </div>
+        </div>
+
+        {/* Media Files Review */}
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-gray-700">Media Files</h3>
+          <div className="space-y-2 mt-2">
+            <div>
+              <strong>Number of files: </strong> {data.media.length}
             </div>
           </div>
         </div>

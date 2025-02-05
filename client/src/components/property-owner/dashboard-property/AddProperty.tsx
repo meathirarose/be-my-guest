@@ -134,7 +134,7 @@ const AddPropertyPage: React.FC = () => {
     }));
   };
 
-  const updaateRoomsAndSpaces = (data: Partial<RoomsAndSpaces>) => {
+  const updateRoomsAndSpaces = (data: Partial<RoomsAndSpaces>) => {
     setFormData(prev => ({
       ...prev,
       roomsAndSpaces: {...prev.roomsAndSpaces, ...data},
@@ -234,9 +234,9 @@ const AddPropertyPage: React.FC = () => {
                   {step.id === 1 && <AddPropertyStep1 />}
                   {step.id === 2 && (<AddPropertyStep2 data={formData.basicInfo} onChange={updateBasicInfo}/>)}                  
                   {step.id === 3 && (<AddPropertyStep3 data={formData.location} onChange={updateLocation}/>)}                  
-                  {step.id === 4 && (<AddPropertyStep4 data={formData.media} onChange={updateMedia}/>)}                  
-                  {step.id === 5 && (<AddPropertyStep5 data={formData.roomsAndSpaces} onChange={updaateRoomsAndSpaces}/>)}                  
-                  {step.id === 6 && (<AddPropertyStep6 data={formData.pricing} onChange={updateMedia}/>)}                  
+                  {step.id === 5 && (<AddPropertyStep4 data={formData.roomsAndSpaces} onChange={updateRoomsAndSpaces}/>)}                  
+                  {step.id === 4 && (<AddPropertyStep5 data={formData.media} onChange={updateMedia}/>)}                  
+                  {step.id === 6 && (<AddPropertyStep6 data={formData.pricing} onChange={updatePricing}/>)}                  
                   {step.id === 7 && (<AddPropertyStep7 data={formData} onChange={handleFinalSubmit}/>)}                  
                 </>
               )}

@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import InputField from "../../../shared/components/ui/InputField";
 
-const AddPropertyStep6: React.FC = () => {
-  const [pricingDetails, setPricingDetails] = useState({
-    price: "",
-    availability: "", 
-  });
+interface PropertyData {
+  price: string;
+  availability: string;
+}
+
+interface Step6Props {
+  data: PropertyData,
+  onChange: (data: Partial<PropertyData>) => void;
+}
+
+const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange}) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPricingDetails((prev) => ({ ...prev, [name]: value }));
+    onChange({ [name]: value });
   };
 
   return (
@@ -35,7 +41,7 @@ const AddPropertyStep6: React.FC = () => {
             type="text"
             name="price"
             placeholder="Enter price"
-            value={pricingDetails.price}
+            value={data.price}
             onChange={handleInputChange}
           />
         </div>
@@ -49,7 +55,7 @@ const AddPropertyStep6: React.FC = () => {
             type="text"
             name="availability"
             placeholder="Enter availability status"
-            value={pricingDetails.availability}
+            value={data.availability}
             onChange={handleInputChange}
           />
         </div>
