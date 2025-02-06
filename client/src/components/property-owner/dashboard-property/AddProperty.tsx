@@ -8,7 +8,9 @@ import AddPropertyStep4 from "./AddPropertyStep4";
 import AddPropertyStep5 from "./AddPropertyStep5";
 import AddPropertyStep6 from "./AddPropertyStep6";
 import AddPropertyStep7 from "./AddPropertyStep7";
-import { listProperty } from "../../../api/listPropertyApi";
+import { fetchPropertyById, listProperty, updateProperty } from "../../../api/listPropertyApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const { TabPane } = Tabs;
 
@@ -60,8 +62,16 @@ interface PropertyFormData {
 
 
 const AddPropertyPage: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const userId = user?.user?.id;
   const navigate = useNavigate();
   const location = useLocation();
+  const id = location.state?.id || null;
+  console.log(id, "property id===================================================================")
+  const isEditMode = Boolean(id);
+  console.log(isEditMode, "is edit mode or not==========================================================");
+
+
 
   const [formData, setFormData] = useState<PropertyFormData>({
     basicInfo: {
@@ -101,6 +111,27 @@ const AddPropertyPage: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    const fetchPropertyData = async () => {
+      if(isEditMode && id) {
+        console.log(isEditMode, id, " is edit mode and id=====================================")
+        try {
+            console.log(isEditMode, id, " is edit mode and id=====================================")
+            const response = await fetchPropertyById(id);
+            console.log(response, "fetch by id=====================================>")
+            if(response.data) {
+              setFormData(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching property:', error);
+            message.error('Failed to fetch property data');
+            navigate('/host/dashboard/properties');
+        }
+      }
+    };
+    fetchPropertyData();
+  },[id, isEditMode, navigate]);
+
   // Extract the current step from the URL
   const getCurrentStep = () => {
     const pathParts = location.pathname.split("/");
@@ -112,7 +143,7 @@ const AddPropertyPage: React.FC = () => {
   const activeStep = parseInt(getCurrentStep());
 
   const steps = [
-    { id: 1, label: "Get Started" },
+    { id: 1, label: `${isEditMode ? 'Edit' : 'Get'} Started` },
     { id: 2, label: "Step 1: Basic Details" },
     { id: 3, label: "Step 2: Location" },
     { id: 4, label: "Step 3: Rooms & Spaces" },
@@ -159,10 +190,17 @@ const AddPropertyPage: React.FC = () => {
   const handleFinalSubmit = async () => {
     try {
 
-      const response = await listProperty(formData);
+      let response;
+
+      if(isEditMode) {
+        response = await updateProperty(id, {...formData});
+        message.success("Property added successfully");
+      } else {
+        response = await listProperty({ ...formData}, userId );
+        message.success("Property added successfully");
+      }
 
       if( response.status === 200){
-        message.success('Property listed successfully');
         navigate('/host/dashboard/properties');
       }
     } catch (error) {
@@ -202,7 +240,7 @@ const AddPropertyPage: React.FC = () => {
           activeKey={activeStep.toString()}
           onChange={(key) =>
             navigate(
-              `/host/dashboard/properties/add-property-start/step-${key}`
+              `/host/dashboard/properties/${isEditMode ? `edit/${id}` : 'add-property-start'}/step-${key}`
             )
           }
           centered
@@ -217,13 +255,13 @@ const AddPropertyPage: React.FC = () => {
             <TabPane tab={step.label} key={step.id.toString()}>
               {activeStep === step.id && (
                 <>
-                  {step.id === 1 && <AddPropertyStep1 />}
+                  {step.id === 1 && <AddPropertyStep1 isEditMode={isEditMode} />}
                   {step.id === 2 && (<AddPropertyStep2 data={formData.basicInfo} onChange={updateBasicInfo}/>)}                  
                   {step.id === 3 && (<AddPropertyStep3 data={formData.location} onChange={updateLocation}/>)}                  
                   {step.id === 4 && (<AddPropertyStep4 data={formData.roomsAndSpaces} onChange={updateRoomsAndSpaces}/>)}                  
                   {step.id === 5 && (<AddPropertyStep5 data={formData.mediaUrls} onChange={updateMedia}/>)}                  
                   {step.id === 6 && (<AddPropertyStep6 data={formData.pricing} onChange={updatePricing}/>)}                  
-                  {step.id === 7 && (<AddPropertyStep7 data={formData} onChange={handleFinalSubmit}/>)}                  
+                  {step.id === 7 && (<AddPropertyStep7 data={formData} onChange={handleFinalSubmit} isEditMode={isEditMode} />)}                  
                 </>
               )}
             </TabPane>

@@ -38,6 +38,9 @@ const propertySchema: Schema = new Schema(
       price: { type: String, required: true },
       availability: { type: String, required: true },
     },
+    userId: {
+      type: String
+    }
   },
   {
     toJSON: {

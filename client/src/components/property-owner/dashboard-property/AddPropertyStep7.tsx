@@ -49,15 +49,16 @@ interface PropertyFormData {
 interface Step7Props {
   data: PropertyFormData;
   onChange: () => Promise<void>;
+  isEditMode?: boolean;  
 }
 
-const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
+const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) => {
   const handlePublish = async () => {
     try {
       await onChange();
-      console.log("property published successfully from the last step");
+      console.log(`property ${isEditMode ? 'updated' : 'published'} successfully from the last step`);
     } catch (error) {
-      console.error('Error publishing property:', error);
+      console.error(`Error ${isEditMode ? 'updating' : 'publishing'} property:`, error);
     }
   };
 
@@ -66,9 +67,14 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
       {/* Review and Publish Section */}
       <div className="bg-white rounded-2xl shadow-sm p-6 mb-4 border border-gray-400">
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-800">Review & Publish</h2>
+          <h2 className="text-lg font-semibold text-gray-800">
+            {isEditMode ? 'Review & Update' : 'Review & Publish'}
+          </h2>          
           <p className="text-sm text-gray-600">
-            Please review your property details before publishing
+            {isEditMode 
+              ? 'Please review your updated property details before saving changes'
+              : 'Please review your property details before publishing'
+            }
           </p>
           <div className="border-b border-gray-200 my-4"></div>
         </div>
@@ -162,7 +168,7 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange }) => {
             onClick={handlePublish}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none"
           >
-            Publish Property
+            {isEditMode ? 'Update Property' : 'Publish Property'}
           </button>
         </div>
       </div>

@@ -6,7 +6,10 @@ export interface IPropertyService {
         location: IPropertyDoc["location"], 
         roomsAndSpaces: IPropertyDoc["roomsAndSpaces"], 
         mediaUrls: IPropertyDoc["mediaUrls"], 
-        pricing: IPropertyDoc["pricing"]
+        pricing: IPropertyDoc["pricing"],
+        userId?: string 
     ): Promise<IPropertyDoc | null>;
     fetchProperties(): Promise<IPropertyDoc[] | null>;
+    fetchProperty(propertyId: string): Promise<IPropertyDoc | null>;
+    updateProperty(propertyId: string, updatedData: Partial<IPropertyDoc>): Promise<IPropertyDoc | null>;
 }

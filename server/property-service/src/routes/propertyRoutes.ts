@@ -20,6 +20,16 @@ router.post(
 router.get(
     "/fetch-properties",
     propertyController.fetchProperties
+);
+
+router.get(
+    `/fetch-property/:propertyId`,
+    propertyController.fetchProperty
+);
+
+router.patch(
+    `/update-property/:propertyId`,
+    propertyController.updateProperty
 )
 
 export default router;

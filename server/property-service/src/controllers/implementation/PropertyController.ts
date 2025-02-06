@@ -12,6 +12,7 @@ export class PropertyController implements IPropertyController {
     }
     public listProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
+            const userId = typeof req.query.userId === 'string' ? req.query.userId : undefined;
             const { error, value } = propertyValidationSchema.validate(req.body, { abortEarly: false });
             
             if (error) {
@@ -22,11 +23,10 @@ export class PropertyController implements IPropertyController {
 
             const { basicInfo, location, roomsAndSpaces, mediaUrls, pricing } = value;
             
-            if(!basicInfo || !location || !roomsAndSpaces || !mediaUrls || !pricing)
+            if(!basicInfo || !location || !roomsAndSpaces || !mediaUrls || !pricing || !userId)
                 throw new NotFoundError("Missing Credentials");
 
-            const propertyDetails = await this.propertyService.listProperty(basicInfo, location, roomsAndSpaces, mediaUrls, pricing);
-            console.log("getting property details from service==================================>", propertyDetails);
+            const propertyDetails = await this.propertyService.listProperty(basicInfo, location, roomsAndSpaces, mediaUrls, pricing, userId);
             
             if(!propertyDetails) throw new BadRequestError("Unable to add Property Details");
 
@@ -49,4 +49,35 @@ export class PropertyController implements IPropertyController {
             next(error);
         }
     }
+
+    public fetchProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { propertyId } = req.params;
+        
+            const property = await this.propertyService.fetchProperty(propertyId);
+            
+            if (!property) throw new NotFoundError("No property found");
+            
+            res.status(200).json({ message: "Property fetched successfully", data: property });
+        } catch (error) {
+            next(error);
+        }
+    }
+    
+    public updateProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { propertyId } = req.params;
+            const updatedData = req.body; 
+    
+            const updatedProperty = await this.propertyService.updateProperty(propertyId, updatedData);
+            console.log(updatedProperty, "updated property from the controller===============================>")
+    
+            if (!updatedProperty) throw new NotFoundError("No property found");
+    
+            res.status(200).json({ message: "Property updated successfully", data: updatedProperty });
+        } catch (error) {
+            next(error);
+        }
+    }
+    
 }

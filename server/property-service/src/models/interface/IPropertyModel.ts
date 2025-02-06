@@ -36,6 +36,7 @@ export interface IPropertyAttrs {
     price: string;
     availability: string;
   };
+  userId?: string;
 }
 
 export interface IPropertyDoc extends mongoose.Document {
@@ -75,6 +76,7 @@ export interface IPropertyDoc extends mongoose.Document {
     price: string;
     availability: string;
   };
+  userId?: string;
 }
 
 export interface IPropertyModel extends mongoose.Model<IPropertyDoc> {

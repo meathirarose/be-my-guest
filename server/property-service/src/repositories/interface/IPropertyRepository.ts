@@ -7,8 +7,11 @@ export interface IPropertyRepository extends IBaseRepository<IPropertyDoc> {
     location: IPropertyDoc["location"],
     roomsAndSpaces: IPropertyDoc["roomsAndSpaces"],
     mediaUrls: IPropertyDoc["mediaUrls"],
-    pricing: IPropertyDoc["pricing"]
+    pricing: IPropertyDoc["pricing"],
+    userId?: string
   ): Promise<IPropertyDoc>;
 
   fetchAllProperties(): Promise<IPropertyDoc[] | null>;
+  fetchProperty(propertyId: string): Promise<IPropertyDoc | null>;
+  updateProperty(propertyId: string, updatedData: Partial<IPropertyDoc>): Promise<IPropertyDoc | null>;
 }

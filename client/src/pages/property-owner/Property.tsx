@@ -68,7 +68,8 @@ const Properties: React.FC = () => {
   };
 
   const handleEditProperty = (id: string) => {
-    navigate(`/host/dashboard/properties/edit/${id}`);
+    console.log(id, "id from edit property-----------------------------------------------")
+    navigate(`/host/dashboard/properties/add-property-start/step-1`,{state:{id:id}});
   };
 
   const handleDeleteProperty = (id: string) => {

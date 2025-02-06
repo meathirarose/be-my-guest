@@ -14,10 +14,11 @@ export class PropertyService implements IPropertyService {
     location: IPropertyDoc["location"],
     roomsAndSpaces: IPropertyDoc["roomsAndSpaces"],
     mediaUrls: IPropertyDoc["mediaUrls"],
-    pricing: IPropertyDoc["pricing"]
+    pricing: IPropertyDoc["pricing"],
+    userId?: string
   ): Promise<IPropertyDoc | null> {
     try {
-        const response = await this.propertyRepository.savePropertyDetails(basicInfo, location, roomsAndSpaces, mediaUrls, pricing);
+        const response = await this.propertyRepository.savePropertyDetails(basicInfo, location, roomsAndSpaces, mediaUrls, pricing, userId);
         return response;
     } catch (error) {
         console.error("Error in adding property details:", error);
@@ -33,5 +34,25 @@ export class PropertyService implements IPropertyService {
         console.error("Error in fetching property details:", error);
         throw error;
       }
+  }
+
+  async fetchProperty(propertyId: string): Promise<IPropertyDoc | null> {
+      try {
+        const response = await this.propertyRepository.fetchProperty(propertyId);
+        return response;
+      } catch (error) {
+        console.error("Error in fetching property details:", error);
+        throw error;
+      }
+  }
+
+  async updateProperty(propertyId: string, updatedData: Partial<IPropertyDoc>): Promise<IPropertyDoc | null> {
+    try {
+        const updatedProperty = await this.propertyRepository.updateProperty(propertyId, updatedData);
+        return updatedProperty;
+    } catch (error) {
+        console.error("Error in updating property:", error);
+        throw error;
+    }
   }
 }
