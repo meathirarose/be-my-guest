@@ -1,18 +1,10 @@
 import React from "react";
 import InputField from "../../../shared/components/ui/InputField";
-
-interface PropertyData {
-  houseName: string,
-  locality: string,
-  pincode: string, 
-  country: string,
-  state: string, 
-  city: string,
-}
+import { PropertyLocation } from "../../../interfaces/ListPropertyDetails";
 
 interface Step3Props {
-  data: PropertyData;
-  onChange: (data: Partial<PropertyData>) => void;
+  data: PropertyLocation;
+  onChange: (data: Partial<PropertyLocation>) => void;
 }
 
 const AddPropertyStep3: React.FC<Step3Props> = ({ data, onChange }) => {

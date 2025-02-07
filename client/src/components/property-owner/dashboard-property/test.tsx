@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
 
 interface Step7Props {
@@ -8,7 +8,14 @@ interface Step7Props {
 }
 
 const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) => {
-  
+  // Add local state to track the current data
+  const [currentData, setCurrentData] = useState<PropertyFormData>(data);
+
+  // Update local state when prop data changes
+  useEffect(() => {
+    setCurrentData(data);
+  }, [data]);
+
   const handlePublish = async () => {
     try {
       await onChange();
@@ -40,16 +47,16 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
           <h3 className="text-sm font-medium text-gray-700">Basic Information</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Property Name: </strong> {data.basicInfo.propertyName}
+              <strong>Property Name: </strong> {currentData.basicInfo.propertyName}
             </div>
             <div>
-              <strong>Build Year: </strong> {data.basicInfo.buildYear}
+              <strong>Build Year: </strong> {currentData.basicInfo.buildYear}
             </div>
             <div>
-              <strong>Contact Email: </strong> {data.basicInfo.contactEmail}
+              <strong>Contact Email: </strong> {currentData.basicInfo.contactEmail}
             </div>
             <div>
-              <strong>Contact Mobile: </strong> {data.basicInfo.contactMobile}
+              <strong>Contact Mobile: </strong> {currentData.basicInfo.contactMobile}
             </div>
           </div>
         </div>
@@ -59,22 +66,22 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
           <h3 className="text-sm font-medium text-gray-700">Location Details</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>House Name: </strong> {data.location.houseName}
+              <strong>House Name: </strong> {currentData.location.houseName}
             </div>
             <div>
-              <strong>Locality: </strong> {data.location.locality}
+              <strong>Locality: </strong> {currentData.location.locality}
             </div>
             <div>
-              <strong>Pincode: </strong> {data.location.pincode}
+              <strong>Pincode: </strong> {currentData.location.pincode}
             </div>
             <div>
-              <strong>Country: </strong> {data.location.country}
+              <strong>Country: </strong> {currentData.location.country}
             </div>
             <div>
-              <strong>State: </strong> {data.location.state}
+              <strong>State: </strong> {currentData.location.state}
             </div>
             <div>
-              <strong>City: </strong> {data.location.city}
+              <strong>City: </strong> {currentData.location.city}
             </div>
           </div>
         </div>
@@ -84,13 +91,13 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
           <h3 className="text-sm font-medium text-gray-700">Rooms & Spaces</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Bedrooms: </strong> {data.roomsAndSpaces.bedrooms}
+              <strong>Bedrooms: </strong> {currentData.roomsAndSpaces.bedrooms}
             </div>
             <div>
-              <strong>Bathrooms: </strong> {data.roomsAndSpaces.bathrooms}
+              <strong>Bathrooms: </strong> {currentData.roomsAndSpaces.bathrooms}
             </div>
             <div>
-              <strong>Living Rooms: </strong> {data.roomsAndSpaces.livingRoom}
+              <strong>Living Rooms: </strong> {currentData.roomsAndSpaces.livingRoom}
             </div>
           </div>
         </div>
@@ -100,10 +107,10 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
           <h3 className="text-sm font-medium text-gray-700">Pricing & Availability</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Price per Night: </strong> ₹{data.pricing.price}
+              <strong>Price per Night: </strong> ₹{currentData.pricing.price}
             </div>
             <div>
-              <strong>Availability: </strong> {data.pricing.availability}
+              <strong>Availability: </strong> {currentData.pricing.availability}
             </div>
           </div>
         </div>
@@ -113,7 +120,7 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
           <h3 className="text-sm font-medium text-gray-700">Media Files</h3>
           <div className="space-y-2 mt-2">
             <div>
-              <strong>Number of files: </strong> {data.mediaUrls.length}
+              <strong>Number of files: </strong> {currentData.mediaUrls.length}
             </div>
           </div>
         </div>

@@ -1,23 +1,9 @@
 import React from "react";
-
-interface PropertyData {
-  bedrooms: number,
-  bathrooms: number,
-  livingRoom: number,
-  lobbyLounge: number,
-  helpersRoom: number,
-  swimmingPool: number,
-  parking: number, 
-  driversRoom: number,
-  terrace: number,
-  garden: number,
-  diningArea: number,
-  kitchenAvailable: boolean,
-}
+import { RoomsAndSpaces } from "../../../interfaces/ListPropertyDetails";
 
 interface Step4Props {
-  data: PropertyData;
-  onChange: (data: Partial<PropertyData>) => void;
+  data: RoomsAndSpaces;
+  onChange: (data: Partial<RoomsAndSpaces>) => void;
 }
 
 const AddPropertyStep4: React.FC<Step4Props> = ({ data, onChange }) => {

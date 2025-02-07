@@ -1,14 +1,10 @@
 import React from "react";
 import InputField from "../../../shared/components/ui/InputField";
-
-interface PropertyData {
-  price: string;
-  availability: string;
-}
+import { PropertyPricing } from "../../../interfaces/ListPropertyDetails";
 
 interface Step6Props {
-  data: PropertyData;
-  onChange: (data: Partial<PropertyData>) => void;
+  data: PropertyPricing;
+  onChange: (data: Partial<PropertyPricing>) => void;
 }
 
 const AddPropertyStep6: React.FC<Step6Props> = ({ data, onChange }) => {

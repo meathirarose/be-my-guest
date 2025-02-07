@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 import InputField from "../../../shared/components/ui/InputField";
-
-// Define the data interface separately
-interface PropertyData {
-  propertyName: string;
-  buildYear: string;
-  liveAtProperty: boolean;
-  contactEmail: string;
-  contactMobile: string;
-  contactLandline: string;
-}
+import { PropertyBasicInfo } from "../../../interfaces/ListPropertyDetails";
 
 interface Step2Props {
-  data: PropertyData;
-  onChange: (data: Partial<PropertyData>) => void;
+  data: PropertyBasicInfo;
+  onChange: (data: Partial<PropertyBasicInfo>) => void;
 }
 
-// Generate array of years from 1900 to current year
 const currentYear = new Date().getFullYear();
 const years = Array.from(
   { length: currentYear - 1899 },
@@ -36,7 +26,6 @@ const AddPropertyStep2: React.FC<Step2Props> = ({ data, onChange }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      {/* Rest of the component remains exactly the same */}
       <div className="bg-white rounded-2xl shadow-sm p-6 mb-4 border border-gray-400">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-800">

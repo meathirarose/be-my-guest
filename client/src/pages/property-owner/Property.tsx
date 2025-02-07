@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { fetchAllProperties } from "../../api/listPropertyApi";
+import { Loader2 } from "lucide-react";
 
 interface Property {
   id: string;
@@ -44,6 +45,7 @@ const Properties: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [properties, setProperties] = useState<Property[]>([]);
+  const [loadingPropertyId, setLoadingPropertyId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProperties();
@@ -53,7 +55,6 @@ const Properties: React.FC = () => {
     try {
       const response = await fetchAllProperties();
       setProperties(response.data.data);
-      console.log(response, "getting the properties or not how")
     } catch (error) {
       console.error("Error fetching properties:", error);
     }
@@ -67,9 +68,16 @@ const Properties: React.FC = () => {
     navigate(`/host/dashboard/properties/view/${id}`);
   };
 
-  const handleEditProperty = (id: string) => {
-    console.log(id, "id from edit property-----------------------------------------------")
-    navigate(`/host/dashboard/properties/add-property-start/step-1`,{state:{id:id}});
+  const handleEditProperty = async (id: string) => {
+    setLoadingPropertyId(id);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      navigate(`/host/dashboard/properties/add-property-start/step-1`, {
+        state: { id: id }
+      });
+    } finally {
+      setLoadingPropertyId(null);
+    }
   };
 
   const handleDeleteProperty = (id: string) => {
@@ -130,11 +138,15 @@ const Properties: React.FC = () => {
                     onClick={() => handleViewProperty(property.id)}
                     title="View"
                   />
-                  <EditOutlined
-                    className="text-xl cursor-pointer hover:text-purple-800"
-                    onClick={() => handleEditProperty(property.id)}
-                    title="Edit"
-                  />
+                  {loadingPropertyId === property.id ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <EditOutlined
+                      className="text-xl cursor-pointer hover:text-purple-800"
+                      onClick={() => handleEditProperty(property.id)}
+                      title="Edit"
+                    />
+                  )}
                   <DeleteOutlined
                     className="text-xl cursor-pointer hover:text-purple-800"
                     onClick={() => handleDeleteProperty(property.id)}

@@ -69,8 +69,8 @@ export class PropertyController implements IPropertyController {
             const { propertyId } = req.params;
             const updatedData = req.body; 
     
+            console.log(updatedData, "updated property from the controller===============================>")
             const updatedProperty = await this.propertyService.updateProperty(propertyId, updatedData);
-            console.log(updatedProperty, "updated property from the controller===============================>")
     
             if (!updatedProperty) throw new NotFoundError("No property found");
     

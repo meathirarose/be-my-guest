@@ -1,50 +1,5 @@
 import axios from "axios";
-
-interface PropertyBasicInfo {
-  propertyName: string;
-  buildYear: string;
-  liveAtProperty: boolean;
-  contactEmail: string;
-  contactMobile: string;
-  contactLandline: string;
-}
-
-interface PropertyLocation {
-  houseName: string;
-  locality: string;
-  pincode: string;
-  country: string;
-  state: string;
-  city: string;
-}
-
-interface RoomsAndSpaces {
-  bedrooms: number;
-  bathrooms: number;
-  livingRoom: number;
-  lobbyLounge: number;
-  helpersRoom: number;
-  swimmingPool: number;
-  parking: number;
-  driversRoom: number;
-  terrace: number;
-  garden: number;
-  diningArea: number;
-  kitchenAvailable: boolean;
-}
-
-interface PropertyPricing {
-  price: string;
-  availability: string;
-}
-
-interface PropertyFormData {
-  basicInfo: PropertyBasicInfo;
-  location: PropertyLocation;
-  roomsAndSpaces: RoomsAndSpaces;
-  mediaUrls: string[];
-  pricing: PropertyPricing;
-}
+import { PropertyFormData } from "../interfaces/ListPropertyDetails";
 
 export const listProperty = async (propertyData: PropertyFormData, userId?: string) => {
   try {
@@ -94,7 +49,6 @@ export const fetchPropertyById = async (propertyId: string) => {
         withCredentials: true,
       }
     );
-    console.log("am I getting the response in list API?", response);
     return response;
   } catch (error) {
     console.error("Error getting property details:", error);
