@@ -123,7 +123,7 @@ const AddPropertyPage: React.FC = () => {
   };
 
   const updateMedia = (urls: string[]) => {
-    setFormData((prev) => ({ ...prev, mediaUrls: urls,}));
+    setFormData((prev) => ({ ...prev, mediaUrls: urls,})); 
   };
 
   const updatePricing = (data: Partial<PropertyPricing>) => {
@@ -136,10 +136,10 @@ const AddPropertyPage: React.FC = () => {
 
       if (isEditMode) {
         response = await updateProperty(id, { ...formData });
-        message.success("Property added successfully");
+        message.success("Property updated successfully");
       } else {
         response = await listProperty({ ...formData }, userId);
-        message.success("Property added successfully");
+        message.success("Property published successfully");
       }
 
       if (response.status === 200) {

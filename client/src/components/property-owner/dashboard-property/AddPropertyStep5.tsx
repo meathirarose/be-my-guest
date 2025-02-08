@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { uploadMediaToCloudinary } from '../../../api/cloudinaryApi';
 import { Spin, message } from 'antd'; 
 
@@ -8,15 +8,45 @@ interface Step5Props {
 }
 
 interface UploadedFile {
-  file: File;
+  file?: File;
   url: string;
-  type:string;
+  type: string;
   uploading: boolean;
   error?: string;
+  isExisting: boolean;
+  fileName?: string; 
 }
 
-const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
+const AddPropertyStep5: React.FC<Step5Props> = ({ data = [], onChange }) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+
+  const getFileNameFromUrl = (url: string): string => {
+    try {
+      const urlParts = url.split('/');
+      let fileName = urlParts[urlParts.length - 1];
+      fileName = fileName.split('?')[0];
+
+      fileName = decodeURIComponent(fileName);
+
+      return fileName;
+    } catch (error) {
+      console.log(error,"Error in extracting file name");
+      return 'Untitled';
+    }
+  };
+
+  useEffect(() => {
+    if(data.length > 0) {
+      const existingFiles = data.map(url => ({
+        url, 
+        type: url.includes('.mp4') ? 'video' : 'image',
+        uploading: false,
+        isExisting: true,
+        fileName: getFileNameFromUrl(url)
+      }));
+      setUploadedFiles(existingFiles);
+    }
+  }, [data]);
   
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -24,13 +54,14 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
       const newUploadedFiles: UploadedFile[] = files.map(file => ({
         file,
         url: '', 
+        type: file.type.startsWith('video/') ? 'video' : 'image',
         uploading: true,
-        type:""
+        isExisting: false,
+        fileName: file.name
       }));
 
       setUploadedFiles(prev => [...prev, ...newUploadedFiles]);
       
-      // Upload each file to Cloudinary
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileIndex = uploadedFiles.length + i;
@@ -48,11 +79,11 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
                   ...f, 
                   uploading: false, 
                   url: cloudinaryUrl.secure_url,
-                  type:cloudinaryUrl.resource_type
-                  
+                  type: cloudinaryUrl.resource_type,
+                  isExisting: false,
+                  fileName: file.name 
                 } : f
               );
-              // Get all URLs and notify parent
               const allUrls = updated.filter(f => f.url && !f.error).map(f => f.url);
               onChange(allUrls);
               return updated;
@@ -68,7 +99,8 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
               ...f, 
               uploading: false, 
               error: 'Upload failed',
-              url: '' 
+              url: '',
+              isExisting: false
             } : f
           ));
           message.error(`Failed to upload ${file.name}`);
@@ -124,7 +156,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
 
         {uploadedFiles.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-sm font-semibold">Uploaded Files</h3>
+            <h3 className="text-sm font-semibold">Media Files</h3>
             <div className="grid grid-cols-3 gap-2 mt-2">
               {uploadedFiles.map((uploadedFile, index) => (
                 <div key={index} className="relative border rounded p-2">
@@ -136,17 +168,17 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
                     <div className="w-full h-44 flex items-center justify-center bg-red-50 text-red-500">
                       Upload Failed
                     </div>
-                  ) : uploadedFile.type == "image" ? (
+                  ) : uploadedFile.type === "image" ? (
                     <img 
-                      src={uploadedFile.url || URL.createObjectURL(uploadedFile.file)} 
+                      src={uploadedFile.url} 
                       alt="Preview" 
                       className="w-full h-44 object-cover rounded" 
                     />
                   ) : (
                     <video controls className="w-full h-20 rounded">
                       <source 
-                        src={uploadedFile.url || URL.createObjectURL(uploadedFile.file)} 
-                        type={uploadedFile.file.type} 
+                        src={uploadedFile.url}
+                        type="video/mp4"
                       />
                     </video>
                   )}
@@ -158,7 +190,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ onChange }) => {
                     ×
                   </button>
                   <p className="text-xs text-center mt-1">
-                    {uploadedFile.file.name}
+                    {uploadedFile.fileName}
                     {uploadedFile.uploading && ' (Uploading...)'}
                   </p>
                 </div>
