@@ -28,6 +28,7 @@ export class PropertyController implements IPropertyController {
             
             if(!basicInfo || !location || !roomsAndSpaces || !mediaUrls || !pricing || !userId)
                 throw new NotFoundError("Missing Input Credentials");
+            if (mediaUrls.length < 3) throw new BadRequestError("At least 3 media files are required.");
 
             const propertyDetails = await this.propertyService.listProperty(basicInfo, location, roomsAndSpaces, mediaUrls, pricing, userId);
             

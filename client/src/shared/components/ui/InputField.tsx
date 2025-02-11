@@ -9,7 +9,7 @@ interface InputFieldProps {
   hidden?: boolean;
   disabled?: boolean;
   accept?: string; 
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>((

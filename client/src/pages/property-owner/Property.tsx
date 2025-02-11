@@ -65,7 +65,7 @@ const Properties: React.FC = () => {
   };
 
   const handleViewProperty = (id: string) => {
-    navigate(`/host/dashboard/properties/view/${id}`);
+    navigate(`/host/dashboard/properties/view-details/${id}`);
   };
 
   const handleEditProperty = async (id: string) => {

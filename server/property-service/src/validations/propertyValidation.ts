@@ -72,6 +72,11 @@ export const propertyValidationSchema = Joi.object({
       "string.max": "State name cannot be longer than 50 characters",
       "any.required": "State is required",
     }),
+    district: Joi.string().min(2).max(50).required().messages({
+      "string.min": "District name must be at least 2 characters long",
+      "string.max": "District name cannot be longer than 50 characters",
+      "any.required": "District is required",
+    }),
     city: Joi.string().min(2).max(50).required().messages({
       "string.min": "City name must be at least 2 characters long",
       "string.max": "City name cannot be longer than 50 characters",

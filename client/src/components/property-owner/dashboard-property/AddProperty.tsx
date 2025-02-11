@@ -12,7 +12,7 @@ import { fetchPropertyById, listProperty, updateProperty, } from "../../../api/l
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { PropertyBasicInfo, PropertyFormData, PropertyLocation, PropertyPricing, RoomsAndSpaces,} from "../../../interfaces/ListPropertyDetails";
-import { RotateCw } from "lucide-react";
+import axios from "axios";
 
 const { TabPane } = Tabs;
 
@@ -39,6 +39,7 @@ const AddPropertyPage: React.FC = () => {
       pincode: "",
       country: "",
       state: "",
+      district: "",
       city: "",
     },
     roomsAndSpaces: {
@@ -146,8 +147,12 @@ const AddPropertyPage: React.FC = () => {
         navigate("/host/dashboard/properties");
       }
     } catch (error) {
-      console.error("Error submitting property:", error);
-      message.error("Failed to submit property");
+      if(axios.isAxiosError(error)){
+        console.log(error.response?.data?.errors[0]?.message, "puthiyahh error==========================================>")
+        message.error(error.response?.data?.errors[0]?.message);
+      }else {
+        message.error("Unexpected error occured.")
+      }
     }
   };
 
@@ -167,13 +172,6 @@ const AddPropertyPage: React.FC = () => {
       });
     }
   }, [location.pathname, navigate]);
-
-  if (loading)
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
-        <RotateCw color="#9333ea" />{" "}
-      </div>
-    );
 
   return (
     <div className="flex-1 flex flex-col ">

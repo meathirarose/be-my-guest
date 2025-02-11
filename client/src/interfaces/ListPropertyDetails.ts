@@ -12,7 +12,8 @@ export interface PropertyBasicInfo {
     locality: string,
     pincode: string, 
     country: string,
-    state: string, 
+    state: string,
+    district: string, 
     city: string,
   }
   

@@ -36,7 +36,6 @@ export class PropertyRepository extends BaseRepository<IPropertyDoc> implements 
 
     async fetchProperty(propertyId: string): Promise<IPropertyDoc | null> {
         try {
-            console.log(propertyId, "property id from repo")
             return await this.findById(propertyId);
         } catch (error) {
             console.error("Error fetching property:", error);

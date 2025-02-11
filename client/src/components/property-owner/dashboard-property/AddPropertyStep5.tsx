@@ -25,9 +25,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data = [], onChange }) => {
       const urlParts = url.split('/');
       let fileName = urlParts[urlParts.length - 1];
       fileName = fileName.split('?')[0];
-
       fileName = decodeURIComponent(fileName);
-
       return fileName;
     } catch (error) {
       console.log(error,"Error in extracting file name");
@@ -94,15 +92,18 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data = [], onChange }) => {
           }
         } catch (error) {
           console.error("Upload error:", error);
-          setUploadedFiles(prev => prev.map((f, index) => 
-            index === fileIndex ? { 
-              ...f, 
-              uploading: false, 
-              error: 'Upload failed',
-              url: '',
-              isExisting: false
-            } : f
-          ));
+          setUploadedFiles(prev => {
+            const updated = prev.map((f, index) => 
+              index === fileIndex ? { 
+                ...f, 
+                uploading: false, 
+                error: 'Upload failed',
+                url: '',
+                isExisting: false
+              } : f
+            );
+            return updated;
+          });
           message.error(`Failed to upload ${file.name}`);
         }
       }
@@ -131,6 +132,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data = [], onChange }) => {
             Adding high-quality photos to your listing can make a big difference. Properties with good images <br/> 
             are likely to get more clicks from users interested in booking a property.
           </p>
+
           <div className="border-b border-gray-200 my-4"></div>
         </div>
 
