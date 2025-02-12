@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Tabs, Button, message } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import AddPropertyStep1 from "./AddPropertyStep1";
@@ -91,7 +91,6 @@ const AddPropertyPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isEditMode]);
 
-  // Extract the current step from the URL
   const getCurrentStep = () => {
     const pathParts = location.pathname.split("/");
     const lastPart = pathParts[pathParts.length - 1];
@@ -101,15 +100,15 @@ const AddPropertyPage: React.FC = () => {
 
   const activeStep = parseInt(getCurrentStep());
 
-  const steps = [
+  const steps = useMemo(() => [
     { id: 1, label: `${isEditMode ? "Edit" : "Get"} Started` },
     { id: 2, label: "Step 1: Basic Details" },
     { id: 3, label: "Step 2: Location" },
     { id: 4, label: "Step 3: Rooms & Spaces" },
     { id: 5, label: "Step 4: Photos & Videos" },
     { id: 6, label: "Step 5: Pricing & Availability" },
-    { id: 7, label: "Step 5: Publish & Live" },
-  ];
+    { id: 7, label: "Step 6: Publish & Live" },
+  ], [isEditMode]);
 
   const updateBasicInfo = (data: Partial<PropertyBasicInfo>) => {
     setFormData((prev) => ({ ...prev, basicInfo: { ...prev.basicInfo, ...data },}));
@@ -148,7 +147,6 @@ const AddPropertyPage: React.FC = () => {
       }
     } catch (error) {
       if(axios.isAxiosError(error)){
-        console.log(error.response?.data?.errors[0]?.message, "puthiyahh error==========================================>")
         message.error(error.response?.data?.errors[0]?.message);
       }else {
         message.error("Unexpected error occured.")

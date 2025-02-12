@@ -57,11 +57,6 @@ const AddPropertyStep3: React.FC<Step3Props> = ({ data, onChange }) => {
 
       if (result.features.length > 0) {
         const address = result.features[0].properties;
-        console.log(
-          "lets find what address is============================================>",
-          address
-        );
-
         const updatedData: Partial<PropertyLocation> = {
           city: address.address_line1,
           country: address.country,
@@ -145,7 +140,7 @@ const AddPropertyStep3: React.FC<Step3Props> = ({ data, onChange }) => {
           name="country"
           placeholder="Country"
           value={data.country}
-          disabled
+          onChange={(e) => onChange({ country: e.target.value })}
         />
       </div>
 
