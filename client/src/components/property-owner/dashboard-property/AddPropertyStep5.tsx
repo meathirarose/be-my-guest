@@ -66,7 +66,7 @@ const AddPropertyStep5: React.FC<Step5Props> = ({ data = [], onChange }) => {
 
     const uploadPromises = files.map(async (file, index) => {
       try {
-        const cloudinaryUrl = await uploadMediaToCloudinary(file, 'property-listings');
+        const cloudinaryUrl = await uploadMediaToCloudinary(file, 'be-my-guest/property-listings');
         
         if (!cloudinaryUrl) throw new Error('Upload failed');
         
