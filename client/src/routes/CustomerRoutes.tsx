@@ -7,6 +7,7 @@ import CustomerSignUp from "../pages/customer/SignUp";
 import Home from "../pages/customer/Home";
 import PropertyDetails from "../pages/customer/PropertyDetails";
 import PublicRoute from "./PublicRoute";
+import Profile from "../pages/customer/Profile";
 
 const CustomerRoutes: React.FC = () => (
   <Routes>
@@ -21,6 +22,7 @@ const CustomerRoutes: React.FC = () => (
     <Route element={<PrivateRouteForCustomer />}>
       <Route path="/customer/home" element={<Home />} />
       <Route path="/customer/property-details" element={<PropertyDetails />} />
+      <Route path="/customer/profile" element={<Profile />} />
     </Route>
   </Routes>
 );

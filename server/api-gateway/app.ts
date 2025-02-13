@@ -4,7 +4,7 @@ import cors from 'cors';
 import proxy from 'express-http-proxy';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { currentUser } from '@be-my-guest/common';
+import { errorHandler, requireAuth } from '@be-my-guest/common';
 
 dotenv.config();
 
@@ -24,10 +24,12 @@ const corsOptions = {
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-app.use(currentUser);
+// app.use(requireAuth);
 
 app.use('/user-service', proxy(`${process.env.USER_SERVICE_URL}`));
 app.use('/property-service', proxy(`${process.env.PROPERTY_SERVICE_URL}`));
+
+app.use(errorHandler);
 
 const PORT = process.env.SERVER_PORT || 4000;
 

@@ -7,6 +7,8 @@ import { IUserController } from "../interfaces/IUserController";
 import { verifyGoogleToken } from "../utils/authUtils";
 import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
 import { IUserService } from "../interfaces/IUserService";
+import { changePasswordValidationSchema } from "../validations/ChangePasswordValidation";
+import { updateProfileValidationSchema } from "../validations/UpdateProfileValidation";
 
 export class UserController implements IUserController{
     private userService: IUserService;
@@ -27,12 +29,10 @@ export class UserController implements IUserController{
             }
 
             const { name, email, password, country } = value;
-            if(!value)
-                throw new NotFoundError("Missing credentials!");
 
             const user = await this.userService.registerUser(name, email, password, country);
-            if(!user)
-                throw new BadRequestError("Unable to create a user account");
+
+            if(!user) throw new BadRequestError("Unable to create a user account");
             
             res.status(201).json({ message: "Account created successfully!", data: user });
 
@@ -44,13 +44,10 @@ export class UserController implements IUserController{
     public verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { token } = req.query;
-            
-            if(!token)
-                throw new NotFoundError("Missing validation credentials");
-    
+                
             const user = await this.userService.verifyEmail(token as string);
-            if(!user)
-                throw new NotFoundError("User not found");
+
+            if(!user) throw new BadRequestError("Unable to verify email");
        
             res.status(200).json({ 
                 status: "success", 
@@ -69,23 +66,18 @@ export class UserController implements IUserController{
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
 
             if(error){
-                console.log(error);
                 const errorMessages = error.details.map(detail => detail.message);
-
+                
                 res.status(400).json({ message: 'Validation error', error: errorMessages});
                 return;
             }
 
             const { email, password } = value;
 
-            if(!email || !password) {
-                throw new NotFoundError("Email and Password are required!");
-            }
-
             const user = await this.userService.signInUser(email, password);
-                
-            if (!user) throw new NotFoundError("User not found!");
 
+            if(!user) throw new BadRequestError("Login failed");
+                
             if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
             
             const token = AuthService.generateToken( { 
@@ -132,9 +124,9 @@ export class UserController implements IUserController{
     public refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { refreshToken } = req.cookies;
-
+            
             if (!refreshToken) throw new NotFoundError("Refresh token is missing!");
-
+            
             const decoded = AuthService.verifyRefreshToken(refreshToken);
 
             if (!decoded) throw new BadRequestError("Invalid refresh token!");
@@ -234,10 +226,6 @@ export class UserController implements IUserController{
         try {
             const { email } = req.body;
 
-            if(!email) {
-                throw new NotFoundError("No account found with the provided email address.");
-            }
-
             await this.userService.forgotPassword(email);
 
             res.status(200).json({ 
@@ -255,31 +243,55 @@ export class UserController implements IUserController{
 
             if (error) {
                 const errorMessages = error.details.map((detail) => detail.message);
-                return res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+                res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+                return;
             }
             
             const { password, token } = value;
 
-            if(!password || !token) {
-                throw new NotFoundError("Required credentials are missing.")
-            }
-
             await this.userService.resetPassword(password, token);
             
-            return res.status(200).json({ message: "Your password has been updated successfully. You can now log in with your new password."
-            });
+            return res.status(200).json({ 
+                message: "Your password has been updated successfully. You can now log in with your new password."
+                });
+
         } catch (error) {
             next(error);
             return;
         }
     };
 
+    public changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const { error, value } = changePasswordValidationSchema.validate(req.body, { abortEarly: false });
+
+            if (error) {
+                const errorMessages = error.details.map((detail) => detail.message);
+                res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+                return;
+            }
+
+            const { password, email } = value;
+
+            await this.userService.changePassword(password, email);
+
+            return res.status(200).json({ message: "Your password has been changed successfully."});
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { name, email, country, profileImage } = req.body;
 
-            if(!name || !email || !country || !profileImage)
-                throw new NotFoundError("Missing credentials!");
+            const { error, value } = updateProfileValidationSchema.validate(req.body, { abortEarly: true });
+
+            if (error) {
+                const errorMessages = error.details.map((detail) => detail.message);
+                return res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+            }
+
+            const { name, email, country, profileImage } = value;
 
             const user = await this.userService.updateProfile(name, email, country, profileImage);
 

@@ -9,7 +9,7 @@ dotenv.config();
 const start = async () => {
   console.log("✨ Starting Up......!");
 
-  if (!process.env.JWT_SECRET) {
+  if (!process.env.ACCESS_SECRET) {
     throw new NotFoundError("JWT_SECRET must be declared");
   }
 

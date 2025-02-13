@@ -42,7 +42,7 @@ const Sidebar: React.FC = () => {
 
   // Define menu items for each role
   const customerMenu: MenuItem[] = [
-    { label: "Your Profile", icon: FiEdit, route: "/profile" },
+    { label: "Your Profile", icon: FiEdit, route: "/customer/profile" },
     { label: "Bookings", icon: FiBookOpen, route: "/bookings" },
     { label: "Refunds", icon: FiRefreshCcw, route: "/refunds" },
     { label: "Messages", icon: FiMessageSquare, route: "/messages" },

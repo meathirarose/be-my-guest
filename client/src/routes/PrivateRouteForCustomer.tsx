@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 const PrivateRouteForCustomer: React.FC = () => {
-
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.isVerified
   );

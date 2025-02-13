@@ -1,28 +1,49 @@
 import React, { useState } from "react";
 import InputField from "../../../shared/components/ui/InputField";
 import { Button, message } from "antd";
+import { changePassword } from "../../../api/userAuthApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import axios from "axios";
 
 const PasswordTab: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const email = user.user?.email;
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
 
-  const handleChangePassword = () => {
-    if (!password || !confirmPassword) {
-      message.error("Please fill out both fields.");
-      return;
+  const handleChangePassword = async () => {
+    try {
+      if (!password || !confirmPassword) {
+        message.error("Please fill out both fields.");
+        return;
+      }
+  
+      if (password !== confirmPassword) {
+        setConfirmPasswordError("Passwords do not match.");
+        return;
+      }
+  
+      if(!email) {
+        message.error("User email is not found");
+        return;
+      }
+      const response = await changePassword(password, confirmPassword, email);
+      console.log(response);
+      message.success("Password successfully changed!");
+  
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      if(axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.message || "An error occurred";
+        message.error(errorMessage);
+      } else {
+        message.error("Something went wrong. Please try again.");
+      }
     }
-
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
-      return;
-    }
-
-    message.success("Password successfully changed!");
-
-    setPassword("");
-    setConfirmPassword("");
   };
 
   return (

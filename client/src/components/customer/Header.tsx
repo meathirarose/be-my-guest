@@ -33,7 +33,7 @@ const Header: React.FC = () => {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile");
+    navigate("/customer/profile");
   };
 
   const handleLogoClick = () => {

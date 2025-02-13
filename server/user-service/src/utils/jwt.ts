@@ -5,20 +5,20 @@ dotenv.config();
 
 export class AuthService {
     static generateToken(user: JwtPayloadInput): string {
-        return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET!, {
-            expiresIn: process.env.JWT_EXPIRATION!
+        return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.ACCESS_SECRET!, {
+            expiresIn: process.env.ACCESS_EXPIRATION!
         });
     }
 
     static generateRefreshToken(user: JwtPayloadInput): string {
         return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.REFRESH_SECRET!, {
-            expiresIn: process.env.JWT_EXPIRATION!
+            expiresIn: process.env.REFRESH_EXPIRATION!
         })
     }
 
     static verifyToken(token: string): JwtPayload | null {
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+            const decoded = jwt.verify(token, process.env.ACCESS_SECRET!);
             return decoded as JwtPayload;
         } catch (error) {
             console.log(error)
@@ -29,6 +29,7 @@ export class AuthService {
     static verifyRefreshToken(token: string): JwtPayload | null {
         try {
             const decoded = jwt.verify(token, process.env.REFRESH_SECRET!);
+             console.log(decoded, "refresh ro===================")
             return decoded as JwtPayload;
         } catch (error) {
             console.log(error)

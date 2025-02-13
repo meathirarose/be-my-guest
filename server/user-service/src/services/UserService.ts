@@ -117,7 +117,6 @@ export class UserService implements IUserService {
 
       await EmailService.sendPasswordResetMail(user.email);
 
-      console.log(`Password reset email sent to: ${email}`);
     } catch (error) {
       console.error("Error occurred in resetPassword service:", error);
 
@@ -145,7 +144,6 @@ export class UserService implements IUserService {
 
       await this.userRepository.update({ email }, { password: hashedPassword });
 
-      console.log(`Password reset successfully for: ${email}`);
     } catch (error) {
       console.error("Error occurred in resetPassword service:", error);
 
@@ -156,6 +154,26 @@ export class UserService implements IUserService {
       throw new BadRequestError(
         "An unexpected error occurred while resetting the password."
       );
+    }
+  }
+
+  async changePassword(password: string, email: string): Promise<void> {
+    try {
+      const user = await this.userRepository.findByEmail(email);
+
+      if(!user) throw new NotFoundError("No account with the provided email found.");
+      
+      const isSamePassword = await bcryptjs.compare(password, user.password);
+
+      if(isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
+
+      const hashedPassword = await bcryptjs.hash(password, 10);
+
+      await this.userRepository.update({ email }, { password: hashedPassword });
+
+    } catch (error) {
+      console.error("Error in change password service:", error);
+      throw error;
     }
   }
 

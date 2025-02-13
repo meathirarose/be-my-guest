@@ -8,6 +8,7 @@ export interface IUserController {
     googleLogin(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
     forgotPassword(req:Request,res:Response, next: NextFunction):Promise<void>;
     resetPassword(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
+    changePassword(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
     updateProfile(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
     fetchAllCustomers(req:Request,res:Response, next: NextFunction): Promise<void>;
     updateUserStatus(req:Request, res:Response, next: NextFunction): Promise<void>;

@@ -115,6 +115,7 @@ export const registerPropertyOwner = async (
   }
 };
 
+// google login for all users
 export const googleLogin = async ({ idToken }: { idToken: string }) => {
   try {
     const response = await axios.post(
@@ -129,6 +130,7 @@ export const googleLogin = async ({ idToken }: { idToken: string }) => {
   }
 };
 
+// forgot password common
 export const forgotPassword = async (email: string) => {
   try {
     const response = await axios.post(
@@ -142,6 +144,7 @@ export const forgotPassword = async (email: string) => {
   }
 }
 
+// reset password common
 export const resetPassword = async (password: string, confirmPassword: string, token: string) => {
   try {
     const response = await axios.post(
@@ -151,6 +154,20 @@ export const resetPassword = async (password: string, confirmPassword: string, t
     return response;
   } catch (error) {
     console.error("Error during reset password:", error);
+    throw error;
+  }
+}
+
+// change password common
+export const changePassword = async (password: string, confirmPassword: string, email: string) => {
+  try {
+    const response = await axiosInstance.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/change-password`,
+      { password, confirmPassword, email }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during change password:", error);
     throw error;
   }
 }
@@ -176,6 +193,7 @@ export const updateProfile = async (name: string, email: string, country: string
   }
 }
 
+// fetching all customers
 export const fetchAllCustomers = async () => {
   try {
     const response = await axios.get(
@@ -189,6 +207,7 @@ export const fetchAllCustomers = async () => {
   }
 }
 
+// update the status of the users
 export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
   try {
     const response =  await axiosInstance.patch(
@@ -203,6 +222,7 @@ export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
   }
 }
 
+// fetch all property owners
 export const fetchAllPropertyOwners = async () => {
   try {
     const response = await axios.get(
@@ -216,6 +236,7 @@ export const fetchAllPropertyOwners = async () => {
   }
 }
 
+// logout user
 export const logoutUser = async () => {
   try {
     const response = await axios.post(

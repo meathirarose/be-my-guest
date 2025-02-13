@@ -5,9 +5,12 @@ import { UserService } from "../services/UserService";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { IUserService } from "../interfaces/IUserService";
 import { IUserController } from "../interfaces/IUserController";
+import { requireAuth, validateRequest } from "@be-my-guest/common";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
-import { currentUser, requireAuth, validateRequest } from "@be-my-guest/common";
+import { updateProfileValidationSchema } from "../validations/UpdateProfileValidation";
+import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
+import { changePasswordValidationSchema } from "../validations/ChangePasswordValidation";
 
 
 const router = express.Router();
@@ -24,7 +27,7 @@ router.post(
 
 router.post(
   "/verify-email",
-  currentUser,
+  requireAuth,
   userController.verifyEmail
 );
 
@@ -36,7 +39,6 @@ router.post(
 
 router.post(
   "/refresh-token",
-  currentUser, 
   userController.refreshToken as RequestHandler
 );
 
@@ -52,33 +54,39 @@ router.post(
 
 router.post(
   "/reset-password",
+  validateRequest(resetPasswordValidationSchema),
   userController.resetPassword as RequestHandler
+);
+
+router.post(
+  "/change-password",
+  requireAuth,
+  validateRequest(changePasswordValidationSchema),
+  userController.changePassword as RequestHandler
 );
 
 router.patch(
   "/update-profile",
-  currentUser,
   requireAuth,
+  validateRequest(updateProfileValidationSchema),
   userController.updateProfile as RequestHandler
 );
 
 router.get(
   "/fetch-customers",
-  currentUser,
   requireAuth,
   userController.fetchAllCustomers as RequestHandler
-)
+);
 
 router.patch(
   "/:userId/update-status",
-  currentUser, 
   requireAuth,
   userController.updateUserStatus as RequestHandler
-)
+);
 
 router.post(
   "/logout-customer",
-  currentUser,   
+  requireAuth,
   userController.logoutUser as RequestHandler
 );
 
