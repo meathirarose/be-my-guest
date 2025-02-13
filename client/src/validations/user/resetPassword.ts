@@ -17,6 +17,6 @@ export const resetPasswordValidationSchema = Joi.object({
       'string.base': 'Confirm password must be a string',
       'string.empty': 'Confirm password cannot be empty',
       'any.required': 'Confirm password is required',
-      'string.valid': 'Confirm password must match the password',
+      'any.only': 'Confirm password must match the password',
     }),
 });

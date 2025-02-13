@@ -3,9 +3,11 @@ import verifyEmailImage from "../../../assets/customer-images/signup-image.jpg";
 import InputField from "../ui/InputField";
 import { SubmitButton } from "../../../components/buttons/SubmitButton";
 import { useNavigate } from "react-router-dom";
-import { showToast } from "../../utils/toastUtils";
 import { resetPassword } from "../../../api/userAuthApi";
 import { resetPasswordValidationSchema } from "../../../validations/user/resetPassword";
+import axios from "axios";
+import { message } from "antd";
+// import {jwtDecode} from "jwt-decode";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -22,14 +24,16 @@ const ResetPassword: React.FC = () => {
     if (name === "password") {
       setPassword(value);
     } else if (name === "confirmPassword") {
+      console.log(value);
       setConfirmPassword(value);
     }
   };
 
   const validateForm = () => {
-    const { error } = resetPasswordValidationSchema.validate({password, confirmPassword}, {
-      abortEarly: false,
-    });
+    const { error } = resetPasswordValidationSchema.validate(
+      { password, confirmPassword },
+      { abortEarly: false, }
+    );
 
     if (!error) {
       setErrors({ password: "", confirmPassword: "" });
@@ -41,9 +45,9 @@ const ResetPassword: React.FC = () => {
     };
 
     error.details.forEach((detail) => {
-      newErrors[detail.path[0] as "password" | "confirmPassword"] = detail.message;
+      newErrors[detail.path[0] as "password" | "confirmPassword"] =
+        detail.message;
     });
-
     setErrors(newErrors);
     return false;
   };
@@ -55,22 +59,34 @@ const ResetPassword: React.FC = () => {
     }
     setIsLoading(true);
     try {
-        const token = new URLSearchParams(window.location.search).get("token");
-        console.log(token, "token ondetto from reset password");
-        if(!token) {
-          showToast("error", "Invalid reset password link.");
-          navigate("/customer/login");
-          return;
-        }
-        const response = await resetPassword(password, confirmPassword, token);
-        showToast("success", response.data.message || "Password successfully reset!");
-        navigate("/customer/login");
-      } catch (error) {
-        showToast("error", "Something went wrong. Please try again.");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
+      const token = new URLSearchParams(window.location.search).get("token");
+      // const decodedToken = jwtDecode(token);
+
+      if (!token) {
+        message.error("Invalid reset password link."); 
+        // navigate("/customer/login");
+        return;
       }
+      const response = await resetPassword(password, confirmPassword, token);
+      message.success(response.data.message);
+      if (response.data.role === "customer") {
+        navigate("/customer/login");
+      } else if (response.data.role === "property-owner") {
+        navigate("/host/signin");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.errors?.[0]?.message ||
+          error.response?.data?.message ||
+          "An error occurred";
+          message.error(errorMessage);
+      } else {
+        message.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -80,7 +96,6 @@ const ResetPassword: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="relative w-106 h-1/2 bg-purple-400 rounded-2xl overflow-hidden shadow-xl">
-        
         <img
           src={verifyEmailImage}
           alt="Email Verification"
@@ -89,7 +104,8 @@ const ResetPassword: React.FC = () => {
 
         <div className="relative z-20 bg-purple-500 bg-opacity-20 border-2 border-purple-600 rounded-2xl p-24 flex flex-col items-center justify-center h-full">
           <div className="text-4xl font-bold px-6 mb-14 text-center">
-            <span className="text-purple-700">Be My</span> <span className="text-white">Guest</span>
+            <span className="text-purple-700">Be My</span>{" "}
+            <span className="text-white">Guest</span>
           </div>
           <h2 className="text-2xl font-bold leading-snug text-center text-white mb-4">
             Reset Your Password
@@ -129,7 +145,6 @@ const ResetPassword: React.FC = () => {
             </button>
           </form>
         </div>
-
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import nodeMailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Role } from "../interfaces/IUserModel";
 
 dotenv.config();
 
@@ -131,8 +132,8 @@ export class EmailService {
     });
   }
 
-  static async sendPasswordResetMail(email: string): Promise<void> {
-    const resetToken = jwt.sign({ email }, EMAIL_SECRET, {
+  static async sendPasswordResetMail(email: string, role: Role): Promise<void> {
+    const resetToken = jwt.sign({ email, role }, EMAIL_SECRET, {
       expiresIn: EMAIL_EXPIRATION,
     });
 

@@ -249,10 +249,11 @@ export class UserController implements IUserController{
             
             const { password, token } = value;
 
-            await this.userService.resetPassword(password, token);
+            const response = await this.userService.resetPassword(password, token);
             
             return res.status(200).json({ 
-                message: "Your password has been updated successfully. You can now log in with your new password."
+                message: "Your password has been updated successfully. You can now log in with your new password.",
+                role: response
                 });
 
         } catch (error) {

@@ -29,7 +29,6 @@ export class AuthService {
     static verifyRefreshToken(token: string): JwtPayload | null {
         try {
             const decoded = jwt.verify(token, process.env.REFRESH_SECRET!);
-             console.log(decoded, "refresh ro===================")
             return decoded as JwtPayload;
         } catch (error) {
             console.log(error)

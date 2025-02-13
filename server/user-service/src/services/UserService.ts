@@ -115,7 +115,7 @@ export class UserService implements IUserService {
         throw new NotFoundError("User not found with this email");
       }
 
-      await EmailService.sendPasswordResetMail(user.email);
+      await EmailService.sendPasswordResetMail(user.email, user.role);
 
     } catch (error) {
       console.error("Error occurred in resetPassword service:", error);
@@ -130,11 +130,12 @@ export class UserService implements IUserService {
     }
   }
 
-  async resetPassword(password: string, token: string): Promise<void> {
+  async resetPassword(password: string, token: string): Promise<Role | null> {
     try {
       const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
 
       const user = await this.userRepository.findByEmail(email);
+      console.log(user, "from the service - user")
 
       if (!user) {
         throw new NotFoundError("User not found with this email");
@@ -143,6 +144,7 @@ export class UserService implements IUserService {
       const hashedPassword = await bcryptjs.hash(password, 10);
 
       await this.userRepository.update({ email }, { password: hashedPassword });
+      return user.role;
 
     } catch (error) {
       console.error("Error occurred in resetPassword service:", error);
