@@ -1,126 +1,102 @@
-import React from 'react';
-import { Wifi, Coffee, Utensils, MessageCircle } from 'lucide-react';
-import Header from '../../components/customer/Header';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { message } from "antd";
+import { RotateCw } from "lucide-react";
+import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
+import { fetchPropertyById } from "../../api/listPropertyApi";
 
-interface PropertyListing {
-  title: string;
-  price: number;
-  location: string;
-  description: string;
-  images: string[];
-  amenities: string[];
-}
+const PropertyDetails: React.FC = () => {
+    const { id } = useParams();
+    console.log(id, " property details-----------------------------------------------------------")
+    const propertyId = id || null;
 
-const PropertyCard: React.FC = () => {
-  const property: PropertyListing = {
-    title: "Marari Beach Palace - Deluxe",
-    price: 69,
-    location: "Kattoor, India",
-    description: "This is really a good place to find peace compared to the crowded cities. Perfect place for a weekend gateway from the city life and business pressures. Big compound with many facilities by default. Food is available on request for lunch and dinner.",
-    images: [
-      "/api/placeholder/600/400",
-      "/api/placeholder/300/200",
-      "/api/placeholder/300/200",
-      "/api/placeholder/300/200"
-    ],
-    amenities: ["Wifi", "Coffee maker", "Kitchen", "Free parking"]
-  };
+    const [formData, setFormData] = useState<PropertyFormData | null>(null);
+    const [loading, setLoading] = useState(true);
 
-  return (
-    <div className="max-w-4xl mx-auto p-6 bg-white">
-        <Header />
+    useEffect(() => {
+        const fetchPropertyData = async () => {
+            if (!propertyId) {
+                setLoading(false);
+                return;
+            }
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-24">
-        {/* Main Image */}
-        <div className="md:col-span-2">
-          <img
-            src={property.images[0]}
-            alt={property.title}
-            className="w-full h-64 object-cover rounded-lg"
-          />
-        </div>
-        
-        {/* Side Images */}
-        <div className="grid grid-cols-1 gap-2">
-          {property.images.slice(1, 4).map((img, idx) => (
-            <img
-              key={idx}
-              src={img}
-              alt={`${property.title} ${idx + 1}`}
-              className="w-full h-20 object-cover rounded-lg"
-            />
-          ))}
-        </div>
-      </div>
+            try {
+                setLoading(true);
+                const response = await fetchPropertyById(propertyId);
+                console.log("am i getting the response========================================", response)
+                if (response.data) setFormData(response.data.data);
+            } catch (error) {
+                console.error("Error fetching property data:", error);
+                message.error("Failed to fetch property details");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-      {/* Property Details */}
-      <div className="mt-6">
-        <h1 className="text-2xl font-semibold">{property.title}</h1>
-        <p className="text-gray-600 mt-2">{property.location}</p>
-        
-        {/* Amenities */}
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Wifi className="w-5 h-5 text-gray-600" />
-            <span>Free Wifi</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Coffee className="w-5 h-5 text-gray-600" />
-            <span>Breakfast included</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Utensils className="w-5 h-5 text-gray-600" />
-            <span>Kitchen facilities</span>
-          </div>
-        </div>
+        fetchPropertyData();
+    }, [propertyId]);
 
-        {/* Description */}
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">About this place</h2>
-          <p className="text-gray-600">{property.description}</p>
-        </div>
-
-        {/* Price and Booking */}
-        <div className="mt-6 border-t pt-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="text-2xl font-bold">${property.price}</span>
-              <span className="text-gray-600"> / night</span>
+    if (loading)
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
+                <RotateCw color="#9333ea" size={32} className="animate-spin" />
             </div>
-            <button className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors">
-              Check availability
-            </button>
-          </div>
-        </div>
+        );
 
-        {/* Calendar */}
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-4">5 nights in Mararikulam</h2>
-          <div className="border rounded-lg p-4">
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {Array.from({ length: 31 }, (_, i) => (
-                <div
-                  key={i}
-                  className="p-2 hover:bg-gray-100 rounded cursor-pointer"
-                >
-                  {i + 1}
+    if (!formData) return <p className="text-center text-gray-600">No property details available.</p>;
+
+    return (
+        <div className="max-w-5xl mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
+            {/* Property Title */}
+            <h1 className="text-4xl font-bold text-gray-800">{formData.basicInfo.propertyName}</h1>
+            <p className="text-gray-600 text-lg mt-1">{formData.location.houseName}, {formData.location.city}, {formData.location.state}, {formData.location.country}</p>
+
+            {/* Image Gallery */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                {formData.mediaUrls.map((url, index) => (
+                    <img key={index} src={url} alt={`Property Image ${index + 1}`} className="rounded-lg w-full h-48 object-cover shadow-md" />
+                ))}
+            </div>
+
+            {/* Property Information */}
+            <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700">Property Details</h2>
+                <ul className="mt-2 text-gray-600 space-y-1">
+                    <li><strong>Build Year:</strong> {formData.basicInfo.buildYear}</li>
+                    <li><strong>Owner Lives Here:</strong> {formData.basicInfo.liveAtProperty ? "Yes" : "No"}</li>
+                    <li><strong>Contact Email:</strong> {formData.basicInfo.contactEmail}</li>
+                    <li><strong>Contact Mobile:</strong> {formData.basicInfo.contactMobile}</li>
+                </ul>
+            </div>
+
+            {/* Rooms & Spaces */}
+            <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700">Rooms & Spaces</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 text-gray-600">
+                    {Object.entries(formData.roomsAndSpaces).map(([key, value]) => (
+                        <div key={key} className="flex items-center space-x-2">
+                            <span className="text-gray-700 capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
+                            <span className="text-lg font-semibold text-gray-800">{value}</span>
+                        </div>
+                    ))}
                 </div>
-              ))}
             </div>
-          </div>
-        </div>
 
-        {/* Chat with Host */}
-        <div className="mt-6 border-t pt-6">
-          <h2 className="text-lg font-semibold mb-4">Chat with Host</h2>
-          <button className="flex items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-50">
-            <MessageCircle className="w-5 h-5" />
-            <span>Get your questions answered instantly</span>
-          </button>
+            {/* Pricing & Availability */}
+            <div className="mt-6 bg-white p-6 rounded-lg shadow-md flex justify-between items-center">
+                <div>
+                    <h3 className="text-xl font-semibold text-gray-800">Price</h3>
+                    <p className="text-lg text-gray-600">₹{formData.pricing.price} per night</p>
+                    <p className={`text-md ${formData.pricing.availability === "Available" ? "text-green-600" : "text-red-600"}`}>
+                        {formData.pricing.availability}
+                    </p>
+                </div>
+                <button className="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700 transition duration-300">
+                    Book Now
+                </button>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default PropertyCard;
+export default PropertyDetails;

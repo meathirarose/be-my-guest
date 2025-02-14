@@ -166,7 +166,7 @@ const LoginForm: React.FC = () => {
           </div>
 
           <SocialLoginButton
-            icon={<FcGoogle className="text-2xl" />}
+            icon={<FcGoogle className="text-2xl rounded-xl" />}
             text="Continue with Google"
             onClick={handleGoogleLogin}
           />

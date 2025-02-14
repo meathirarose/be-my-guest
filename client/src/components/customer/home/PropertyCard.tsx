@@ -35,7 +35,11 @@ const getFirstImageUrl = (mediaUrls: string[]): string => {
   return imageUrls.length > 0 ? imageUrls[0] : '/api/placeholder/400/300';
 };
 
-const PropertyCard: React.FC = () => {
+interface PropertyCardProps {
+  onPropertyClick: (id: string) => void;
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +78,7 @@ const PropertyCard: React.FC = () => {
       {properties.map((property) => (
         <div
           key={property.id}
+          onClick={() => onPropertyClick(property.id)}
           className="w-72 bg-white shadow-xl rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer"
         >
           <div className="relative">

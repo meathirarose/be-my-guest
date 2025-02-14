@@ -21,7 +21,7 @@ const CustomerRoutes: React.FC = () => (
     {/* Private Routes */}
     <Route element={<PrivateRouteForCustomer />}>
       <Route path="/customer/home" element={<Home />} />
-      <Route path="/customer/property-details" element={<PropertyDetails />} />
+      <Route path="/customer/property-details/:id" element={<PropertyDetails />} />
       <Route path="/customer/profile" element={<Profile />} />
     </Route>
   </Routes>

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../..
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { fetchAllProperties } from "../../api/listPropertyApi";
 import { Loader2 } from "lucide-react";
+import ShimmerCard from "../../shared/shimmers/ShimmerCard";
 
 interface Property {
   id: string;
@@ -45,18 +46,24 @@ const Properties: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
   const [loadingPropertyId, setLoadingPropertyId] = useState<string | null>(null);
+  const [countProperty, setCountProperty] = useState(0);
 
   useEffect(() => {
     fetchProperties();
   }, []);
 
   const fetchProperties = async () => {
+    setLoading(true);
     try {
       const response = await fetchAllProperties();
       setProperties(response.data.data);
+      setCountProperty(response.data.data.length)
     } catch (error) {
       console.error("Error fetching properties:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -91,71 +98,83 @@ const Properties: React.FC = () => {
         <AddPropertyButton onAdd={handleAddProperty} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {properties
-          .filter((property) =>
-            property.basicInfo.propertyName.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-          .map((property) => (
-            <Card
-              key={property.id}
-              className="w-full max-w-sm mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="h-56 overflow-hidden">
-                <img 
-                  src={getFirstImageUrl(property.mediaUrls)} 
-                  alt={property.basicInfo.propertyName}
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-
-              <CardHeader className="p-5 pb-2">
-                <CardTitle className="text-xl font-semibold text-purple-700 truncate">
-                  {property.basicInfo.propertyName}
-                </CardTitle>
-                <CardDescription className="text-base text-gray-600">
-                  {property.location.locality}, {property.location.state}
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="p-5 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center text-base text-gray-600">
-                    <span>{property.roomsAndSpaces.bedrooms} Bedrooms</span>
-                    <span className="mx-2">•</span>
-                    <span>{property.roomsAndSpaces.bathrooms} Bathrooms</span>
-                  </div>
-                  <p className="text-xl font-bold text-purple-700">
-                    ₹{parseInt(property.pricing.price).toLocaleString('en-IN')} / day
-                  </p>
-                  <p className="text-base font-medium text-green-600">
-                    {property.pricing.availability}
-                  </p>
-                </div>
-                
-                <div className="flex justify-end mt-4 space-x-4 text-purple-600">
-                  <EyeOutlined
-                    className="text-xl cursor-pointer hover:text-purple-800"
-                    onClick={() => handleViewProperty(property.id)}
-                    title="View"
-                  />
-                  {loadingPropertyId === property.id ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <EditOutlined
-                      className="text-xl cursor-pointer hover:text-purple-800"
-                      onClick={() => handleEditProperty(property.id)}
-                      title="Edit"
+        {loading
+          ? Array.from({ length: countProperty }).map((_, index) => (
+              <ShimmerCard key={index} />
+            ))
+          : properties
+              .filter((property) =>
+                property.basicInfo.propertyName
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              )
+              .map((property) => (
+                <Card
+                  key={property.id}
+                  className="w-full max-w-sm mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="h-56 overflow-hidden">
+                    <img
+                      src={getFirstImageUrl(property.mediaUrls)}
+                      alt={property.basicInfo.propertyName}
+                      className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
                     />
-                  )}
-                  <DeleteOutlined
-                    className="text-xl cursor-pointer hover:text-purple-800"
-                    onClick={() => handleDeleteProperty(property.id)}
-                    title="Delete"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </div>
+
+                  <CardHeader className="p-5 pb-2">
+                    <CardTitle className="text-xl font-semibold text-purple-700 truncate">
+                      {property.basicInfo.propertyName}
+                    </CardTitle>
+                    <CardDescription className="text-base text-gray-600">
+                      {property.location.locality}, {property.location.state}
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="p-5 pt-0">
+                    <div className="space-y-2">
+                      <div className="flex items-center text-base text-gray-600">
+                        <span>{property.roomsAndSpaces.bedrooms} Bedrooms</span>
+                        <span className="mx-2">•</span>
+                        <span>
+                          {property.roomsAndSpaces.bathrooms} Bathrooms
+                        </span>
+                      </div>
+                      <p className="text-xl font-bold text-purple-700">
+                        ₹
+                        {parseInt(property.pricing.price).toLocaleString(
+                          "en-IN"
+                        )}{" "}
+                        / day
+                      </p>
+                      <p className="text-base font-medium text-green-600">
+                        {property.pricing.availability}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-end mt-4 space-x-4 text-purple-600">
+                      <EyeOutlined
+                        className="text-xl cursor-pointer hover:text-purple-800"
+                        onClick={() => handleViewProperty(property.id)}
+                        title="View"
+                      />
+                      {loadingPropertyId === property.id ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <EditOutlined
+                          className="text-xl cursor-pointer hover:text-purple-800"
+                          onClick={() => handleEditProperty(property.id)}
+                          title="Edit"
+                        />
+                      )}
+                      <DeleteOutlined
+                        className="text-xl cursor-pointer hover:text-purple-800"
+                        onClick={() => handleDeleteProperty(property.id)}
+                        title="Delete"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
       </div>
     </div>
   );

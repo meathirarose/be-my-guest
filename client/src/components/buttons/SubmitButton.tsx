@@ -10,7 +10,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   <button
     type="submit"
     disabled={isLoading}
-    className={`w-full p-3 text-white rounded-lg ${
+    className={`w-full p-3 text-white rounded-xl ${
       isLoading ? "bg-gray-400" : "bg-purple-500 hover:bg-purple-600"
     }`}
   >
@@ -18,7 +18,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       <span
         className="spinner-border spinner-border-sm"
         role="status"
-        aria-hidden="true"
+        aria-hidden="true" 
       >Processing...</span>
     ) : (
       text
