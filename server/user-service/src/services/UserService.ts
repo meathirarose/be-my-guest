@@ -141,6 +141,10 @@ export class UserService implements IUserService {
         throw new NotFoundError("User not found with this email");
       }
 
+      const isSamePassword = await bcryptjs.compare(password, user.password);
+
+      if(isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
+
       const hashedPassword = await bcryptjs.hash(password, 10);
 
       await this.userRepository.update({ email }, { password: hashedPassword });

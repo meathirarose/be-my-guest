@@ -89,9 +89,7 @@ const PropertyDetails: React.FC = () => {
                         {formData.pricing.availability}
                     </p>
                 </div>
-                <button className="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700 transition duration-300">
-                    Book Now
-                </button>
+
             </div>
         </div>
     );

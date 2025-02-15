@@ -23,7 +23,6 @@ export class UserController implements IUserController{
 
             if(error){
                 const errorMessages = error.details.map(detail => detail.message);
-
                 res.status(400).json({ message: 'Validation error', error: errorMessages});
                 return;
             }
@@ -65,7 +64,7 @@ export class UserController implements IUserController{
         try {
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
 
-            if(error){
+            if(error) {
                 const errorMessages = error.details.map(detail => detail.message);
                 
                 res.status(400).json({ message: 'Validation error', error: errorMessages});
@@ -289,7 +288,8 @@ export class UserController implements IUserController{
 
             if (error) {
                 const errorMessages = error.details.map((detail) => detail.message);
-                return res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+                res.status(400).json({ message: "Invalid input. Please check your input and try again.", error: errorMessages });
+                return;
             }
 
             const { name, email, country, profileImage } = value;
@@ -312,8 +312,7 @@ export class UserController implements IUserController{
             
             const customers = await this.userService.fetchAllCustomers();
 
-            if(!customers || customers.length === 0)
-                throw new NotFoundError("No customers found.");
+            if(!customers || customers.length === 0) throw new NotFoundError("No customers found.");
 
             res.status(200).json({ message: "All customers are fetched", data: customers });
 

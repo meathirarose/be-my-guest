@@ -30,8 +30,7 @@ const PasswordTab: React.FC = () => {
         message.error("User email is not found");
         return;
       }
-      const response = await changePassword(password, confirmPassword, email);
-      console.log(response);
+      await changePassword(password, confirmPassword, email);
       message.success("Password successfully changed!");
   
       setPassword("");

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Tabs, Button, message } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
-import AddPropertyStep1 from "./AddPropertyStep1";
+import AddPropertyStep1 from "./AddPropertyStep1"; 
 import AddPropertyStep2 from "./AddPropertyStep2";
 import AddPropertyStep3 from "./AddPropertyStep3";
 import AddPropertyStep4 from "./AddPropertyStep4";
@@ -13,6 +13,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { PropertyBasicInfo, PropertyFormData, PropertyLocation, PropertyPricing, RoomsAndSpaces,} from "../../../interfaces/ListPropertyDetails";
 import axios from "axios";
+import Joi from "joi";
+import { propertyValidationSchema } from "../../../validations/property/propertyValidation";
 
 const { TabPane } = Tabs;
 
@@ -109,26 +111,58 @@ const AddPropertyPage: React.FC = () => {
     { id: 6, label: "Step 5: Pricing & Availability" },
     { id: 7, label: "Step 6: Publish & Live" },
   ], [isEditMode]);
-
+  
   const updateBasicInfo = (data: Partial<PropertyBasicInfo>) => {
     setFormData((prev) => ({ ...prev, basicInfo: { ...prev.basicInfo, ...data },}));
   };
-
+  
   const updateLocation = (data: Partial<PropertyLocation>) => {
     setFormData((prev) => ({ ...prev, location: { ...prev.location, ...data },}));
   };
-
+  
   const updateRoomsAndSpaces = (data: Partial<RoomsAndSpaces>) => {
     setFormData((prev) => ({ ...prev, roomsAndSpaces: { ...prev.roomsAndSpaces, ...data },}));
   };
-
+  
   const updateMedia = (urls: string[]) => {
     setFormData((prev) => ({ ...prev, mediaUrls: urls,})); 
   };
-
+  
   const updatePricing = (data: Partial<PropertyPricing>) => {
     setFormData((prev) => ({ ...prev, pricing: { ...prev.pricing, ...data },}));
   };
+  
+  const validationSchemas = useMemo(() => ({
+    2: Joi.object({ basicInfo: propertyValidationSchema.extract('basicInfo')}),
+    3: Joi.object({ location: propertyValidationSchema.extract('location')}),
+    4: Joi.object({ roomsAndSpaces: propertyValidationSchema.extract('roomsAndSpaces')}),
+    5: Joi.object({ mediaUrls: propertyValidationSchema.extract('mediaUrls')}),
+    6: Joi.object({ pricing: propertyValidationSchema.extract('pricing')}),
+  }),[]);
+
+  const validateStep = (step: number): boolean => {
+    if(step === 1 || step === 7) return true;
+    const schema = validationSchemas[step as keyof typeof validationSchemas];
+    if(!schema) return true;
+
+    let dataToValidate = {};
+    switch(step) {
+      case 2: dataToValidate = { basicInfo: formData.basicInfo }; break;
+      case 3: dataToValidate = { location : formData.location }; break;
+      case 4: dataToValidate = { roomsAndSpaces: formData.roomsAndSpaces }; break;
+      case 5: dataToValidate = { mediaUrls: formData.mediaUrls }; break;
+      case 6: dataToValidate = { pricing: formData.pricing }; break;
+    }
+    const { error } = schema.validate(dataToValidate, { abortEarly: false });
+    if(error) {
+      const errors = error.details.map(detail => detail.message);
+      errors.forEach(err => {
+        message.error(err)
+      });
+      return false;
+    }
+    return true;
+  }
 
   const handleFinalSubmit = async () => {
     try {
@@ -146,21 +180,46 @@ const AddPropertyPage: React.FC = () => {
         navigate("/host/dashboard/properties");
       }
     } catch (error) {
-      if(axios.isAxiosError(error)){
-        message.error(error.response?.data?.errors[0]?.message);
-      }else {
-        message.error("Unexpected error occured.")
-      }
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.errors?.[0]?.message ||
+          error.response?.data?.message ||
+          "An error occurred";
+          message.error(errorMessage);
+      } else {
+        message.error("Something went wrong. Please try again.");
+      } 
     }
   };
 
   const handleNext = () => {
-    setFormData((prev) => ({ ...prev }));
-    navigate(`/host/dashboard/properties/add-property-start/step-${activeStep + 1}`, { state: { id } });
+    if(validateStep(activeStep)) {
+      setFormData((prev) => ({ ...prev }));
+      navigate(`/host/dashboard/properties/add-property-start/step-${activeStep + 1}`, { state: { id } });
+    }
   };
 
   const handlePrevious = () => {
     if (activeStep > 1) navigate(`/host/dashboard/properties/add-property-start/step-${activeStep - 1}`,{ state: { id } });
+  };
+
+  const handleTabChange = (key: string) => {
+    const targetStep = parseInt(key);
+    
+    if (targetStep < activeStep) {
+      navigate(`/host/dashboard/properties/add-property-start/step-${key}`, { state: { id } }); return;
+    }
+
+    let isValid = true;
+    for (let step = activeStep; step < targetStep; step++) {
+      if (!validateStep(step)) {
+        isValid = false; break;
+      }
+    }
+
+    if (isValid) {
+      navigate(`/host/dashboard/properties/add-property-start/step-${key}`, { state: { id } });
+    }
   };
 
   useEffect(() => {
@@ -176,9 +235,7 @@ const AddPropertyPage: React.FC = () => {
       <div className="flex-1">
         <Tabs
           activeKey={activeStep.toString()}
-          onChange={(key) =>
-            navigate(`/host/dashboard/properties/add-property-start/step-${key}`,{ state: { id } })
-          }
+          onChange={handleTabChange}
           centered
           type="card"
           tabBarStyle={{

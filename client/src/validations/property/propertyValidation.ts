@@ -5,6 +5,7 @@ export const propertyValidationSchema = Joi.object({
     propertyName: Joi.string().min(3).max(100).required().messages({
       "string.min": "Property name must be at least 3 characters long",
       "string.max": "Property name cannot be longer than 100 characters",
+      "string.empty": "Property name is required",
       "any.required": "Property name is required",
     }),
     buildYear: Joi.number()
@@ -13,6 +14,7 @@ export const propertyValidationSchema = Joi.object({
       .max(new Date().getFullYear())
       .required()
       .messages({
+        "number.base": "Build year is required and must be a valid number",
         "number.min": "Build year must be after 1800",
         "number.max": `Build year cannot be in the future (max is ${new Date().getFullYear()})`,
         "any.required": "Build year is required",
@@ -21,10 +23,11 @@ export const propertyValidationSchema = Joi.object({
       .required()
       .messages({ "any.required": "Live at property status is required" }),
     contactEmail: Joi.string()
-    .email({ tlds: { allow: false } })
+      .email({ tlds: { allow: false } })
       .required()
       .messages({
         "string.email": "Invalid email address",
+        "string.empty": "Contact email cannot be empty",
         "any.required": "Contact email is required",
       }),
     contactMobile: Joi.string()
@@ -32,6 +35,7 @@ export const propertyValidationSchema = Joi.object({
       .required()
       .messages({
         "string.pattern.base": "Mobile number must be 10 digits",
+        "string.empty": "Contact mobile is required",
         "any.required": "Contact mobile number is required",
       }),
     contactLandline: Joi.string()
@@ -42,17 +46,19 @@ export const propertyValidationSchema = Joi.object({
         "string.pattern.base":
           'Value must be in the format "XXXXXXXX-XXXXXXXX" (each part up to 8 digits)',
       }),
-  }),
+  }).required(),
 
   location: Joi.object({
     houseName: Joi.string().min(3).max(100).required().messages({
       "string.min": "House name must be at least 3 characters long",
       "string.max": "House name cannot be longer than 100 characters",
+      "string.empty": "House name is required",
       "any.required": "House name is required",
     }),
     locality: Joi.string().min(3).max(100).required().messages({
       "string.min": "Locality must be at least 3 characters long",
       "string.max": "Locality cannot be longer than 100 characters",
+      "string.empty": "Locality is required",
       "any.required": "Locality is required",
     }),
     pincode: Joi.string()
@@ -60,26 +66,31 @@ export const propertyValidationSchema = Joi.object({
       .required()
       .messages({
         "string.pattern.base": "Pincode must be 5 to 10 digits",
+        "string.empty": "Pincode is required",
         "any.required": "Pincode is required",
       }),
     country: Joi.string().min(2).max(50).required().messages({
       "string.min": "Country name must be at least 2 characters long",
       "string.max": "Country name cannot be longer than 50 characters",
+      "string.empty": "Country is required",
       "any.required": "Country is required",
     }),
     state: Joi.string().min(2).max(50).required().messages({
       "string.min": "State name must be at least 2 characters long",
       "string.max": "State name cannot be longer than 50 characters",
+      "string.empty": "State is required",
       "any.required": "State is required",
     }),
     district: Joi.string().min(2).max(50).required().messages({
       "string.min": "District name must be at least 2 characters long",
       "string.max": "District name cannot be longer than 50 characters",
+      "string.empty": "District is required",
       "any.required": "District is required",
     }),
     city: Joi.string().min(2).max(50).required().messages({
       "string.min": "City name must be at least 2 characters long",
       "string.max": "City name cannot be longer than 50 characters",
+      "string.empty": "City is required",
       "any.required": "City is required",
     }),
   }).required(),
@@ -102,7 +113,6 @@ export const propertyValidationSchema = Joi.object({
       "any.required": "Number of lobby lounges is required",
     }),
     helpersRoom: Joi.number().integer().min(0).required().messages({
-      "number.base": "Helpers room must be a number",
       "number.min": "Helpers room cannot be negative",
       "any.required": "Helpers room is required",
     }),
@@ -136,17 +146,23 @@ export const propertyValidationSchema = Joi.object({
   }).required(),
 
   mediaUrls: Joi.array()
-    .items(Joi.string().uri().required())
-    .min(1)
+    .items(
+      Joi.string().uri().messages({
+        "string.uri": "Each media URL must be a valid URL",
+        "string.empty": "A media URL cannot be empty",
+      })
+    )
+    .min(3)
     .required()
     .messages({
-      "array.min": "At least one media URL is required",
-      "string.uri": "Each media URL must be valid",
+      "array.base": "Media URLs must be provided as a list",
+      "array.min": "At least three media file is required",
       "any.required": "Media URLs are required",
     }),
 
   pricing: Joi.object({
     price: Joi.number().min(0).required().messages({
+      "number.base": "Price must be a valid number",
       "number.min": "Price cannot be negative",
       "any.required": "Price is required",
     }),
@@ -156,6 +172,7 @@ export const propertyValidationSchema = Joi.object({
       .messages({
         "any.only":
           "Availability must be one of: Available, Not Available, or Booked",
+        "string.empty": "Availability status is required",
         "any.required": "Availability status is required",
       }),
   }).required(),

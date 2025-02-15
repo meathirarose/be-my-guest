@@ -159,4 +159,4 @@ export const propertyValidationSchema = Joi.object({
         "any.required": "Availability status is required",
       }),
   }).required(),
-});
+}); 
