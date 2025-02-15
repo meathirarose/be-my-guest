@@ -1,7 +1,7 @@
 import { app } from "./app";
 import { envConfig } from "./config/envConfig"; 
 import  connectToDatabase  from "./config/dbConfig";
-import { connectRabbitMQ } from "./config/rabbitmq";
+import { connectRabbitMQ } from "./config/rabbitmqConfig";
 
 const start = async () => {
   console.log("✨ Starting Up......!");

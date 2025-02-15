@@ -22,6 +22,6 @@ export const envConfig = {
     ACCESS_SECRET: process.env.ACCESS_SECRET as string,
     MONGO_URL: process.env.MONGO_URL as string,
     RABBITMQ_URL: process.env.RABBITMQ_URL as string,
-    PORT: process.env.PORT ? Number(process.env.PORT) : 3000,
+    PORT: Number(process.env.PORT),
     FRONTEND_URL: process.env.FRONTEND_URL as string,
 }
