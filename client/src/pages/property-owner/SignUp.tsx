@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerPropertyOwner } from "../../api/userAuthApi";
+import { SignUpUser } from "../../api/userAuthApi";
 import Header from "../../shared/components/layout/Header";
 import Footer from "../../shared/components/layout/Footer";
 import bg_signup from "../../assets/property-owner-images/bg-signin.jpg";
@@ -38,6 +38,7 @@ const SignupPage: React.FC = () => {
 
   const validateForm = () => {
     const { error } = signUpValidationSchema.validate(formData, { abortEarly: false });
+    console.log(error, "from validaton=======================================================")
     
         if (!error) {
           setErrors({
@@ -76,12 +77,13 @@ const SignupPage: React.FC = () => {
     }
 
     try {
-      const response = await registerPropertyOwner(
+      const response = await SignUpUser(
         formData.name,
         formData.email,
         formData.country,
         formData.password,
-        formData.confirmPassword
+        formData.confirmPassword,
+        "property-owner"
       );
 
       if (response.status === 201) {

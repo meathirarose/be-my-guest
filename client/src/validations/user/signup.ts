@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { Role } from "../../interfaces/UserRoles";
 
 export const signUpValidationSchema = Joi.object({
     name: Joi.string().min(3).max(50).required().messages({
@@ -38,4 +39,7 @@ export const signUpValidationSchema = Joi.object({
         'string.valid': 'Confirm password must match the password'
     }),
 
+    role: Joi.string()
+        .valid(...Object.values(Role)) 
+        .default(Role.CUSTOMER) 
 });

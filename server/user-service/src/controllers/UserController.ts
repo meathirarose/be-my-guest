@@ -27,10 +27,9 @@ export class UserController implements IUserController{
                 return;
             }
 
-            const { name, email, password, country } = value;
+            const { name, email, password, country, role } = value;
 
-            const user = await this.userService.registerUser(name, email, password, country);
-
+            const user = await this.userService.registerUser(name, email, password, country, role);
             if(!user) throw new BadRequestError("Unable to create a user account");
             
             res.status(201).json({ message: "Account created successfully!", data: user });
@@ -45,7 +44,6 @@ export class UserController implements IUserController{
             const { token } = req.query;
                 
             const user = await this.userService.verifyEmail(token as string);
-
             if(!user) throw new BadRequestError("Unable to verify email");
        
             res.status(200).json({ 
@@ -63,10 +61,8 @@ export class UserController implements IUserController{
     public signInUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { error, value } = signInValidationSchema.validate(req.body, { abortEarly: false });
-
             if(error) {
                 const errorMessages = error.details.map(detail => detail.message);
-                
                 res.status(400).json({ message: 'Validation error', error: errorMessages});
                 return;
             }
@@ -74,44 +70,26 @@ export class UserController implements IUserController{
             const { email, password } = value;
 
             const user = await this.userService.signInUser(email, password);
-
-            if(!user) throw new BadRequestError("Login failed");
+            if(!user) throw new NotFoundError("User not found");
                 
             if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
             
-            const token = AuthService.generateToken( { 
-                id: user.id, 
-                email: user.email, 
-                role: user.role
-            });
+            const tokenPayload = { id: user.id, email: user.email, role: user.role };
+            const token = AuthService.generateToken(tokenPayload);
+            const refreshToken = AuthService.generateRefreshToken(tokenPayload);
 
-            const refreshToken = AuthService.generateRefreshToken({ 
-                id: user.id, 
-                email: user.email, 
-                role: user.role 
-            });
-
-            res.cookie('accessToken', token, {
-                httpOnly: true,
-                sameSite: "strict",
-                maxAge: 60 * 60 * 1000,
-            });
-
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-                sameSite: "strict",
-                maxAge: 7 * 24 * 60 * 60 * 1000, 
-            });
+            res.cookie('accessToken', token, { httpOnly: true, sameSite: "strict", maxAge: 60 * 60 * 1000 });
+            res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: "strict", maxAge: 7 * 24 * 60 * 60 * 1000 });
 
             res.status(200).json({
                 message: "Login Successfully",
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    country: user.country,
-                    role: user.role,
-                    profileImage: user.profileImage
+                user: { 
+                    id: user.id, 
+                    name: user.name, 
+                    email: user.email, 
+                    country: user.country, 
+                    role: user.role, 
+                    profileImage: user.profileImage 
                 }
             });
 
@@ -123,11 +101,9 @@ export class UserController implements IUserController{
     public refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { refreshToken } = req.cookies;
-            
             if (!refreshToken) throw new NotFoundError("Refresh token is missing!");
             
             const decoded = AuthService.verifyRefreshToken(refreshToken);
-
             if (!decoded) throw new BadRequestError("Invalid refresh token!");
 
             // Generate new access token
@@ -157,37 +133,25 @@ export class UserController implements IUserController{
     public googleLogin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { idToken } = req.body;
-    
-            if (!idToken) throw new NotFoundError("idToken is required!");
+                if (!idToken) throw new NotFoundError("idToken is required!");
     
             // Verify the Google token
             const payload = await verifyGoogleToken(idToken);
-            
             if (!payload) throw new BadRequestError("Invalid Google token!");
     
             const { name = "", email, sub: googleId, picture = "" } = payload;
-    
             if (!email || !googleId)  throw new NotFoundError("Google token is missing essential information!");
     
             // Check if the user exists or create a new one
             const user = await this.userService.googleLogin(name, email, googleId, picture);
-
             if (!user) throw new NotFoundError("User not found!");
 
             if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
     
             // Generate tokens
-            const token = AuthService.generateToken({
-                id: user.id,
-                email: user.email,
-                role: user.role,
-            });
-    
-            const refreshToken = AuthService.generateRefreshToken({
-                id: user.id,
-                email: user.email,
-                role: user.role,
-            });
+            const tokenPayload = { id: user.id, email: user.email, role: user.role };
+            const token = AuthService.generateToken(tokenPayload);  
+            const refreshToken = AuthService.generateRefreshToken(tokenPayload);
     
             // Set cookies
             res.cookie("accessToken", token, {
@@ -295,7 +259,6 @@ export class UserController implements IUserController{
             const { name, email, country, profileImage } = value;
 
             const user = await this.userService.updateProfile(name, email, country, profileImage);
-
             if (!user) throw new NotFoundError("User not found!");
 
             if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
@@ -311,13 +274,22 @@ export class UserController implements IUserController{
         try {
             
             const customers = await this.userService.fetchAllCustomers();
-
             if(!customers || customers.length === 0) throw new NotFoundError("No customers found.");
 
             res.status(200).json({ message: "All customers are fetched", data: customers });
-
         } catch (error) {
             next(error)
+        }
+    }
+
+    public fetchAllPropertyOwners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const propertyOwners = await this.userService.fetchAllPropertyOwners();
+            if(!propertyOwners || propertyOwners.length === 0) throw new NotFoundError("No Property Owners found.");
+
+            res.status(200).json({ message: "All Property Owners are fetched", data: propertyOwners });
+        } catch (error) {
+            next(error);
         }
     }
 
@@ -337,8 +309,7 @@ export class UserController implements IUserController{
                 return;
               }
         
-              res.status(200).json({ message: "User status updated successfully", user: updatedUser });
-
+            res.status(200).json({ message: "User status updated successfully", user: updatedUser });
         } catch (error) {
             next(error);
         }

@@ -78,6 +78,12 @@ router.get(
   userController.fetchAllCustomers as RequestHandler
 );
 
+router.get(
+  "/fetch-property-owners",
+  requireAuth,
+  userController.fetchAllPropertyOwners as RequestHandler
+)
+
 router.patch(
   "/:userId/update-status",
   requireAuth,

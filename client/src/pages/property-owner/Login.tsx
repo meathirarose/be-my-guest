@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { SignInPropertyOwner } from "../../api/userAuthApi";
+import { signInUser } from "../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { loginHost } from "../../redux/user/userSlice";
 import { showToast } from "../../shared/utils/toastUtils";
@@ -69,7 +69,7 @@ const LoginForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await SignInPropertyOwner(
+      const response = await signInUser(
         formData.email,
         formData.password
       );

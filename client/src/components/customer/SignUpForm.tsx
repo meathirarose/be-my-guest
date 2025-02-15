@@ -79,7 +79,8 @@ const SignupForm: React.FC = () => {
         formData.email,
         formData.country,
         formData.password,
-        formData.confirmPassword
+        formData.confirmPassword,
+        "customer"
       );
       if (response && response.status === 201) {
         showToast("success", "Signup successful! Please verify your email.");

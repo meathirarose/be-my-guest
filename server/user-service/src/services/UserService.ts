@@ -15,28 +15,17 @@ export class UserService implements IUserService {
     this.userRepository = userRepository;
   }
 
-  async registerUser(name: string, email: string, password: string, country: string): Promise<IUserDoc> {
+  async registerUser(name: string, email: string, password: string, country: string, role: string): Promise<IUserDoc> {
     try {
-      const existingUser = await this.userRepository.findByEmail(email);
+      const userRole: Role = Object.values(Role).includes(role as Role) ? (role as Role) : Role.CUSTOMER;
 
-      if (existingUser) {
-        throw new BadRequestError("User with this email already exists.");
-      }
+      const existingUser = await this.userRepository.findByEmail(email);
+      if (existingUser) throw new BadRequestError("User with this email already exists.");
 
       const hashedPassword = await bcryptjs.hash(password, 10);
 
-      const newUser = await this.userRepository.createUser(
-        name,
-        email,
-        hashedPassword,
-        country,
-        Role.CUSTOMER,
-        false
-      );
-
-      if (!newUser) {
-        throw new BadRequestError("Failed to create user");
-      }
+      const newUser = await this.userRepository.createUser( name, email, hashedPassword, country, userRole, false );
+      if (!newUser) throw new BadRequestError("Failed to create user");
 
       await EmailService.sendVerificationMail(newUser.email);
       return newUser;
@@ -217,6 +206,20 @@ export class UserService implements IUserService {
 
       return customers;
 
+    } catch (error) {
+      console.error("Error in fetching all customers:", error);
+      throw error;
+    }
+  }
+
+  async fetchAllPropertyOwners(): Promise<IUserDoc[] | null> {
+    try {
+      const propertyOwners = await this.userRepository.fetchAllPropertyOwners(Role.PROPERTY_OWNER);
+    
+      if(!propertyOwners || propertyOwners.length === 0)
+        throw new NotFoundError("No Property Owners found");
+
+      return propertyOwners;
     } catch (error) {
       console.error("Error in fetching all customers:", error);
       throw error;

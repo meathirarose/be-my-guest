@@ -1,7 +1,6 @@
 import express from "express";
 import { errorHandler, NotFoundError } from "@be-my-guest/common";
 import userRoutes from "./routes/userRoutes";
-import propertyOwnerRoutes from "./routes/propertyOwnerRoutes";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { envConfig } from "./config/envConfig"; 
@@ -22,7 +21,6 @@ app.use(express.json());
 
 // Routes
 app.use("/api/users", userRoutes);
-app.use("/api/property-owners", propertyOwnerRoutes);
 
 app.all("*", () => {
   throw new NotFoundError("Sorry, the page you are looking for does not exist.");

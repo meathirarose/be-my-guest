@@ -1,16 +1,16 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { JwtPayloadInput } from '../interfaces/IJwtPayloadInput';
+import { UserPayload } from '../interfaces/IJwtPayloadInput';
 import dotenv from 'dotenv';
 dotenv.config();
 
 export class AuthService {
-    static generateToken(user: JwtPayloadInput): string {
+    static generateToken(user: UserPayload): string {
         return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.ACCESS_SECRET!, {
             expiresIn: process.env.ACCESS_EXPIRATION!
         });
     }
 
-    static generateRefreshToken(user: JwtPayloadInput): string {
+    static generateRefreshToken(user: UserPayload): string {
         return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.REFRESH_SECRET!, {
             expiresIn: process.env.REFRESH_EXPIRATION!
         })

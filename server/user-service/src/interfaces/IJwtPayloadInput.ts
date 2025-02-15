@@ -1,5 +1,5 @@
 
-export interface JwtPayloadInput {
+export interface UserPayload {
     id: string,
     email: string, 
     role: string,

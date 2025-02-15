@@ -1,11 +1,12 @@
 import Joi from "joi";
+import { Role } from "../interfaces/IUserModel";
 
 export const signUpValidationSchema = Joi.object({
     name: Joi.string().min(3).max(50).required().messages({
         'string.base': 'Name should be a type of text',
         'string.empty': 'Name cannot be empty',
-        'string.min': 'Name should have atleast 3 characters',
-        'string.max': 'Name should have atmost 50 characters',
+        'string.min': 'Name should have at least 3 characters',
+        'string.max': 'Name should have at most 50 characters',
         'any.required': 'Name is required'
     }),
 
@@ -26,7 +27,7 @@ export const signUpValidationSchema = Joi.object({
         .messages({
             'string.base': 'Password must be a string',
             'string.empty': 'Password cannot be empty',
-            'string.min': 'Password should contain 8 characters',
+            'string.min': 'Password should contain at least 8 characters',
             'string.pattern.base': 'Password must contain at least one letter, one number, and one special character',
             'any.required': 'Password is required'
         }),
@@ -35,7 +36,10 @@ export const signUpValidationSchema = Joi.object({
         'string.base': 'Confirm password must be a string',
         'string.empty': 'Confirm password cannot be empty',
         'any.required': 'Confirm password is required',
-        'string.valid': 'Confirm password must match the password'
+        'any.only': 'Confirm password must match the password'
     }),
 
+    role: Joi.string()
+        .valid(...Object.values(Role)) 
+        .default(Role.CUSTOMER) 
 });

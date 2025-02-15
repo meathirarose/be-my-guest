@@ -12,7 +12,6 @@ export const signInUser = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
-
     return response;
   } catch (error) {
     console.log(error);
@@ -26,7 +25,8 @@ export const SignUpUser = async (
   email: string,
   country: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
+  role: string
 ) => {
   try {
     const response = await axios.post(
@@ -37,9 +37,9 @@ export const SignUpUser = async (
         country,
         password,
         confirmPassword,
+        role
       }
     );
-
     return response;
   } catch (error) {
     console.log(error);
@@ -58,59 +58,6 @@ export const VerifyEmail = async (token: string | null) => {
     return response;
   } catch (error) {
     console.log(error);
-    throw error;
-  }
-};
-
-// signin property owner
-export const SignInPropertyOwner = async (email: string, password: string) => {
-  try {
-    const response = await axios.post(
-      `${
-        import.meta.env.VITE_BASE_URL
-      }/user-service/api/property-owners/signin-host`,
-      {
-        email,
-        password,
-      },
-      { withCredentials: true }
-    );
-
-    return response;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-// register property owner
-export const registerPropertyOwner = async (
-  name: string,
-  email: string,
-  country: string,
-  password: string,
-  confirmPassword: string
-) => {
-  try {
-    console.log("Start - Register Property Owner");
-
-    const response = await axios.post(
-      `${
-        import.meta.env.VITE_BASE_URL
-      }/user-service/api/property-owners/register-host`,
-      {
-        name,
-        email,
-        country,
-        password,
-        confirmPassword,
-      }
-    );
-
-    console.log("Response - Register Property Owner", response);
-    return response;
-  } catch (error) {
-    console.error("Error - Register Property Owner", error);
     throw error;
   }
 };
@@ -226,7 +173,7 @@ export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
 export const fetchAllPropertyOwners = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/property-owners/fetch-property-owners`,
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-property-owners`,
       { withCredentials: true }
     );
     return response.data;
