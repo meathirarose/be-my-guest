@@ -1,16 +1,11 @@
 import React from "react";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineStop } from "react-icons/ai";
+import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
 
-interface Property {
-  id: number;
-  name: string;
-  description: string;
-  dateAdded: string;
-}
 
 interface PropertyListProps {
-  properties: Property[];
-  onDelete: (id: number) => void;
+  properties: PropertyFormData[];
+  onDelete: (id?: string) => void;
   searchQuery: string;
 }
 
@@ -18,9 +13,7 @@ const PropertyList: React.FC<PropertyListProps> = ({ properties, onDelete, searc
   return (
     <ul className="space-y-4">
       {properties
-        .filter((property) =>
-          property.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        .filter((property) => property?.basicInfo?.propertyName?.toLowerCase().includes(searchQuery.toLowerCase()))
         .map((property) => (
           <li
             key={property.id}
@@ -31,14 +24,14 @@ const PropertyList: React.FC<PropertyListProps> = ({ properties, onDelete, searc
                 📄
               </div>
               <div>
-                <h5 className="font-bold text-purple-950">{property.name}</h5>
-                <p className="text-sm text-purple-700">{property.description}</p>
-                <p className="text-xs text-purple-400">{property.dateAdded}</p>
+                <h5 className="font-bold text-purple-950">{property.basicInfo.propertyDescription}</h5>
+                <p className="text-sm text-purple-700">{property.location.district}</p>
+                <p className="text-xs text-purple-400">{property.location.state}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <AiOutlineEdit className="text-xl text-purple-900 cursor-pointer hover:text-purple-500" />
-              <AiOutlineDelete
+              <AiOutlineStop
                 className="text-xl text-purple-900 cursor-pointer hover:text-red-600"
                 onClick={() => onDelete(property.id)}
               />

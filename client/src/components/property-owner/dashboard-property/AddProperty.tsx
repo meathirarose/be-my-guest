@@ -29,6 +29,7 @@ const AddPropertyPage: React.FC = () => {
   const [formData, setFormData] = useState<PropertyFormData>({
     basicInfo: {
       propertyName: "",
+      propertyDescription: "",
       buildYear: "",
       liveAtProperty: false,
       contactEmail: "",

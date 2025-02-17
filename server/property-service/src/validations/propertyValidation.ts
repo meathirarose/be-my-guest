@@ -7,6 +7,11 @@ export const propertyValidationSchema = Joi.object({
       "string.max": "Property name cannot be longer than 100 characters",
       "any.required": "Property name is required",
     }),
+    propertyDescription: Joi.string().min(3).max(250).required().messages({
+      "string.min": "Property Description must be at least 3 characters long",
+      "string.max": "Property Description cannot be longer than 250 characters",
+      "any.required": "Property Description is required",
+    }),
     buildYear: Joi.number()
       .integer()
       .min(1800)
@@ -137,10 +142,10 @@ export const propertyValidationSchema = Joi.object({
 
   mediaUrls: Joi.array()
     .items(Joi.string().uri().required())
-    .min(1)
+    .min(3)
     .required()
     .messages({
-      "array.min": "At least one media URL is required",
+      "array.min": "At least three media URL is required",
       "string.uri": "Each media URL must be valid",
       "any.required": "Media URLs are required",
     }),

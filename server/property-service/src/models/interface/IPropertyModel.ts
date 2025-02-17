@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface IPropertyAttrs {
   basicInfo: {
     propertyName: string;
+    propertyDescription: string;
     buildYear: string;
     liveAtProperty: boolean;
     contactEmail: string;
@@ -43,6 +44,7 @@ export interface IPropertyDoc extends mongoose.Document {
   id: string;
   basicInfo: {
     propertyName: string;
+    propertyDescription: string;
     buildYear: string;
     liveAtProperty: boolean;
     contactEmail: string;

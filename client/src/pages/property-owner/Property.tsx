@@ -58,8 +58,8 @@ const Properties: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetchAllProperties();
-      setProperties(response.data.data);
-      setCountProperty(response.data.data.length)
+      setProperties(response.data?.data);
+      setCountProperty(response.data?.data?.length)
     } catch (error) {
       console.error("Error fetching properties:", error);
     }finally {

@@ -1,5 +1,6 @@
 export interface PropertyBasicInfo {
     propertyName: string,
+    propertyDescription: string,
     buildYear: string,
     liveAtProperty: boolean,
     contactEmail: string,
@@ -38,6 +39,7 @@ export interface PropertyBasicInfo {
   }
   
   export interface PropertyFormData {
+    id?: string,
     basicInfo: PropertyBasicInfo,
     location: PropertyLocation,
     roomsAndSpaces: RoomsAndSpaces,

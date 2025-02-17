@@ -8,6 +8,12 @@ export const propertyValidationSchema = Joi.object({
       "string.empty": "Property name is required",
       "any.required": "Property name is required",
     }),
+    propertyDescription: Joi.string().min(3).max(250).required().messages({
+      "string.min": "Property description must be at least 3 characters long",
+      "string.max": "Property description cannot be longer than 250 characters",
+      "string.empty": "Property description is required",
+      "any.required": "Property description  is required",
+    }),
     buildYear: Joi.number()
       .integer()
       .min(1800)

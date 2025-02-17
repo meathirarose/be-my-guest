@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import propertyRoutes from "./routes/propertyRoutes";
+import { envConfig } from "./config/envConfig";
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "",
+  origin: envConfig.FRONTEND_URL,
   method: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,

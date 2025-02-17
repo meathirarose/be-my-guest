@@ -56,6 +56,25 @@ const AddPropertyStep2: React.FC<Step2Props> = ({ data, onChange }) => {
             <p className="text-red-500 text-xs">{errors.propertyName}</p>
           )}
         </div>
+        {/* Property Description */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description about the Property
+          </label>
+          <p className="text-xs text-gray-500 mb-2">
+            Enter the description about the property which will be displayed to Guests
+          </p>
+          <InputField
+            type="text"
+            name="propertyDescription"
+            placeholder="Enter property description"
+            value={data.propertyDescription}
+            onChange={handleInputChange}
+          />
+          {errors.propertyDescription && (
+            <p className="text-red-500 text-xs">{errors.propertyDescription}</p>
+          )}
+        </div>
 
         {/* Build Year */}
         <div className="mb-6">

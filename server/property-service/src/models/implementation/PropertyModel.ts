@@ -5,6 +5,7 @@ const propertySchema: Schema = new Schema(
   {
     basicInfo: {
       propertyName: { type: String, required: true },
+      propertyDescription: { type: String, required: true },
       buildYear: { type: String, required: true },
       liveAtProperty: { type: Boolean, default: false },
       contactEmail: { type: String, required: true },

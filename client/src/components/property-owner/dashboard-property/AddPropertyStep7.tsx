@@ -43,6 +43,9 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
               <strong>Property Name: </strong> {data.basicInfo.propertyName}
             </div>
             <div>
+              <strong>Property Description: </strong> {data.basicInfo.propertyDescription}
+            </div>
+            <div>
               <strong>Build Year: </strong> {data.basicInfo.buildYear}
             </div>
             <div>

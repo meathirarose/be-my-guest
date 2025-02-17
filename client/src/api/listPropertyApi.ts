@@ -4,7 +4,7 @@ import { PropertyFormData } from "../interfaces/ListPropertyDetails";
 export const listProperty = async (propertyData: PropertyFormData, userId?: string) => {
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/list-property`,
+      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/add-property`,
       propertyData,
       {
         params: { userId }, 
