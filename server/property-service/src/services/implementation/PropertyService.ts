@@ -60,4 +60,15 @@ export class PropertyService implements IPropertyService {
         throw error;
     }
   }
+
+  async blockProperty(propertyId: string, isBlocked: boolean): Promise<IPropertyDoc | null> {
+    try {
+      const response = await this.propertyRepository.blockProperty(propertyId, isBlocked);
+      return response;
+    } catch (error) {
+      console.error("Error in blocking property:", error);
+      throw error;
+    }
+  }
+
 }

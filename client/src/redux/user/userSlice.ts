@@ -55,9 +55,7 @@ const userSlice = createSlice({
       }
     },
     userStatus(state, action: PayloadAction<{isBlocked: boolean}>) {
-      if(state.user){
-        state.user.isBlocked = action.payload.isBlocked;
-      }
+      if(state.user) state.user.isBlocked = action.payload.isBlocked;
     }
   },
 });

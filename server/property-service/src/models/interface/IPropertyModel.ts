@@ -79,6 +79,7 @@ export interface IPropertyDoc extends mongoose.Document {
     availability: string;
   };
   userId?: string;
+  isBlocked: boolean;
 }
 
 export interface IPropertyModel extends mongoose.Model<IPropertyDoc> {

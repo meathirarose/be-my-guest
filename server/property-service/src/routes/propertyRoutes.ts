@@ -36,6 +36,12 @@ router.patch(
     `/update-property/:propertyId`,
     requireAuth,
     propertyController.updateProperty
-)
+);
+
+router.patch(
+    `/block-property/:propertyId`,
+    requireAuth,
+    propertyController.blockProperty
+);
 
 export default router;

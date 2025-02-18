@@ -78,5 +78,20 @@ export class PropertyController implements IPropertyController {
             next(error);
         }
     }
+
+    public blockProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { isBlocked } = req.body;
+            const { propertyId } = req.params;
+           
+            if (!propertyId) throw new NotFoundError('Property ID is required');
+
+            const updatedStatus = await this.propertyService.blockProperty(propertyId, isBlocked);
+
+            res.status(200).json({ message: "Property blocked successfully", data: updatedStatus});
+        } catch (error) {
+            next(error);
+        }
+    }
     
 }

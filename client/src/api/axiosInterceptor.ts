@@ -7,7 +7,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Response interceptor to handle token expiration
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -18,15 +17,13 @@ axiosInstance.interceptors.response.use(
 
       try {
 
-        const response = await axios.post(
+          await axios.post(
           `${import.meta.env.VITE_BASE_URL}/user-service/api/users/refresh-token`,
           {},
           {
             withCredentials: true,
           }
         );
-        const newAccessToken = response.data.accessToken;
-        console.log("new access token --------------------------------------", newAccessToken);
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {

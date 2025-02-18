@@ -53,5 +53,14 @@ export class PropertyRepository extends BaseRepository<IPropertyDoc> implements 
         }
     }
 
+    async blockProperty(propertyId: string, isBlocked: boolean): Promise<IPropertyDoc | null> {
+        try {
+            const updatedStatus = await this.findByIdAndUpdate(propertyId, {isBlocked});
+            return updatedStatus;
+        } catch (error) {
+            console.error("Error updating property:", error);
+            throw error;
+        }
+    }
 
 }

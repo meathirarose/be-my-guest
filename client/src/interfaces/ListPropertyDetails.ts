@@ -39,7 +39,8 @@ export interface PropertyBasicInfo {
   }
   
   export interface PropertyFormData {
-    id?: string,
+    id: string,
+    isBlocked: boolean,
     basicInfo: PropertyBasicInfo,
     location: PropertyLocation,
     roomsAndSpaces: RoomsAndSpaces,

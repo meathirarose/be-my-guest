@@ -130,8 +130,7 @@ export const updateProfile = async (name: string, email: string, country: string
         email,
         country,
         profileImage
-      },
-      { withCredentials: true }
+      }
     );
     return response.data;
   } catch (error) {
@@ -143,9 +142,8 @@ export const updateProfile = async (name: string, email: string, country: string
 // fetching all customers
 export const fetchAllCustomers = async () => {
   try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-customers`,
-      { withCredentials: true }
+    const response = await axiosInstance.get(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-customers`
     );
     return response.data;
   } catch (error) {
@@ -154,13 +152,12 @@ export const fetchAllCustomers = async () => {
   }
 }
 
-// update the status of the users
+// update the status of the users - block or unblock
 export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
   try {
     const response =  await axiosInstance.patch(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/${userId}/update-status`, 
-      { isBlocked },
-      { withCredentials: true }
+      { isBlocked }
     );
     return response;
   } catch (error) {
@@ -172,9 +169,8 @@ export const updateUserStatus = async (userId: string, isBlocked: boolean) => {
 // fetch all property owners
 export const fetchAllPropertyOwners = async () => {
   try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-property-owners`,
-      { withCredentials: true }
+    const response = await axiosInstance.get(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-property-owners`
     );
     return response.data;
   } catch (error) {
@@ -186,9 +182,8 @@ export const fetchAllPropertyOwners = async () => {
 // logout user
 export const logoutUser = async () => {
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/logout-customer`,
-      { withCredentials: true }
+    const response = await axiosInstance.post(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/logout-customer`
     );
     return response;
   } catch (error) {

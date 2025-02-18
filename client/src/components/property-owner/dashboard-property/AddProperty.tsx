@@ -9,24 +9,28 @@ import AddPropertyStep5 from "./AddPropertyStep5";
 import AddPropertyStep6 from "./AddPropertyStep6";
 import AddPropertyStep7 from "./AddPropertyStep7";
 import { fetchPropertyById, listProperty, updateProperty, } from "../../../api/listPropertyApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { PropertyBasicInfo, PropertyFormData, PropertyLocation, PropertyPricing, RoomsAndSpaces,} from "../../../interfaces/ListPropertyDetails";
 import axios from "axios";
 import Joi from "joi";
 import { propertyValidationSchema } from "../../../validations/property/propertyValidation";
+import { addProperty, updatedProperty } from "../../../redux/property/propertySlice";
 
 const { TabPane } = Tabs;
 
 const AddPropertyPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const userId = user?.user?.id;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.state?.id || null;
   const isEditMode = Boolean(id);
 
   const [formData, setFormData] = useState<PropertyFormData>({
+    id: id || "",
+    isBlocked: false, 
     basicInfo: {
       propertyName: "",
       propertyDescription: "",
@@ -172,9 +176,13 @@ const AddPropertyPage: React.FC = () => {
       if (isEditMode) {
         response = await updateProperty(id, { ...formData });
         message.success("Property updated successfully");
+
+        dispatch(updatedProperty({id, data: formData}))
       } else {
         response = await listProperty({ ...formData }, userId);
         message.success("Property published successfully");
+
+        dispatch(addProperty(formData));
       }
 
       if (response.status === 200) {

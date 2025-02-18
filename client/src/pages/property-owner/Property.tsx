@@ -10,6 +10,7 @@ import ShimmerCard from "../../shared/shimmers/ShimmerCard";
 
 interface Property {
   id: string;
+  isBlocked: boolean,
   basicInfo: {
     propertyName: string;
     contactEmail: string;
@@ -111,7 +112,8 @@ const Properties: React.FC = () => {
               .map((property) => (
                 <Card
                   key={property.id}
-                  className="w-full max-w-sm mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className={`w-full max-w-sm mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-300
+                  ${property.isBlocked ? "bg-red-100 border-red-500": ""}`}
                 >
                   <div className="h-56 overflow-hidden">
                     <img
@@ -119,10 +121,15 @@ const Properties: React.FC = () => {
                       alt={property.basicInfo.propertyName}
                       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
                     />
+                    {property.isBlocked && (
+                      <div className="absolute top-0 left-0 right-0 bg-red-600 text-black text-center font-bold py-1">
+                        Blocked by Admin
+                      </div>
+                    )} 
                   </div>
 
                   <CardHeader className="p-5 pb-2">
-                    <CardTitle className="text-xl font-semibold text-purple-700 truncate">
+                    <CardTitle className={`text-xl font-semibold truncate ${property.isBlocked ? "text-red-700" : "text-purple-700"}`}>
                       {property.basicInfo.propertyName}
                     </CardTitle>
                     <CardDescription className="text-base text-gray-600">

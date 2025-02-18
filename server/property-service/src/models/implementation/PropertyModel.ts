@@ -41,6 +41,10 @@ const propertySchema: Schema = new Schema(
     },
     userId: {
       type: String
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false
     }
   },
   {

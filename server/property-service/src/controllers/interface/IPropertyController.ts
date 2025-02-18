@@ -5,4 +5,5 @@ export interface IPropertyController {
     fetchProperties(req: Request, res: Response, next: NextFunction): Promise<void>;
     fetchProperty(req: Request, res: Response, next: NextFunction): Promise<void>;
     updateProperty(req: Request, res: Response, next: NextFunction): Promise<void>;
+    blockProperty(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

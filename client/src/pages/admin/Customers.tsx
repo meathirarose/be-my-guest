@@ -42,7 +42,6 @@ const Customers: React.FC = () => {
     try {
       setLoading(true);
       await updateUserStatus(userId, newStatus);
-      // Update local state
       setCustomers(prevCustomers =>
         prevCustomers.map(customer =>
           customer.id === userId
@@ -53,7 +52,7 @@ const Customers: React.FC = () => {
       dispatch(userStatus({ isBlocked: newStatus }));      
       message.success(`User ${newStatus ? 'blocked' : 'unblocked'} successfully`);
     } catch (error) {
-      console.error("Error updating user status: error endhada paray", error);
+      console.error("Error updating user status: ", error);
       message.error("Failed to update user status");
     } finally {
       setLoading(false);
