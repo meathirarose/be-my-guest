@@ -1,6 +1,9 @@
 import Joi from "joi";
 
 export const propertyValidationSchema = Joi.object({
+  id: Joi.string().allow("").optional(), 
+  isBlocked: Joi.boolean().required(),
+  
   basicInfo: Joi.object({
     propertyName: Joi.string().min(3).max(100).required().messages({
       "string.min": "Property name must be at least 3 characters long",

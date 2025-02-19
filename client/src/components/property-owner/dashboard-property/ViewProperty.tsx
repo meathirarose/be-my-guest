@@ -4,6 +4,7 @@ import { fetchPropertyById } from "../../../api/listPropertyApi";
 import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
 import { message } from "antd";
 import { RotateCw } from "lucide-react";
+import Header from "../../common/Header";
 
 const PropertyDetails: React.FC = () => {
     const { id } = useParams();
@@ -45,18 +46,16 @@ const PropertyDetails: React.FC = () => {
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
-            {/* Property Title */}
+            <Header />
             <h1 className="text-4xl font-bold text-gray-800">{formData.basicInfo.propertyName}</h1>
             <p className="text-gray-600 text-lg mt-1">{formData.location.houseName}, {formData.location.city}, {formData.location.state}, {formData.location.country}</p>
 
-            {/* Image Gallery */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
                 {formData.mediaUrls.map((url, index) => (
                     <img key={index} src={url} alt={`Property Image ${index + 1}`} className="rounded-lg w-full h-48 object-cover shadow-md" />
                 ))}
             </div>
 
-            {/* Property Information */}
             <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-2xl font-semibold text-gray-700">Property Details</h2>
                 <ul className="mt-2 text-gray-600 space-y-1">
@@ -67,7 +66,6 @@ const PropertyDetails: React.FC = () => {
                 </ul>
             </div>
 
-            {/* Rooms & Spaces */}
             <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-2xl font-semibold text-gray-700">Rooms & Spaces</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 text-gray-600">
