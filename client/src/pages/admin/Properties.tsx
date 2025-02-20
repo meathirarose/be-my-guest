@@ -3,7 +3,7 @@ import Sidebar from "../../components/common/SideBar";
 import Header from "../../components/common/Header";
 import SearchBar from "../../components/common/SearchBar";
 import PropertyList from "../../components/admin/dashboard-property/PropertyList";
-import { fetchAllProperties, blockProperty } from "../../api/listPropertyApi";
+import { blockProperty, fetchAllProperties } from "../../api/listPropertyApi";
 import { Spin, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { propertyStatus, setProperties } from "../../redux/property/propertySlice";

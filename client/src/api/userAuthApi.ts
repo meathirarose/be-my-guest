@@ -63,13 +63,14 @@ export const VerifyEmail = async (token: string | null) => {
 };
 
 // google login for all users
-export const googleLogin = async ({ idToken }: { idToken: string }) => {
+export const  googleLogin = async (data: { idToken: string, role: string }) => {
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/google-login`,
-      { idToken },
+      data,
       { withCredentials: true }
     );
+    console.log(response, "from the api--------------------------------------")
     return response;
   } catch (error) {
     console.error("Error during Google login:", error);
@@ -173,6 +174,20 @@ export const fetchAllPropertyOwners = async () => {
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-property-owners`
     );
     return response.data;
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error;
+  }
+}
+
+// fetch by user id
+export const fetchByUserId = async (userId: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-by-userId`,
+      { params: { userId } }
+    );
+    return response;
   } catch (error) {
     console.error("Error during logout:", error);
     throw error;

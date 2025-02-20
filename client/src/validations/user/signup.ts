@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Role } from "../../interfaces/UserRoles";
+import { Role } from "../../interfaces/User";
 
 export const signUpValidationSchema = Joi.object({
     name: Joi.string().min(3).max(50).required().messages({

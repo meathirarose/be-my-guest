@@ -28,9 +28,20 @@ export class PropertyService implements IPropertyService {
     }
   }
 
+  async fetchPropertiesByUser(userId: string): Promise<IPropertyDoc[] | null> {
+      try {
+        const response = await this.propertyRepository.fetchPropertiesByUser(userId);
+        if(!response || response.length === 0) throw new BadRequestError("No properties found.")
+        return response;
+      } catch (error) {
+        console.error("Error in fetching property details:", error);
+        throw error;
+      }
+  }
+
   async fetchProperties(): Promise<IPropertyDoc[] | null> {
       try {
-        const response = await this.propertyRepository.fetchAllProperties();
+        const response = await this.propertyRepository.fetchProperties();
         if(!response || response.length === 0) throw new BadRequestError("No properties found.")
         return response;
       } catch (error) {

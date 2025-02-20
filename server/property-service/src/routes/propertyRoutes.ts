@@ -21,6 +21,12 @@ router.post(
 );
 
 router.get(
+    "/fetch-user-properties",
+    requireAuth,
+    propertyController.fetchPropertiesByUser
+);
+
+router.get(
     "/fetch-properties",
     requireAuth,
     propertyController.fetchProperties

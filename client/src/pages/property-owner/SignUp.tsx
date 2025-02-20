@@ -38,7 +38,6 @@ const SignupPage: React.FC = () => {
 
   const validateForm = () => {
     const { error } = signUpValidationSchema.validate(formData, { abortEarly: false });
-    console.log(error, "from validaton=======================================================")
     
         if (!error) {
           setErrors({

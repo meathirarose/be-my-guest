@@ -9,6 +9,7 @@ export interface IPropertyService {
         pricing: IPropertyDoc["pricing"],
         userId?: string 
     ): Promise<IPropertyDoc | null>;
+    fetchPropertiesByUser(userId: string): Promise<IPropertyDoc[] | null>;
     fetchProperties(): Promise<IPropertyDoc[] | null>;
     fetchProperty(propertyId: string): Promise<IPropertyDoc | null>;
     updateProperty(propertyId: string, updatedData: Partial<IPropertyDoc>): Promise<IPropertyDoc | null>;

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { signInUser } from "../../api/userAuthApi";
+import { googleLogin, signInUser } from "../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { loginHost } from "../../redux/user/userSlice";
 import { showToast } from "../../shared/utils/toastUtils";
@@ -12,8 +11,10 @@ import bg_signin from "../../assets/property-owner-images/bg-signin.jpg";
 import { loginValidationSchema } from "../../validations/user/login";
 import { LinkText } from "../../shared/components/ui/LinkText";
 import { SubmitButton } from "../../components/buttons/SubmitButton";
-import { SocialLoginButton } from "../../components/buttons/SocialLoginButtons";
 import axios from "axios";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { message } from "antd";
+import { Role } from "../../interfaces/User";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -75,9 +76,10 @@ const LoginForm: React.FC = () => {
       );
 
       if (response && response.status === 200) {
-        const { user, token } = response.data;
+        const { user } = response.data;
+        const { token } = user;
 
-        dispatch(loginHost({ user, token }));
+        dispatch(loginHost({ user, token }))
         showToast("success", "Sign-in successful!");
         if (user?.role === "admin") {
           navigate("/admin/dashboard", { replace: true });
@@ -87,13 +89,11 @@ const LoginForm: React.FC = () => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const errorMessage =
-          err.response?.data?.errors?.[0]?.message || err.response?.data?.error[0] ||
-          "Sign-in failed. Please try again.";
-        console.log(
-          "Error message from login page of property owner:",
-          errorMessage
-        );
+        const errorMessage = 
+            err.response?.data?.errors?.[0]?.message 
+            || err.response?.data?.error[0] 
+            || "Sign-in failed. Please try again.";
+        console.log("Error message from login page of property owner:", errorMessage);
         showToast("error", errorMessage);
       } else {
         console.error("Unexpected error:", err);
@@ -104,13 +104,40 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
+  const handleGoogleLoginSuccess = async (response: CredentialResponse) => {
+    setLoading(true);
+    try {
+      const { credential } = response;
+      if (!credential) throw new Error("Google login failed!");
+
+      const apiResponse = await googleLogin({ idToken: credential, role: Role.PROPERTY_OWNER });
+
+      if (apiResponse.status === 200) {
+        const { user } = apiResponse.data;
+        const { token } = user;
+        dispatch(loginHost({ user, token }))
+        if (user?.role === "admin") {
+          navigate("/admin/dashboard", { replace: true });
+        } else {
+          navigate("/host/dashboard", { replace: true });
+          message.success("Sign-in Successfully!");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      message.error("Google login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLoginFailure = () => {
+    message.error("Google login failed. Please try again.");
+    setLoading(false);
   };
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header Component */}
       <Header />
 
       <div
@@ -165,11 +192,11 @@ const LoginForm: React.FC = () => {
             <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
-          <SocialLoginButton
-            icon={<FcGoogle className="text-2xl rounded-xl" />}
-            text="Continue with Google"
-            onClick={handleGoogleLogin}
-          />
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={handleGoogleLoginFailure}
+            useOneTap
+        />
         </div>
       </div>
 

@@ -4,9 +4,11 @@ import AddPropertyButton from "../../components/buttons/AddPropertyButton";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { fetchAllProperties } from "../../api/listPropertyApi";
+import { fetchPropertiesByUser } from "../../api/listPropertyApi";
 import { Loader2 } from "lucide-react";
 import ShimmerCard from "../../shared/shimmers/ShimmerCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 interface Property {
   id: string;
@@ -44,6 +46,8 @@ const getFirstImageUrl = (mediaUrls: string[]): string => {
 };
 
 const Properties: React.FC = () => {
+  const { user } = useSelector((state: RootState) => state.user);
+  const userId = user?.id;
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [properties, setProperties] = useState<Property[]>([]);
@@ -53,12 +57,13 @@ const Properties: React.FC = () => {
 
   useEffect(() => {
     fetchProperties();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProperties = async () => {
     setLoading(true);
     try {
-      const response = await fetchAllProperties();
+      const response = await fetchPropertiesByUser(userId!);
       setProperties(response.data?.data);
       setCountProperty(response.data?.data?.length)
     } catch (error) {

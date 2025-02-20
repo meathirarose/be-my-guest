@@ -4,21 +4,38 @@ import { message } from "antd";
 import { RotateCw } from "lucide-react";
 import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
 import { fetchPropertyById } from "../../api/listPropertyApi";
-import Header from "../../components/common/Header";
+import Header from "../../components/customer/Header";
 import Footer from "../../shared/components/layout/Footer";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { fetchByUserId } from "../../api/userAuthApi";
+import { User } from "../../interfaces/User";
+
 
 const PropertyDetails: React.FC = () => {
-  const user = useSelector((state: RootState) => state.user.user);
-  console.log(user, "here is the user from the property details======================================")
-  const profileImage = user?.profileImage;
   const { id } = useParams();
   const propertyId = id || null;
 
   const [formData, setFormData] = useState<PropertyFormData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<User | null>(null);
+  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userId = formData?.userId;
+        if(!userId) {
+          return;
+        }
+        const response = await fetchByUserId(userId);
+        if(response) setUserData(response.data.data);
+      }catch (error) {
+        console.error("Error fetching user data:", error);
+        message.error("Failed to fetch user details");
+      } 
+    }
+    fetchUserData();
+  }, [formData?.userId]);
 
+  
   useEffect(() => {
     const fetchPropertyData = async () => {
       if (!propertyId) {
@@ -93,7 +110,7 @@ const PropertyDetails: React.FC = () => {
             </div>
           </div>
         </div>
-
+        {/* heading */}
         <div className="flex flex-col lg:flex-row gap-10 mt-12">
           <div className="lg:w-2/3">
             <h1 className="text-2xl font-semibold text-gray-900">
@@ -103,23 +120,22 @@ const PropertyDetails: React.FC = () => {
             <p className="text-gray-700 mt-1 mb-6">
               {formData.roomsAndSpaces.bedrooms} bedrooms · 1 double bed · Private attached bathroom
             </p>
-
+            {/* host information */}
             <div className="border-t border-b mt-4 py-6">
               <div className="flex items-center gap-3">
                 <img
-                  src={profileImage}
+                  src={userData?.profileImage}
                   alt="Host"
                   className="w-12 h-12 rounded-full border"
                 />
                 <div>
-                  <p className="font-semibold text-gray-800">Stay with {user?.name}</p>
+                  <p className="font-semibold text-gray-800">Stay with {userData?.name || "Host"}</p>
                   <p className="text-gray-600 text-sm">1.6 years hosting</p>
                 </div>
               </div>
             </div>
 
-
-
+            {/* features */}
             <div className="mt-5 space-y-5 border-b py-8">
               <div className="flex items-start gap-3">
                 🛏️
@@ -178,7 +194,7 @@ const PropertyDetails: React.FC = () => {
               </div>
             </div>
 
-
+            {/* description about the place */}
             <div className="mt-5 p-1 rounded-lg border-b py-8">
               <h2 className="text-xl font-semibold text-gray-800 pb-2">About this place</h2>
                 <p>{formData.basicInfo.propertyDescription}</p>
@@ -193,7 +209,8 @@ const PropertyDetails: React.FC = () => {
                 <li><strong>Contact Mobile:</strong> {formData.basicInfo.contactMobile}</li>
               </ul>
             </div>
-
+            
+            {/* room details */}
             <div className="mt-5 p-1 rounded-lg border-b py-8">
               <h2 className="text-2xl font-semibold text-gray-800 pb-2">Rooms & Spaces</h2>
               <div className="grid grid-cols-2 gap-4 mt-4">
@@ -219,9 +236,8 @@ const PropertyDetails: React.FC = () => {
               </div>
             </div>
 
-
           </div>
-
+          {/* box for booking */}
           <div className="lg:w-1/3 sticky top-24 self-start">
             <div className="border border-gray-200 rounded-lg p-6 shadow-sm">
               <div className="flex items-baseline justify-between">

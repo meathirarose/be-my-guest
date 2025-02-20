@@ -79,7 +79,7 @@ export class UserService implements IUserService {
     return existingUser;
   }
 
-  async googleLogin(name: string, email: string, googleId: string): Promise<IUserDoc> {
+  async googleLogin(name: string, email: string, googleId: string, role: string): Promise<IUserDoc> {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
         return existingUser;
@@ -91,7 +91,7 @@ export class UserService implements IUserService {
         email,
         hashedGoogleId,
         "India",
-        Role.CUSTOMER,
+        role,
         true
     );
   }
@@ -224,6 +224,18 @@ export class UserService implements IUserService {
       console.error("Error in fetching all customers:", error);
       throw error;
     }
+  }
+
+  async fetchByUserId(userId: string): Promise<IUserDoc | null> {
+      try {
+        const user = await this.userRepository.findByUserId(userId);
+        if(!user) throw new NotFoundError("No user found with this accound.");
+
+        return user;
+      } catch (error) {
+        console.error("Error in fetching all customers:", error);
+        throw error;
+      }
   }
 
   async updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null> {

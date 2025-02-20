@@ -12,6 +12,7 @@ export interface IUserController {
     updateProfile(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
     fetchAllCustomers(req:Request,res:Response, next: NextFunction): Promise<void>;
     fetchAllPropertyOwners(req:Request,res:Response, next: NextFunction): Promise<void>;
+    fetchUserById(req: Request, res: Response, next: NextFunction): Promise<void>;
     updateUserStatus(req:Request, res:Response, next: NextFunction): Promise<void>;
     logoutUser(req:Request,res:Response, next: NextFunction):Promise<Response | void>;
 }

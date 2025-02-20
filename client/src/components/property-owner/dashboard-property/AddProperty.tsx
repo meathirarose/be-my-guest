@@ -171,18 +171,29 @@ const AddPropertyPage: React.FC = () => {
 
   const handleFinalSubmit = async () => {
     try {
+
+      const propertyData = {
+        id: formData.id,
+        isBlocked: formData.isBlocked,
+        basicInfo: {
+          propertyName: formData.basicInfo.propertyName,
+        },
+        mediaUrls: formData.mediaUrls,
+        pricing: formData.pricing,
+      };
+
       let response;
 
       if (isEditMode) {
         response = await updateProperty(id, { ...formData });
         message.success("Property updated successfully");
 
-        dispatch(updatedProperty({id, data: formData}))
+        dispatch(updatedProperty({id, data: propertyData}))
       } else {
         response = await listProperty({ ...formData }, userId);
         message.success("Property published successfully");
 
-        dispatch(addProperty(formData));
+        dispatch(addProperty(propertyData));
       }
 
       if (response.status === 200) {

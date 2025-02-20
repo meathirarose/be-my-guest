@@ -46,4 +46,5 @@ export interface PropertyBasicInfo {
     roomsAndSpaces: RoomsAndSpaces,
     mediaUrls: string[], 
     pricing: PropertyPricing,
+    userId?: string
   }

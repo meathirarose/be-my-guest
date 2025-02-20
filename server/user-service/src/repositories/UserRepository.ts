@@ -19,6 +19,10 @@ export class UserRepository extends BaseRepository<IUserDoc> implements IUserRep
         return this.findOne({ email }); 
     }
 
+    async findByUserId(userId: string): Promise<IUserDoc | null> {
+        return this.findById(userId);
+    }
+
     async findByPhoneNumber(phoneNumber: number): Promise<IUserDoc | null> {
         return this.findOne({ phoneNumber }); 
     }

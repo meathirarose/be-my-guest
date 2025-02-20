@@ -25,7 +25,6 @@ const userSchema: Schema = new Schema<IUserDoc>({
     role: {
         type: String,
         enum: Object.values(Role),
-        default: Role.CUSTOMER
     },
     verified: {
         type: Boolean,

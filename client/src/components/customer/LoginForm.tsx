@@ -10,6 +10,8 @@ import { SubmitButton } from "../buttons/SubmitButton";
 import { loginValidationSchema } from "../../validations/user/login";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { message } from "antd";
+import axios from "axios";
+import { Role } from "../../interfaces/User";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -79,11 +81,19 @@ const LoginForm: React.FC = () => {
 
         navigate("/customer/home", { replace: true });
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      
-      if(err.response){
-        message.error(err?.response?.data?.errors[0]?.message, 2);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const errorMessage =
+          err.response?.data?.errors?.[0]?.message || err.response?.data?.error[0] ||
+          "Sign-in failed. Please try again.";
+        console.log(
+          "Error message from login page of property owner:",
+          errorMessage
+        );
+        showToast("error", errorMessage);
+      } else {
+        console.error("Unexpected error:", err);
+        showToast("error", "An unexpected error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -100,7 +110,7 @@ const LoginForm: React.FC = () => {
       }
 
       // Sending idToken to the backend for verification
-      const apiResponse = await googleLogin({ idToken: credential });
+      const apiResponse = await googleLogin({ idToken: credential, role: Role.CUSTOMER });
       if (apiResponse.status === 200) {
         const { user, token } = apiResponse.data;
 

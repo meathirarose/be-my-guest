@@ -25,7 +25,16 @@ export class PropertyRepository extends BaseRepository<IPropertyDoc> implements 
         }
     }
 
-    async fetchAllProperties(): Promise<IPropertyDoc[] | null> {
+    async fetchPropertiesByUser(userId: string): Promise<IPropertyDoc[] | null> {
+        try {
+            return await this.findAll({userId});
+        } catch (error) {
+            console.error("Error fetching all properties:", error);
+            throw error;
+        }
+    }
+
+    async fetchProperties(): Promise<IPropertyDoc[] | null> {
         try {
             return await this.findAll();
         } catch (error) {

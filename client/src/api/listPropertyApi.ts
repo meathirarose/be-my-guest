@@ -2,16 +2,21 @@ import { PropertyFormData } from "../interfaces/ListPropertyDetails";
 import axiosInstance from "./axiosInterceptor";
 
 // adding property
-export const listProperty = async (propertyData: PropertyFormData, userId?: string) => {
+export const listProperty = async (
+  propertyData: PropertyFormData,
+  userId?: string
+) => {
   try {
     const response = await axiosInstance.post(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/add-property`,
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/add-property`,
       propertyData,
       {
-        params: { userId }, 
+        params: { userId },
         withCredentials: true,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       }
     );
@@ -22,13 +27,37 @@ export const listProperty = async (propertyData: PropertyFormData, userId?: stri
   }
 };
 
-// fetching all properties
+// fetching all properties - according to user
+export const fetchPropertiesByUser = async (userId: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/fetch-user-properties`,
+      {
+        params: { userId },
+        withCredentials: true,
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getting property details:", error);
+    throw error;
+  }
+};
+
+// fetch all properties
 export const fetchAllProperties = async () => {
   try {
     const response = await axiosInstance.get(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/fetch-properties`,
-      { withCredentials: true }
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/fetch-properties`,
+      {
+        withCredentials: true,
+      }
     );
+    console.log(response, "from the api===========================")
     return response;
   } catch (error) {
     console.error("Error getting property details:", error);
@@ -40,8 +69,10 @@ export const fetchAllProperties = async () => {
 export const fetchPropertyById = async (propertyId: string) => {
   try {
     const response = await axiosInstance.get(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/fetch-property/${propertyId}`,
-      {         
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/fetch-property/${propertyId}`,
+      {
         withCredentials: true,
       }
     );
@@ -55,11 +86,13 @@ export const fetchPropertyById = async (propertyId: string) => {
 // update a property
 export const updateProperty = async (
   propertyId: string | undefined,
-  formData: PropertyFormData,
+  formData: PropertyFormData
 ) => {
   try {
     const response = await axiosInstance.patch(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/update-property/${propertyId}`,
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/update-property/${propertyId}`,
       formData,
       {
         withCredentials: true,
@@ -76,14 +109,15 @@ export const updateProperty = async (
 export const blockProperty = async (propertyId: string, isBlocked: boolean) => {
   try {
     const response = await axiosInstance.patch(
-      `${import.meta.env.VITE_BASE_URL}/property-service/api/properties/block-property/${propertyId}`, 
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/block-property/${propertyId}`,
       { isBlocked }
     );
-    console.log("response from the api===================================>", response);
+
     return response;
   } catch (error) {
     console.log("Error in blocking the property:", error);
     throw error;
   }
-}
-
+};

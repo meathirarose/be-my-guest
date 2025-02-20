@@ -89,7 +89,8 @@ export class UserController implements IUserController{
                     email: user.email, 
                     country: user.country, 
                     role: user.role, 
-                    profileImage: user.profileImage 
+                    profileImage: user.profileImage,
+                    token: token, 
                 }
             });
 
@@ -132,18 +133,18 @@ export class UserController implements IUserController{
 
     public googleLogin = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { idToken } = req.body;
-                if (!idToken) throw new NotFoundError("idToken is required!");
+            const { idToken, role } = req.body;
+            if (!idToken || !role) throw new NotFoundError("idToken is required!");
     
             // Verify the Google token
             const payload = await verifyGoogleToken(idToken);
             if (!payload) throw new BadRequestError("Invalid Google token!");
     
-            const { name = "", email, sub: googleId, picture = "" } = payload;
+            const { name = "", email, sub: googleId } = payload;
             if (!email || !googleId)  throw new NotFoundError("Google token is missing essential information!");
     
             // Check if the user exists or create a new one
-            const user = await this.userService.googleLogin(name, email, googleId, picture);
+            const user = await this.userService.googleLogin(name, email, googleId, role);
             if (!user) throw new NotFoundError("User not found!");
 
             if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
@@ -310,6 +311,20 @@ export class UserController implements IUserController{
               }
         
             res.status(200).json({ message: "User status updated successfully", user: updatedUser });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public fetchUserById = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { userId } = req.query;
+            if(!userId || typeof userId !== "string") throw new NotFoundError("Resource not found");
+
+            const user = await this.userService.fetchByUserId(userId);
+            if(!user) throw new BadRequestError("No user found with this account.");
+
+            res.status(200).json({ message: "User fetched successfully", data: user});
         } catch (error) {
             next(error);
         }

@@ -1,29 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllProperties } from '../../../api/listPropertyApi';
-
-interface Property {
-  id: string;
-  basicInfo: {
-    propertyName: string;
-    contactEmail: string;
-    contactMobile: string;
-  };
-  location: {
-    houseName: string;
-    locality: string;
-    state: string;
-    country: string;
-  };
-  mediaUrls: string[];
-  pricing: {
-    price: string;
-    availability: string;
-  };
-  roomsAndSpaces: {
-    bedrooms: number;
-    bathrooms: number;
-  };
-}
+import { PropertyFormData } from '../../../interfaces/ListPropertyDetails';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 const isImageUrl = (url: string): boolean => {
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff'];
@@ -40,24 +19,28 @@ interface PropertyCardProps {
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
-  const [properties, setProperties] = useState<Property[]>([]);
+  const user = useSelector((state: RootState) => state.user.user);
+  const [properties, setProperties] = useState<PropertyFormData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await fetchAllProperties();
-        setProperties(response.data.data);
-      } catch (err) {
-        console.log(err);
-        setError('Unable to load properties. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProperties();
   }, []);
+
+  const fetchProperties = async () => {
+    try {
+      const response = await fetchAllProperties();
+      console.log(response, 'from property card===================================================')
+      const filteredProperties = response.data?.data.filter((property: PropertyFormData) => !property.isBlocked);
+      setProperties(filteredProperties);
+    } catch (err) {
+      console.log(err);
+      setError('Unable to load properties. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -91,10 +74,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
              
           </div>
           <div className="p-5">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-1">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-1">{property.basicInfo.propertyName}</h3>
+            <h6 className="text-sm font-semibold text-gray-800 mb-2 line-clamp-1">
               {`${property.location.locality}, ${property.location.state}`}
-            </h3>
-            <p className="text-sm text-gray-600 mb-1">Hosted by {property.basicInfo.propertyName}</p>
+            </h6>
+            <p className="text-sm text-gray-600 mb-1">Hosted by {user?.name}</p>
             <div className="flex items-center mb-2">
               <span className="text-sm text-gray-600">
                 {property.roomsAndSpaces.bedrooms} bedrooms • {property.roomsAndSpaces.bathrooms} bathrooms

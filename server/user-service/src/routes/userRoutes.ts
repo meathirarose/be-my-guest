@@ -82,6 +82,12 @@ router.get(
   "/fetch-property-owners",
   requireAuth,
   userController.fetchAllPropertyOwners as RequestHandler
+);
+
+router.get(
+  "/fetch-by-userId",
+  requireAuth,
+  userController.fetchUserById as RequestHandler
 )
 
 router.patch(

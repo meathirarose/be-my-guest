@@ -1,14 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "customer" | "property-owner" | "admin";
-  country?: string;
-  profileImage?: string;
-  isBlocked: boolean;
-}
+import { User } from "../../interfaces/User";
 
 interface UserState {
   user: User | null;

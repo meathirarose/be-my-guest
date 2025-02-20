@@ -7,9 +7,10 @@ export interface IUserService {
     forgotPassword(email: string): Promise<void>;
     resetPassword(token: string, password: string): Promise<Role | null>;
     changePassword(password: string, email: string): Promise<void>;
-    googleLogin(email: string, name: string, googleId: string, picture?: string): Promise<IUserDoc>;
+    googleLogin(email: string, name: string, googleId: string, role: string): Promise<IUserDoc>;
     fetchAllCustomers(): Promise<IUserDoc[] | null>;
     fetchAllPropertyOwners(): Promise<IUserDoc[] | null>;
+    fetchByUserId(userId: string): Promise<IUserDoc | null>;
     updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc>;
     updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null>;
 }

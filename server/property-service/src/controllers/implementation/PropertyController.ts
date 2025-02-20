@@ -36,9 +36,27 @@ export class PropertyController implements IPropertyController {
         }
     };
 
+    public fetchPropertiesByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { userId } = req.query;
+            if(!userId || typeof userId !== "string") throw new NotFoundError("Resource not found");
+
+            const properties = await this.propertyService.fetchPropertiesByUser(userId);
+            if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
+
+            res.status(200).json({ message: "All properties fetched successfully" , data: properties});
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public fetchProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
+
             const properties = await this.propertyService.fetchProperties();
+            console.log(properties, "properties from the controller=====================================")
+
             if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
 
             res.status(200).json({ message: "All properties fetched successfully" , data: properties});
