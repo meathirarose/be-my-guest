@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
-import { BadRequestError, NotFoundError } from "@be-my-guest/common";
+import { BadRequestError, NotAuthorizedError, NotFoundError } from "@be-my-guest/common";
 import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
 import { verifyGoogleToken } from "../utils/authUtils";
@@ -72,7 +72,7 @@ export class UserController implements IUserController{
             const user = await this.userService.signInUser(email, password);
             if(!user) throw new NotFoundError("User not found");
                 
-            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
+            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details");
             
             const tokenPayload = { id: user.id, email: user.email, role: user.role };
             const token = AuthService.generateToken(tokenPayload);
@@ -90,6 +90,7 @@ export class UserController implements IUserController{
                     country: user.country, 
                     role: user.role, 
                     profileImage: user.profileImage,
+                    isBlocked: user.isBlocked,
                     token: token, 
                 }
             });
@@ -98,7 +99,6 @@ export class UserController implements IUserController{
             next(error)
         }
     }
-
     public refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { refreshToken } = req.cookies;
@@ -176,6 +176,7 @@ export class UserController implements IUserController{
                     country: user.country,
                     role: user.role,
                     profileImage: user.profileImage, 
+                    isBlocked: user.isBlocked,
                     token: token,
                 },
             });
@@ -262,7 +263,7 @@ export class UserController implements IUserController{
             const user = await this.userService.updateProfile(name, email, country, profileImage);
             if (!user) throw new NotFoundError("User not found!");
 
-            if(user.isBlocked) throw new BadRequestError("Your account is blocked. Please contact support for further details")
+            if(user.isBlocked) throw new NotAuthorizedError();
 
             return res.status(200).json({ message: "Profile updated successfully!", user });
 

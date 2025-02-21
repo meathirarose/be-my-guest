@@ -79,6 +79,33 @@ export class UserService implements IUserService {
     return existingUser;
   }
 
+  // async refreshToken(refreshToken: string): Promise<string> {
+  //     try {
+  //       if(!refreshToken) throw new BadRequestError("Refresh token is expired");
+
+  //       const decoded = AuthService.verifyRefreshToken(refreshToken);
+  //       if (decoded) {
+  //         const userExist = await this.userRepository.findByEmail(decoded.email);
+  //         if(userExist && userExist.isBlocked === false) throw new NotAuthorizedError();
+  //       }
+
+  //       if(!decoded) throw new NotFoundError("Invalid or expired refresh token");
+
+  //       // Generate new access token
+  //       const newAccessToken = AuthService.generateToken({ 
+  //           id: decoded.id, 
+  //           email: decoded.email, 
+  //           role: decoded.role 
+  //       });
+
+  //       return newAccessToken;
+
+  //     } catch (error) {
+  //       console.error("Error in creating refresh token:", error);
+  //       throw error;
+  //     }
+  // }
+
   async googleLogin(name: string, email: string, googleId: string, role: string): Promise<IUserDoc> {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {

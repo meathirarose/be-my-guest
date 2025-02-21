@@ -1,0 +1,26 @@
+export const Messages = {
+    SUCCESS: {
+        ACCOUNT_CREATED: "Account created successfully!",
+        EMAIL_VERIFIED: "Email successfully verified.",
+        LOGIN_SUCCESS: "Login successful!",
+        LOGOUT_SUCCESS: "Logout successful!",
+        PASSWORD_RESET_SENT: "Password reset link sent to your email.",
+        PASSWORD_CHANGED: "Your password has been changed successfully.",
+        PROFILE_UPDATED: "Profile updated successfully!",
+        USERS_FETCHED: "Users fetched successfully.",
+        STATUS_UPDATED: "User status updated successfully.",
+    },
+    ERROR: {
+        VALIDATION_ERROR: "Validation error.",
+        USER_NOT_FOUND: "User not found.",
+        ACCOUNT_CREATION_FAILED: "Unable to create a user account.",
+        EMAIL_VERIFICATION_FAILED: "Unable to verify email.",
+        ACCOUNT_BLOCKED: "Your account is blocked. Please contact support.",
+        INVALID_TOKEN: "Invalid token.",
+        REFRESH_TOKEN_MISSING: "Refresh token is missing!",
+        REFRESH_TOKEN_INVALID: "Invalid refresh token!",
+        NO_CUSTOMERS_FOUND: "No customers found.",
+        NO_PROPERTY_OWNERS_FOUND: "No property owners found.",
+        INVALID_STATUS: "Invalid status value. Must be boolean.",
+    },
+};

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineEdit, AiOutlineStop } from "react-icons/ai";
 import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
+import { Pagination } from "antd";
 
 interface PropertyListProps {
   properties: PropertyFormData[];
@@ -10,6 +11,9 @@ interface PropertyListProps {
 
 const PropertyList: React.FC<PropertyListProps> = ({ properties, searchQuery, onBlockProperty }) => {
   const [blockingStates, setBlockingStates] = useState<{ [key: string]: boolean }>({});
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const propertiesPerPage = 4;
   
   const handleBlock = async (id: string, isBlocked: boolean) => {
     setBlockingStates(prev => ({ ...prev, [id]: true }));
@@ -25,9 +29,14 @@ const PropertyList: React.FC<PropertyListProps> = ({ properties, searchQuery, on
     }
   };
 
+  const startIndex = (currentPage - 1) * propertiesPerPage;
+  const endIndex = startIndex + propertiesPerPage;
+  const currentProperties = properties.slice(startIndex, endIndex);
+
   return (
+    <div>
     <ul className="space-y-4">
-      {properties
+      {currentProperties
         .filter((property) =>
           property?.basicInfo?.propertyName?.toLowerCase().includes(searchQuery.toLowerCase())
         )
@@ -52,7 +61,7 @@ const PropertyList: React.FC<PropertyListProps> = ({ properties, searchQuery, on
                 
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
                 <span
                   className={`text-xs font-semibold px-2 py-1 rounded ${
                     property.isBlocked ? "bg-red-200 text-red-700" : "bg-green-200 text-green-700"
@@ -77,6 +86,16 @@ const PropertyList: React.FC<PropertyListProps> = ({ properties, searchQuery, on
           </li>
         ))}
     </ul>
+    <div className="flex justify-center my-8">
+        <Pagination
+          current={currentPage}
+          total={properties.length}
+          pageSize={propertiesPerPage}
+          onChange={(page) => setCurrentPage(page)}
+          showSizeChanger={false} 
+        />
+      </div>
+    </div>
   );
 };
 

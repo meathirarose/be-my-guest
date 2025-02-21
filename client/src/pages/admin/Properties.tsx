@@ -6,21 +6,27 @@ import PropertyList from "../../components/admin/dashboard-property/PropertyList
 import { blockProperty, fetchAllProperties } from "../../api/listPropertyApi";
 import { Spin, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { propertyStatus, setProperties } from "../../redux/property/propertySlice";
+import {
+  propertyStatus,
+  setProperties,
+} from "../../redux/property/propertySlice";
 import { RootState } from "../../redux/store";
+import Footer from "../../shared/components/layout/Footer";
 
 const Properties: React.FC = () => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false); 
+  const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const properties = useSelector((state: RootState) => state.property.properties);
+  const properties = useSelector(
+    (state: RootState) => state.property.properties
+  );
 
   useEffect(() => {
     fetchProperties();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProperties = async () => {
@@ -40,51 +46,63 @@ const Properties: React.FC = () => {
 
   const handleBlockProperty = async (id: string, newBlockedStatus: boolean) => {
     try {
-      setUpdating(true); 
+      setUpdating(true);
       await blockProperty(id, newBlockedStatus);
-      
+
       dispatch(propertyStatus({ id, isBlocked: newBlockedStatus }));
-      
-      message.success(`Property ${newBlockedStatus ? "blocked" : "unblocked"} successfully.`);
+
+      message.success(
+        `Property ${newBlockedStatus ? "blocked" : "unblocked"} successfully.`
+      );
     } catch (error) {
       message.error("Failed to update the property status");
       console.error("Error updating property status:", error);
     } finally {
-      setUpdating(false); 
+      setUpdating(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
-      {updating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <Spin size="small"/>
-        </div>
-      )}
-
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="flex-1 bg-gray-50 px-6 py-28">
-          <div className="flex justify-between items-center mb-6">
-            <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+    <div>
+      <div className="flex h-screen bg-gray-50 ">
+        {updating && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <Spin size="small" />
           </div>
+        )}
 
-          {loading ? (
-            <div className="text-center text-gray-600"><Spin /></div>
-          ) : error ? (
-            <div className="text-center text-red-600">{error}</div>
-          ) : properties.length === 0 ? (
-            <div className="text-center text-gray-500">No properties found.</div>
-          ) : (
-            <PropertyList 
-              properties={properties} 
-              searchQuery={searchQuery} 
-              onBlockProperty={handleBlockProperty}
-            />
-          )}
+        <Sidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header />
+          <div className="flex-1 bg-gray-50 px-6 py-28">
+            <div className="flex justify-between items-center mb-6">
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            </div>
+
+            {loading ? (
+              <div className="text-center text-gray-600">
+                <Spin />
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-600">{error}</div>
+            ) : properties.length === 0 ? (
+              <div className="text-center text-gray-500">
+                No properties found.
+              </div>
+            ) : (
+              <PropertyList
+                properties={properties}
+                searchQuery={searchQuery}
+                onBlockProperty={handleBlockProperty}
+              />
+            )}
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

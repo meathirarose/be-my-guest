@@ -57,7 +57,6 @@ export const fetchAllProperties = async () => {
         withCredentials: true,
       }
     );
-    console.log(response, "from the api===========================")
     return response;
   } catch (error) {
     console.error("Error getting property details:", error);

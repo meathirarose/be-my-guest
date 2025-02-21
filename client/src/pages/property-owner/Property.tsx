@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import ShimmerCard from "../../shared/shimmers/ShimmerCard";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { Pagination } from "antd";
 
 interface Property {
   id: string;
@@ -55,6 +56,9 @@ const Properties: React.FC = () => {
   const [loadingPropertyId, setLoadingPropertyId] = useState<string | null>(null);
   const [countProperty, setCountProperty] = useState(0);
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const propertiesPerPage = 8;
+
   useEffect(() => {
     fetchProperties();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,18 +101,22 @@ const Properties: React.FC = () => {
     setProperties(properties.filter((property) => property.id !== id));
   };
 
+  const startIndex = (currentPage - 1) * propertiesPerPage;
+  const endIndex = startIndex + propertiesPerPage;
+  const currentProperties = properties.slice(startIndex, endIndex);
+
   return (
     <div className="flex-1 p-4 bg-gray-100">
       <div className="flex justify-between items-center mb-6">
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <AddPropertyButton onAdd={handleAddProperty} />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {loading
           ? Array.from({ length: countProperty }).map((_, index) => (
               <ShimmerCard key={index} />
             ))
-          : properties
+          : currentProperties
               .filter((property) =>
                 property.basicInfo.propertyName
                   .toLowerCase()
@@ -117,7 +125,7 @@ const Properties: React.FC = () => {
               .map((property) => (
                 <Card
                   key={property.id}
-                  className={`w-full max-w-sm mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-300
+                  className={`w-full overflow-hidden hover:shadow-lg transition-shadow duration-300
                   ${property.isBlocked ? "bg-red-100 border-red-500": ""}`}
                 >
                   <div className="h-56 overflow-hidden">
@@ -187,6 +195,15 @@ const Properties: React.FC = () => {
                   </CardContent>
                 </Card>
               ))}
+      </div>
+      <div className="flex justify-center my-8">
+        <Pagination
+          current={currentPage}
+          total={properties.length}
+          pageSize={propertiesPerPage}
+          onChange={(page) => setCurrentPage(page)}
+          showSizeChanger={false} 
+        />
       </div>
     </div>
   );

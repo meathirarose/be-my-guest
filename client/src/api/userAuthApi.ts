@@ -70,7 +70,6 @@ export const  googleLogin = async (data: { idToken: string, role: string }) => {
       data,
       { withCredentials: true }
     );
-    console.log(response, "from the api--------------------------------------")
     return response;
   } catch (error) {
     console.error("Error during Google login:", error);

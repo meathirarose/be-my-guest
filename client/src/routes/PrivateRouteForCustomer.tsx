@@ -9,7 +9,6 @@ const PrivateRouteForCustomer: React.FC = () => {
   );
   const userRole = useSelector((state: RootState) => state.user?.user?.role);
   if (!isAuthenticated || userRole !== "customer") {
-    console.log("is authenticated alla")
     return <Navigate to="/customer/login" replace />;
   }
 

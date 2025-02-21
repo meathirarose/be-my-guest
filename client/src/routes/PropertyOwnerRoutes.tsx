@@ -21,7 +21,7 @@ import AddPropertyStep4 from "../components/property-owner/dashboard-property/Ad
 import AddPropertyStep5 from "../components/property-owner/dashboard-property/AddPropertyStep5";
 import AddPropertyStep6 from "../components/property-owner/dashboard-property/AddPropertyStep6";
 import AddPropertyStep7 from "../components/property-owner/dashboard-property/AddPropertyStep7";
-import ViewPropertyDetails from "../components/property-owner/dashboard-property/ViewProperty";
+import ViewPropertyDetails from "../pages/property-owner/PropertyDetails";
 
 const PropertyOwnerRoutes: React.FC = () => (
   <Routes>

@@ -4,6 +4,7 @@ export interface IUserService {
     registerUser(name: string, email: string, password: string, country: string, role: string): Promise<IUserDoc | null>;
     verifyEmail(token: string): Promise<{ name: string; email: string; role: string } | null>;
     signInUser(email: string, password: string): Promise<IUserDoc>;
+    // refreshToken(refreshToken: string): Promise<string>;
     forgotPassword(email: string): Promise<void>;
     resetPassword(token: string, password: string): Promise<Role | null>;
     changePassword(password: string, email: string): Promise<void>;

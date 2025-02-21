@@ -53,7 +53,7 @@ const Profile: React.FC = () => {
           throw new Error("Failed to upload image");
         }
       }
-  
+
       await updateProfile(editedName, editedEmail, editedCountry, imageUrl);
       dispatch(updateUser({ name: editedName, country: editedCountry, profileImage: imageUrl }));
       message.success("Profile updated successfully!");

@@ -6,6 +6,7 @@ import Sidebar from "../../components/common/SideBar";
 import { fetchAllCustomers, updateUserStatus } from "../../api/userAuthApi";
 import { useDispatch } from "react-redux";
 import { userStatus } from "../../redux/user/userSlice";
+import Footer from "../../shared/components/layout/Footer";
 
 interface Customer {
   id: string;
@@ -117,11 +118,12 @@ const Customers: React.FC = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div>
+    <div className="flex h-screen bg-gray-50">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
           <div className="container mx-auto px-6 mt-24 py-8">
             <h3 className="text-gray-700 text-3xl font-medium mb-6">
               List Customers
@@ -138,6 +140,8 @@ const Customers: React.FC = () => {
           </div>
         </main>
       </div>
+    </div>
+      <Footer />
     </div>
   );
 };
