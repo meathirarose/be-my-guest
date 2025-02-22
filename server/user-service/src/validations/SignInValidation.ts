@@ -1,11 +1,11 @@
 import Joi from "joi";
 
 export const signInValidationSchema = Joi.object({
-    email: Joi.string().email().required().messages({
-        'string.email': 'Email must be a valid email',
+    email: Joi.string().email({ tlds: { allow: ['com', 'org', 'net', 'in'] } }).required().messages({
+        'string.email': 'Email must be a valid email with an allowed domain (.com, .org, etc.)',
         'string.empty': 'Email cannot be empty',
-        'any.required': 'Email is required'
-    }),
+        'any.required': 'Email is required',
+    }),    
     password: Joi.string().min(8)
         .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/-]).+$/)
         .required()

@@ -30,7 +30,7 @@ const Customers: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetchAllCustomers();
-      setCustomers(response.data);
+      setCustomers(response.data.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
       message.error("Failed to fetch customers");

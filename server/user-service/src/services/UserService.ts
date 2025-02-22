@@ -2,9 +2,11 @@ import bcryptjs from "bcryptjs";
 import { Role, IUserDoc } from "../interfaces/IUserModel";
 import jwt from "jsonwebtoken";
 import { EmailService } from "../utils/emailSender";
-import { BadRequestError, NotFoundError } from "@be-my-guest/common";
+import { BadRequestError, NotAuthorizedError, NotFoundError } from "@be-my-guest/common";
 import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../interfaces/IUserRepository";
+import { AuthService } from "../utils/jwt";
+import { verifyGoogleToken } from "../utils/authUtils";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET || "email-secret-key";
 
@@ -15,263 +17,224 @@ export class UserService implements IUserService {
     this.userRepository = userRepository;
   }
 
-  async registerUser(name: string, email: string, password: string, country: string, role: string): Promise<IUserDoc> {
+// registering user
+  async registerUser( name: string, email: string, password: string, country: string, role: string ): Promise<IUserDoc> {
     try {
-      const userRole: Role = Object.values(Role).includes(role as Role) ? (role as Role) : Role.CUSTOMER;
+        const userRole: Role = Object.values(Role).includes(role as Role) ? (role as Role) : Role.CUSTOMER;
 
-      const existingUser = await this.userRepository.findByEmail(email);
-      if (existingUser) throw new BadRequestError("User with this email already exists.");
+        const existingUser = await this.userRepository.findByEmail(email);
+        if (existingUser) throw new BadRequestError("User with this email already exists.");
 
-      const hashedPassword = await bcryptjs.hash(password, 10);
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-      const newUser = await this.userRepository.createUser( name, email, hashedPassword, country, userRole, false );
-      if (!newUser) throw new BadRequestError("Failed to create user");
+        const newUser = await this.userRepository.createUser( name, email, hashedPassword, country, userRole, false );
+        if (!newUser) throw new BadRequestError("Failed to create user");
 
-      await EmailService.sendVerificationMail(newUser.email);
-      return newUser;
+        await EmailService.sendVerificationMail(newUser.email);
+        return newUser;
     } catch (error) {
-      console.error("Error in register user service:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during registering user.");
     }
   }
 
-  async verifyEmail(token: string): Promise<{ name: string; email: string; role: string } | null> {
+// verifying mail
+  async verifyEmail( token: string ): Promise<{ name: string; email: string; role: string } | null> {
     try {
-      const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
+        const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
 
-      const user = await this.userRepository.findByEmail(email);
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) throw new NotFoundError("User not found with this email");
+        if (user?.verified) throw new BadRequestError("User email is already verified");
 
-      if (!user) {
-        throw new NotFoundError("User not found with this email");
-      }
+        await this.userRepository.update({ email }, { verified: true });
 
-      if (user?.verified) {
-        throw new BadRequestError("User email is already verified");
-      }
-
-      await this.userRepository.update({ email }, { verified: true });
-
-      return {
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      };
+        return { name: user.name, email: user.email, role: user.role, };
     } catch (error) {
-      console.error("Error in verifyEmail service:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during verifying email.");
     }
   }
 
-  async signInUser(email: string, password: string): Promise<IUserDoc> {
+// sign in user
+  async signInUser(email: string, password: string): Promise<{ user: IUserDoc; token: string; refreshToken: string; }> {
+    try {
+        const existingUser = await this.userRepository.findByEmail(email);
+        if (!existingUser) throw new NotFoundError("User not found with this email");
+      
+        if (existingUser.isBlocked) throw new NotAuthorizedError();
+      
+        const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
+        if (!passwordMatch) throw new BadRequestError("Invalid email or Password.!");
+      
+        const tokenPayload = { id: existingUser.id, email: existingUser.email, role: existingUser.role };
+        
+        const token = AuthService.generateToken(tokenPayload);
+        const refreshToken = AuthService.generateRefreshToken(tokenPayload);
+      
+        return { user: existingUser, token, refreshToken };
+    } catch (error) {
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during sign-in.");
+    }
+  }
+
+// create new access token using refresh token
+  async refreshToken(refreshToken: string): Promise<string> {
+      try {
+        const decoded = AuthService.verifyRefreshToken(refreshToken);
+        if (!decoded) throw new BadRequestError("Invalid refresh token!");
+
+        const tokenPayload = { id: decoded.id, email: decoded.email, role: decoded.role};
+        const newAccessToken = AuthService.generateToken(tokenPayload);
+
+        return newAccessToken;
+
+      } catch (error) {
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during creating refresh token.");
+      }
+  }
+
+// login - google
+  async googleLogin( idToken: string, role: string ): Promise<{ user: IUserDoc; token: string; refreshToken: string; }> {
+    try {
+        const payload = await verifyGoogleToken(idToken);
+        if (!payload) throw new BadRequestError("Invalid Google token!");
     
-    const existingUser = await this.userRepository.findByEmail(email);
-
-    if (!existingUser) {
-      throw new NotFoundError("User not found with this email");
+        const { name = "", email, sub: googleId } = payload;
+        if (!email || !googleId) throw new NotFoundError("Google token is missing essential information!");
+    
+        let user = await this.userRepository.findByEmail(email);
+        if (!user) {
+          const hashedGoogleId = await bcryptjs.hash(googleId, 10);
+          user = await this.userRepository.createUser(name, email, hashedGoogleId, "India", role, true);
+        }  
+        const tokenPayload = { id: user.id, email: user.email, role: user.role };
+        const token = AuthService.generateToken(tokenPayload);
+        const refreshToken = AuthService.generateRefreshToken(tokenPayload);
+    
+        return { user, token, refreshToken };
+    } catch (error) {
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during creating google login.");
     }
-
-    const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
-
-    if (!passwordMatch) {
-      throw new BadRequestError("Invalid email or Password.!");
-    }
-
-    return existingUser;
   }
 
-  // async refreshToken(refreshToken: string): Promise<string> {
-  //     try {
-  //       if(!refreshToken) throw new BadRequestError("Refresh token is expired");
-
-  //       const decoded = AuthService.verifyRefreshToken(refreshToken);
-  //       if (decoded) {
-  //         const userExist = await this.userRepository.findByEmail(decoded.email);
-  //         if(userExist && userExist.isBlocked === false) throw new NotAuthorizedError();
-  //       }
-
-  //       if(!decoded) throw new NotFoundError("Invalid or expired refresh token");
-
-  //       // Generate new access token
-  //       const newAccessToken = AuthService.generateToken({ 
-  //           id: decoded.id, 
-  //           email: decoded.email, 
-  //           role: decoded.role 
-  //       });
-
-  //       return newAccessToken;
-
-  //     } catch (error) {
-  //       console.error("Error in creating refresh token:", error);
-  //       throw error;
-  //     }
-  // }
-
-  async googleLogin(name: string, email: string, googleId: string, role: string): Promise<IUserDoc> {
-    const existingUser = await this.userRepository.findByEmail(email);
-    if (existingUser) {
-        return existingUser;
-    }
-
-    const hashedGoogleId = await bcryptjs.hash(googleId, 10);
-    return await this.userRepository.createUser(
-        name,
-        email,
-        hashedGoogleId,
-        "India",
-        role,
-        true
-    );
-  }
-
+//forgot password 
   async forgotPassword(email: string): Promise<void> {
     try {
       const user = await this.userRepository.findByEmail(email);
-
-      if (!user) {
-        throw new NotFoundError("User not found with this email");
-      }
+      if (!user) throw new NotFoundError("User not found with this email");
 
       await EmailService.sendPasswordResetMail(user.email, user.role);
-
     } catch (error) {
-      console.error("Error occurred in resetPassword service:", error);
-
-      if (error instanceof NotFoundError) {
-        throw error;
-      }
-
-      throw new BadRequestError(
-        "An unexpected error occurred while resetting the password."
-      );
+      if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+      throw new Error("An unexpected error occurred while resetting the password.");
     }
   }
 
+// resetting password
   async resetPassword(password: string, token: string): Promise<Role | null> {
     try {
-      const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
+        const { email } = jwt.verify(token, EMAIL_SECRET) as { email: string };
 
-      const user = await this.userRepository.findByEmail(email);
-      console.log(user, "from the service - user")
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) throw new NotFoundError("User not found with this email");
 
-      if (!user) {
-        throw new NotFoundError("User not found with this email");
-      }
+        const isSamePassword = await bcryptjs.compare(password, user.password);
+        if (isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
 
-      const isSamePassword = await bcryptjs.compare(password, user.password);
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-      if(isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
-
-      const hashedPassword = await bcryptjs.hash(password, 10);
-
-      await this.userRepository.update({ email }, { password: hashedPassword });
-      return user.role;
-
+        await this.userRepository.update({ email }, { password: hashedPassword });
+        return user.role;
     } catch (error) {
-      console.error("Error occurred in resetPassword service:", error);
-
-      if (error instanceof NotFoundError) {
-        throw error;
-      }
-
-      throw new BadRequestError(
-        "An unexpected error occurred while resetting the password."
-      );
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred while resetting the password.");
     }
   }
 
+// change the existing password
   async changePassword(password: string, email: string): Promise<void> {
     try {
-      const user = await this.userRepository.findByEmail(email);
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) throw new NotFoundError("No account with the provided email found.");
 
-      if(!user) throw new NotFoundError("No account with the provided email found.");
-      
-      const isSamePassword = await bcryptjs.compare(password, user.password);
+        const isSamePassword = await bcryptjs.compare(password, user.password);
+        if (isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
 
-      if(isSamePassword) throw new BadRequestError("New password must be different from the previous password.");
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-      const hashedPassword = await bcryptjs.hash(password, 10);
-
-      await this.userRepository.update({ email }, { password: hashedPassword });
-
+        await this.userRepository.update({ email }, { password: hashedPassword });
     } catch (error) {
-      console.error("Error in change password service:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred while changing the password.");
     }
   }
 
-  async updateProfile(name: string, email: string, country: string, profileImage: string): Promise<IUserDoc> {
+// updating the profile information
+  async updateProfile( name: string, email: string, country: string, profileImage: string ): Promise<IUserDoc> {
     try {
-      const user = await this.userRepository.findByEmail(email);
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) throw new NotFoundError("User not found with this email");
+        
+        const updatedUser = await this.userRepository.update({ email },{ name, country, profileImage });
+        if (!updatedUser) throw new BadRequestError("Failed to update the user");
 
-      if (!user) {
-        throw new NotFoundError("User not found with this email");
-      }
-
-      const updatedUser = await this.userRepository.update(
-        { email },
-        { name, country, profileImage },
-      );
-
-      if (!updatedUser) {
-        throw new BadRequestError("Failed to update the user");
-      }
-
-      return updatedUser;
+        return updatedUser;
     } catch (error) {
-      console.error("Error in verifyEmail service:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred while updating profile.");
     }
   }
 
+// fetch all customers - admin
   async fetchAllCustomers(): Promise<IUserDoc[] | null> {
     try {
-      
-      const customers = await this.userRepository.fetchAllCustomers(Role.CUSTOMER);
+        const customers = await this.userRepository.fetchAllCustomers(Role.CUSTOMER);
+        if (!customers || customers.length === 0) throw new NotFoundError("No customers found");
 
-      if(!customers || customers.length === 0)
-        throw new NotFoundError("No customers found");
-
-      return customers;
-
+        return customers;
     } catch (error) {
-      console.error("Error in fetching all customers:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred while fetching customers.");
     }
   }
 
+// fetch all property-owners - admin
   async fetchAllPropertyOwners(): Promise<IUserDoc[] | null> {
     try {
-      const propertyOwners = await this.userRepository.fetchAllPropertyOwners(Role.PROPERTY_OWNER);
-    
-      if(!propertyOwners || propertyOwners.length === 0)
-        throw new NotFoundError("No Property Owners found");
+        const propertyOwners = await this.userRepository.fetchAllPropertyOwners(Role.PROPERTY_OWNER);
+        if (!propertyOwners || propertyOwners.length === 0) throw new NotFoundError("No Property Owners found");
 
-      return propertyOwners;
+        return propertyOwners;
     } catch (error) {
-      console.error("Error in fetching all customers:", error);
-      throw error;
+      if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+      throw new Error("An unexpected error occurred while fetching customers.");
     }
   }
 
+// fetch user using their ID
   async fetchByUserId(userId: string): Promise<IUserDoc | null> {
-      try {
-        const user = await this.userRepository.findByUserId(userId);
-        if(!user) throw new NotFoundError("No user found with this accound.");
+    try {
+      const user = await this.userRepository.findByUserId(userId);
+      if (!user) throw new NotFoundError("No user found with this accound.");
 
-        return user;
-      } catch (error) {
-        console.error("Error in fetching all customers:", error);
-        throw error;
-      }
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+      throw new Error("An unexpected error occurred while fetch user by ID.");
+    }
   }
 
-  async updateUserStatus(userId: string, isBlocked: boolean): Promise<IUserDoc | null> {
+// updating the user status - block/unblock
+  async updateUserStatus( userId: string, isBlocked: boolean ): Promise<IUserDoc | null> {
     try {
       return await this.userRepository.updateUserStatus(userId, isBlocked);
     } catch (error) {
-      console.error("Error in updating the user status :", error);
-      throw error;
+      if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+      throw new Error("An unexpected error occurred while updating status of the user.");
     }
   }
-
 }

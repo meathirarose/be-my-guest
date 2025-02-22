@@ -29,7 +29,7 @@ const PropertyOwners: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetchAllPropertyOwners();
-      setPropertyOwners(response.data);
+      setPropertyOwners(response.data.data);
     } catch (error) {
       console.error("Error fetching property owners:", error);
       message.error("Failed to fetch property owners");

@@ -70,15 +70,11 @@ const LoginForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await signInUser(
-        formData.email,
-        formData.password
-      );
+      const response = await signInUser( formData.email, formData.password);
 
       if (response && response.status === 200) {
-        const { user } = response.data;
-        const { token } = user;
-
+        const { user, token } = response.data.data;
+      
         dispatch(loginHost({ user, token }))
         showToast("success", "Sign-in successful!");
         if (user?.role === "admin") {
@@ -89,12 +85,9 @@ const LoginForm: React.FC = () => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const errorMessage = 
-            err.response?.data?.errors?.[0]?.message 
-            || err.response?.data?.error[0] 
-            || "Sign-in failed. Please try again.";
-        console.log("Error message from login page of property owner:", errorMessage);
-        showToast("error", errorMessage);
+        const errorMessage =
+          err.response?.data?.errors?.[0]?.message || err.response?.data?.error[0] || "Sign-in failed. Please try again.";
+          showToast("error", errorMessage);
       } else {
         console.error("Unexpected error:", err);
         showToast("error", "An unexpected error occurred. Please try again.");
@@ -113,8 +106,9 @@ const LoginForm: React.FC = () => {
       const apiResponse = await googleLogin({ idToken: credential, role: Role.PROPERTY_OWNER });
 
       if (apiResponse.status === 200) {
-        const { user } = apiResponse.data;
+        const { user } = apiResponse.data.data;
         const { token } = user;
+        
         dispatch(loginHost({ user, token }))
         if (user?.role === "admin") {
           navigate("/admin/dashboard", { replace: true });
