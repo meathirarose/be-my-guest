@@ -15,40 +15,22 @@ export const propertyValidationSchema = Joi.object({
       "string.max": "Property Description cannot be longer than 250 characters",
       "any.required": "Property Description is required",
     }),
-    buildYear: Joi.number()
-      .integer()
-      .min(1800)
-      .max(new Date().getFullYear())
-      .required()
-      .messages({
+    buildYear: Joi.number().integer().min(1800).max(new Date().getFullYear()).required().messages({
         "number.min": "Build year must be after 1800",
         "number.max": `Build year cannot be in the future (max is ${new Date().getFullYear()})`,
         "any.required": "Build year is required",
       }),
-    liveAtProperty: Joi.boolean()
-      .required()
-      .messages({ "any.required": "Live at property status is required" }),
-    contactEmail: Joi.string()
-      .email()
-      .required()
-      .messages({
+    liveAtProperty: Joi.boolean().required().messages({ "any.required": "Live at property status is required" }),
+    contactEmail: Joi.string().email().required().messages({
         "string.email": "Invalid email address",
         "any.required": "Contact email is required",
       }),
-    contactMobile: Joi.string()
-      .pattern(/^\d{10}$/)
-      .required()
-      .messages({
+    contactMobile: Joi.string().pattern(/^\d{10}$/).required().messages({
         "string.pattern.base": "Mobile number must be 10 digits",
         "any.required": "Contact mobile number is required",
       }),
-    contactLandline: Joi.string()
-      .pattern(/^\d{1,8}-\d{1,8}$/)
-      .allow("")
-      .optional()
-      .messages({
-        "string.pattern.base":
-          'Value must be in the format "XXXXXXXX-XXXXXXXX" (each part up to 8 digits)',
+    contactLandline: Joi.string().pattern(/^\d{1,8}-\d{1,8}$/).allow("").optional().messages({
+        "string.pattern.base":'Value must be in the format "XXXXXXXX-XXXXXXXX" (each part up to 8 digits)',
       }),
   }),
 
@@ -63,10 +45,7 @@ export const propertyValidationSchema = Joi.object({
       "string.max": "Locality cannot be longer than 100 characters",
       "any.required": "Locality is required",
     }),
-    pincode: Joi.string()
-      .pattern(/^\d{5,10}$/)
-      .required()
-      .messages({
+    pincode: Joi.string().pattern(/^\d{5,10}$/).required().messages({
         "string.pattern.base": "Pincode must be 5 to 10 digits",
         "any.required": "Pincode is required",
       }),
@@ -138,16 +117,15 @@ export const propertyValidationSchema = Joi.object({
       "number.min": "Dining area cannot be negative",
       "any.required": "Dining area is required",
     }),
-    kitchenAvailable: Joi.boolean()
-      .required()
-      .messages({ "any.required": "Kitchen availability is required" }),
+    kitchenAvailable: Joi.boolean().required().messages({ "any.required": "Kitchen availability is required" }),
+    guestCapacity: Joi.number().integer().min(1).required().messages({
+      "number.min": "Guest capacity cannot be negative",
+      "any.required": "Guest capacity is required",
+    }),
   }).required(),
 
   mediaUrls: Joi.array()
-    .items(Joi.string().uri().required())
-    .min(3)
-    .required()
-    .messages({
+    .items(Joi.string().uri().required()).min(3).required().messages({
       "array.min": "At least three media URL is required",
       "string.uri": "Each media URL must be valid",
       "any.required": "Media URLs are required",
@@ -158,10 +136,7 @@ export const propertyValidationSchema = Joi.object({
       "number.min": "Price cannot be negative",
       "any.required": "Price is required",
     }),
-    availability: Joi.string()
-      .valid("Available", "Not Available", "Booked")
-      .required()
-      .messages({
+    availability: Joi.string().valid("Available", "Not Available", "Booked").required().messages({
         "any.only":
           "Availability must be one of: Available, Not Available, or Booked",
         "any.required": "Availability status is required",

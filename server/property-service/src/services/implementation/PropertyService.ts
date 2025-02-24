@@ -28,7 +28,6 @@ export class PropertyService implements IPropertyService {
           userId
         );
         if (!response) throw new BadRequestError("Failed to save property details. Please check the provided information and try again.");
-        
         return response;
     } catch (error) {
       if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;

@@ -95,6 +95,9 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
             <div>
               <strong>Living Rooms: </strong> {data.roomsAndSpaces.livingRoom}
             </div>
+            <div>
+              <strong>Maximum Guests: </strong> {data.roomsAndSpaces.guestCapacity}
+            </div>
           </div>
         </div>
 

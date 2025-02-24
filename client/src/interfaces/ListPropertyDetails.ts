@@ -31,6 +31,7 @@ export interface PropertyBasicInfo {
     garden: number,
     diningArea: number,
     kitchenAvailable: boolean,
+    guestCapacity: number,
   }
   
   export interface PropertyPricing {

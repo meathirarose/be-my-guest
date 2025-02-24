@@ -149,9 +149,12 @@ export const propertyValidationSchema = Joi.object({
       "number.min": "Dining area cannot be negative",
       "any.required": "Dining area is required",
     }),
-    kitchenAvailable: Joi.boolean()
-      .required()
+    kitchenAvailable: Joi.boolean().required()
       .messages({ "any.required": "Kitchen availability is required" }),
+    guestCapacity: Joi.number().integer().min(1).required().messages({
+      "number.min": "Guest capacity cannot be negative",
+      "any.required": "Guest capacity is required",
+    }),
   }).required(),
 
   mediaUrls: Joi.array()

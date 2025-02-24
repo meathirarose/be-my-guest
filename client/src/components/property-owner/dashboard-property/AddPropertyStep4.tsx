@@ -16,6 +16,10 @@ const AddPropertyStep4: React.FC<Step4Props> = ({ data, onChange }) => {
     onChange({ kitchenAvailable: value });
   }
 
+  const handleGuestCapacityChange = (delta: number) => {
+    onChange({ guestCapacity: Math.max(1, data.guestCapacity + delta)});
+  }
+
   const roomTypes = [
     "bedrooms",
     "bathrooms",
@@ -84,6 +88,28 @@ const AddPropertyStep4: React.FC<Step4Props> = ({ data, onChange }) => {
             </button>
           </div>
         </div>
+
+        <div className="flex justify-between items-center py-4 border-b border-gray-200">
+          <span className="text-gray-700">How many guests can be accommodated?</span>
+          <div className="flex items-center">
+            <button 
+              onClick={() => handleGuestCapacityChange(-1)}
+              className="px-3 py-1 border rounded-l bg-gray-100"
+              > 
+              - 
+            </button>
+            <span className="px-4 py-1 border-t border-b">              
+              {data.guestCapacity.toString().padStart(2, '0')}
+            </span>
+            <button 
+              onClick={() => handleGuestCapacityChange(1)}
+              className="px-3 py-1 border rounded-r bg-gray-100"
+            > 
+            + 
+            </button>
+          </div>
+        </div>
+
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-400">

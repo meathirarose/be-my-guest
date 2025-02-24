@@ -33,6 +33,7 @@ const propertySchema: Schema = new Schema(
       garden: { type: Number, default: 0 },
       diningArea: { type: Number, default: 0 },
       kitchenAvailable: { type: Boolean, default: false },
+      guestCapacity: { type: Number, default: 1 },
     },
     mediaUrls: [{ type: String }],
     pricing: {

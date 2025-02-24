@@ -1,21 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface PropertyData {
-    id: string;
-    isBlocked: boolean;
-    basicInfo: {
-      propertyName: string;
-    };
-    mediaUrls: string[];
-    pricing: {
-      price: string;
-      availability: string;
-    };
-  }
-  
+import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
 
 interface PropertyState {
-    properties: PropertyData[];
+    properties: PropertyFormData[];
 }
 
 const initialState: PropertyState = {
@@ -26,13 +13,13 @@ const propertySlice = createSlice({
     name: "property",
     initialState,
     reducers: {
-        setProperties(state, action: PayloadAction<PropertyData[]>) {
+        setProperties(state, action: PayloadAction<PropertyFormData[]>) {
             state.properties = action.payload;
         },
-        addProperty(state, action: PayloadAction<PropertyData>) {
+        addProperty(state, action: PayloadAction<PropertyFormData>) {
             state.properties.push(action.payload);
         },
-        updatedProperty(state, action: PayloadAction<{id:string, data: PropertyData}>){
+        updatedProperty(state, action: PayloadAction<{id:string, data: PropertyFormData}>){
             const index = state.properties.findIndex(p => p.id === action.payload.id);
             if(index !== -1) state.properties[index] = action.payload.data;
         },

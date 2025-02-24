@@ -20,9 +20,7 @@ axiosInstance.interceptors.response.use(
           await axios.post(
           `${import.meta.env.VITE_BASE_URL}/user-service/api/users/refresh-token`,
           {},
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
 
         return axiosInstance(originalRequest);

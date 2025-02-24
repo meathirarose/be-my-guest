@@ -62,6 +62,7 @@ const AddPropertyPage: React.FC = () => {
       garden: 0,
       diningArea: 0,
       kitchenAvailable: false,
+      guestCapacity: 1,
     },
     mediaUrls: [],
     pricing: {
@@ -171,29 +172,15 @@ const AddPropertyPage: React.FC = () => {
 
   const handleFinalSubmit = async () => {
     try {
-
-      const propertyData = {
-        id: formData.id,
-        isBlocked: formData.isBlocked,
-        basicInfo: {
-          propertyName: formData.basicInfo.propertyName,
-        },
-        mediaUrls: formData.mediaUrls,
-        pricing: formData.pricing,
-      };
-
       let response;
-
       if (isEditMode) {
         response = await updateProperty(id, { ...formData });
         message.success("Property updated successfully");
-
-        dispatch(updatedProperty({id, data: propertyData}))
+        dispatch(updatedProperty({id, data: formData}))
       } else {
         response = await listProperty({ ...formData }, userId);
         message.success("Property published successfully");
-
-        dispatch(addProperty(propertyData));
+        dispatch(addProperty(formData));
       }
 
       if (response.status === 200) {
@@ -202,9 +189,7 @@ const AddPropertyPage: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.errors?.[0]?.message ||
-          error.response?.data?.message ||
-          "An error occurred";
+          error.response?.data?.errors?.[0]?.message || error.response?.data?.message || "An error occurred";
           message.error(errorMessage);
       } else {
         message.error("Something went wrong. Please try again.");

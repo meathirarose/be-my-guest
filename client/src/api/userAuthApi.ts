@@ -186,7 +186,7 @@ export const fetchByUserId = async (userId: string) => {
       `${import.meta.env.VITE_BASE_URL}/user-service/api/users/fetch-by-userId`,
       { params: { userId } }
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error during logout:", error);
     throw error;

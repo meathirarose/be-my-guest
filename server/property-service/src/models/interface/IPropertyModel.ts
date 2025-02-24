@@ -72,6 +72,7 @@ export interface IPropertyDoc extends mongoose.Document {
     garden: number;
     diningArea: number;
     kitchenAvailable: boolean;
+    guestCapacity: number;
   };
   mediaUrls: string[];
   pricing: {
