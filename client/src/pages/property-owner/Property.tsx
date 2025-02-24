@@ -125,6 +125,7 @@ const Properties: React.FC = () => {
               .map((property) => (
                 <Card
                   key={property.id}
+                  onClick={() => handleViewProperty(property.id)}
                   className={`w-full overflow-hidden hover:shadow-lg transition-shadow duration-300
                   ${property.isBlocked ? "bg-red-100 border-red-500": ""}`}
                 >
