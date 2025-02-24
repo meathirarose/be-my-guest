@@ -89,7 +89,6 @@ export class UserService implements IUserService {
         const newAccessToken = AuthService.generateToken(tokenPayload);
 
         return newAccessToken;
-
       } catch (error) {
         if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
         throw new Error("An unexpected error occurred during creating refresh token.");

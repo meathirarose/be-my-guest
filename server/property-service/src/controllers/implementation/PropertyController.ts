@@ -46,7 +46,7 @@ export class PropertyController implements IPropertyController {
 
             const properties = await this.propertyService.fetchPropertiesByUser(userId);
             if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
-
+            
             responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: properties })
         } catch (error) {
             next(error);

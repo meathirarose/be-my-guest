@@ -27,8 +27,11 @@ const propertySlice = createSlice({
             const property = state.properties.find((p) => p.id === action.payload.id);
             if(property) property.isBlocked = action.payload.isBlocked;
         },
+        deleteProperty(state, action: PayloadAction<string>) {
+            state.properties = state.properties.filter((p) => p.id !== action.payload);
+        },
     },
 });
 
-export const { setProperties, addProperty, updatedProperty, propertyStatus } = propertySlice.actions;
+export const { setProperties, addProperty, updatedProperty, propertyStatus, deleteProperty } = propertySlice.actions;
 export default propertySlice.reducer;
