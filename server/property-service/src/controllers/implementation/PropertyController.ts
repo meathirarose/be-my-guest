@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { IPropertyController } from "../interface/IPropertyController";
 import { propertyValidationSchema } from "../../validations/propertyValidation";
-import { BadRequestError, NotFoundError } from "@be-my-guest/common";
+import { BadRequestError, HttpStatusCode, Messages, NotFoundError, responseHandler } from "@be-my-guest/common";
 import { IPropertyService } from "../../services/interface/IPropertyService";
 
 export class PropertyController implements IPropertyController {
@@ -16,21 +16,24 @@ export class PropertyController implements IPropertyController {
             if(!userId) throw new BadRequestError("No user found with the provided data");
 
             const { error, value } = propertyValidationSchema.validate(req.body, { abortEarly: false });
-            
             if (error) {
                 const errorMessages = error.details.map((detail) => detail.message);
-                res.status(400).json({ message: "Validation Error", error: errorMessages });
-                return;
+                responseHandler(res, HttpStatusCode.BAD_REQUEST, Messages.VALIDATION_ERROR, {error: errorMessages})
             }
 
             const { basicInfo, location, roomsAndSpaces, mediaUrls, pricing } = value;
 
             const propertyDetails = await this.propertyService.listProperty(
-                basicInfo, location, roomsAndSpaces, mediaUrls, pricing, userId
+                basicInfo, 
+                location, 
+                roomsAndSpaces, 
+                mediaUrls, 
+                pricing, 
+                userId
             );
             if(!propertyDetails) throw new BadRequestError("Unable to add Property Details");
 
-            res.status(200).json({ message: "Property published successfully", data: propertyDetails});
+            responseHandler(res, HttpStatusCode.OK, Messages.CREATED, { data: propertyDetails })
         } catch (error) {
             next(error);
         }
@@ -44,8 +47,7 @@ export class PropertyController implements IPropertyController {
             const properties = await this.propertyService.fetchPropertiesByUser(userId);
             if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
 
-            res.status(200).json({ message: "All properties fetched successfully" , data: properties});
-
+            responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: properties })
         } catch (error) {
             next(error);
         }
@@ -55,12 +57,9 @@ export class PropertyController implements IPropertyController {
         try {
 
             const properties = await this.propertyService.fetchProperties();
-            console.log(properties, "properties from the controller=====================================")
-
             if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
 
-            res.status(200).json({ message: "All properties fetched successfully" , data: properties});
-
+            responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: properties })
         } catch (error) {
             next(error);
         }
@@ -74,7 +73,7 @@ export class PropertyController implements IPropertyController {
             const property = await this.propertyService.fetchProperty(propertyId);
             if (!property) throw new NotFoundError("No property found");
             
-            res.status(200).json({ message: "Property fetched successfully", data: property });
+            responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: property })
         } catch (error) {
             next(error);
         }
@@ -91,7 +90,7 @@ export class PropertyController implements IPropertyController {
             const updatedProperty = await this.propertyService.updateProperty(propertyId, updatedData); 
             if (!updatedProperty) throw new NotFoundError("No property found");
     
-            res.status(200).json({ message: "Property updated successfully", data: updatedProperty });
+            responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: updatedProperty })
         } catch (error) {
             next(error);
         }
@@ -105,8 +104,9 @@ export class PropertyController implements IPropertyController {
             if (!propertyId) throw new NotFoundError('Property ID is required');
 
             const updatedStatus = await this.propertyService.blockProperty(propertyId, isBlocked);
+            if(!updatedStatus) throw new BadRequestError("Unable to update Property Details");
 
-            res.status(200).json({ message: "Property blocked successfully", data: updatedStatus});
+            responseHandler(res, HttpStatusCode.OK, Messages.FETCHED, { data: updatedStatus })
         } catch (error) {
             next(error);
         }

@@ -35,9 +35,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
   const fetchProperties = async () => {
     try {
       const response = await fetchAllProperties();
-      const filteredProperties = response.data?.data.filter(
-        (property: PropertyFormData) => !property.isBlocked
-      );
+      const filteredProperties = response.data?.data?.filter((property: PropertyFormData) => !property.isBlocked);
       setProperties(filteredProperties);
     } catch (err) {
       console.log(err);

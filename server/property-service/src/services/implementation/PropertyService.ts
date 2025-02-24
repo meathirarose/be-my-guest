@@ -1,4 +1,4 @@
-import { BadRequestError } from "@be-my-guest/common";
+import { BadRequestError, NotAuthorizedError, NotFoundError } from "@be-my-guest/common";
 import { IPropertyDoc } from "../../models/interface/IPropertyModel";
 import { IPropertyRepository } from "../../repositories/interface/IPropertyRepository";
 import { IPropertyService } from "../interface/IPropertyService";
@@ -19,45 +19,55 @@ export class PropertyService implements IPropertyService {
     userId?: string
   ): Promise<IPropertyDoc | null> {
     try {
-        const response = await this.propertyRepository.savePropertyDetails(basicInfo, location, roomsAndSpaces, mediaUrls, pricing, userId);
+        const response = await this.propertyRepository.savePropertyDetails(
+          basicInfo, 
+          location, 
+          roomsAndSpaces, 
+          mediaUrls, 
+          pricing, 
+          userId
+        );
         if (!response) throw new BadRequestError("Failed to save property details. Please check the provided information and try again.");
+        
         return response;
     } catch (error) {
-        console.error("Error in adding property details:", error);
-        throw error;
+      if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+      throw new Error("An unexpected error occurred during adding property.");
     }
   }
 
   async fetchPropertiesByUser(userId: string): Promise<IPropertyDoc[] | null> {
       try {
-        const response = await this.propertyRepository.fetchPropertiesByUser(userId);
-        if(!response || response.length === 0) throw new BadRequestError("No properties found.")
-        return response;
+          const response = await this.propertyRepository.fetchPropertiesByUser(userId);
+          if(!response || response.length === 0) throw new BadRequestError("No properties found.");
+
+          return response;
       } catch (error) {
-        console.error("Error in fetching property details:", error);
-        throw error;
+          if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+          throw new Error("An unexpected error occurred during fetching property details.");
       }
   }
 
   async fetchProperties(): Promise<IPropertyDoc[] | null> {
       try {
-        const response = await this.propertyRepository.fetchProperties();
-        if(!response || response.length === 0) throw new BadRequestError("No properties found.")
-        return response;
+          const response = await this.propertyRepository.fetchProperties();
+          if(!response || response.length === 0) throw new BadRequestError("No properties found.");
+          
+          return response;
       } catch (error) {
-        console.error("Error in fetching property details:", error);
-        throw error;
+          if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+          throw new Error("An unexpected error occurred during fetching properties.");
       }
   }
 
   async fetchProperty(propertyId: string): Promise<IPropertyDoc | null> {
       try {
-        const response = await this.propertyRepository.fetchProperty(propertyId);
-        if(!response) throw new BadRequestError("No property found.");
-        return response;
+          const response = await this.propertyRepository.fetchProperty(propertyId);
+          if(!response) throw new BadRequestError("No property found.");
+          return response;
       } catch (error) {
-        console.error("Error in fetching property details:", error);
-        throw error;
+          if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+          throw new Error("An unexpected error occurred during fetching property.");
       }
   }
 
@@ -67,18 +77,20 @@ export class PropertyService implements IPropertyService {
         if(!updatedProperty) throw new BadRequestError("Failed to update property details. Please check the provided information and try again.")
         return updatedProperty;
     } catch (error) {
-        console.error("Error in updating property:", error);
-        throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during updating property.");
     }
   }
 
   async blockProperty(propertyId: string, isBlocked: boolean): Promise<IPropertyDoc | null> {
     try {
-      const response = await this.propertyRepository.blockProperty(propertyId, isBlocked);
-      return response;
+        const response = await this.propertyRepository.blockProperty(propertyId, isBlocked);
+        if(!response) throw new BadRequestError("Failed to change the status of the property");
+
+        return response;
     } catch (error) {
-      console.error("Error in blocking property:", error);
-      throw error;
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during blocking property.");
     }
   }
 

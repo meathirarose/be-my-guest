@@ -39,7 +39,7 @@ export const fetchPropertiesByUser = async (userId: string) => {
         withCredentials: true,
       }
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error getting property details:", error);
     throw error;
@@ -57,7 +57,7 @@ export const fetchAllProperties = async () => {
         withCredentials: true,
       }
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error getting property details:", error);
     throw error;
@@ -75,7 +75,7 @@ export const fetchPropertyById = async (propertyId: string) => {
         withCredentials: true,
       }
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error getting property details:", error);
     throw error;
