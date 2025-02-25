@@ -3,6 +3,7 @@ import { UserPayload } from '../interfaces/IJwtPayloadInput';
 import dotenv from 'dotenv';
 dotenv.config();
 
+
 export class AuthService {
     static generateToken(user: UserPayload): string {
         return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.ACCESS_SECRET!, {

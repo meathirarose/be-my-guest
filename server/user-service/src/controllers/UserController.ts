@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { signUpValidationSchema } from "../validations/SignUpValidation";
 import { signInValidationSchema } from "../validations/SignInValidation";
 import { BadRequestError, HttpStatusCode, Messages, NotAuthorizedError, NotFoundError, responseHandler } from "@be-my-guest/common";
-import { AuthService } from "../utils/jwt";
 import { IUserController } from "../interfaces/IUserController";
 import { resetPasswordValidationSchema } from "../validations/ResetPasswordValidation";
 import { IUserService } from "../interfaces/IUserService";
@@ -90,7 +89,7 @@ export class UserController implements IUserController{
             const { refreshToken } = req.cookies;
             if (!refreshToken) throw new NotFoundError("Refresh token is missing!");
 
-            const newAccessToken = AuthService.generateToken(refreshToken);
+            const newAccessToken = await this.userService.refreshToken(refreshToken);
 
             res.cookie('accessToken', newAccessToken, { httpOnly: true, sameSite: "strict", maxAge: 60 * 60 * 1000,}); // 1 hour
 

@@ -39,7 +39,6 @@ export const fetchPropertiesByUser = async (userId: string) => {
         withCredentials: true,
       }
     );
-    console.log("response.data============================", response.data);
     return response.data;
   } catch (error) {
     console.error("Error getting property details:", error);

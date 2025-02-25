@@ -83,7 +83,13 @@ export class UserService implements IUserService {
   async refreshToken(refreshToken: string): Promise<string> {
       try {
         const decoded = AuthService.verifyRefreshToken(refreshToken);
-        if (!decoded) throw new BadRequestError("Invalid refresh token!");
+        if(decoded) {
+          const userExist = await this.userRepository.findByEmail(decoded.email);
+          if(userExist && userExist.isBlocked === true) throw new NotAuthorizedError();
+        }
+        if (!decoded) {
+          throw new NotAuthorizedError();
+        }
 
         const tokenPayload = { id: decoded.id, email: decoded.email, role: decoded.role};
         const newAccessToken = AuthService.generateToken(tokenPayload);
