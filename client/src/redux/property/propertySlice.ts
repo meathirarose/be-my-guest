@@ -30,8 +30,11 @@ const propertySlice = createSlice({
         deleteProperty(state, action: PayloadAction<string>) {
             state.properties = state.properties.filter((p) => p.id !== action.payload);
         },
+        resetProperties(state) {
+            state.properties = [];
+        }
     },
 });
 
-export const { setProperties, addProperty, updatedProperty, propertyStatus, deleteProperty } = propertySlice.actions;
+export const { setProperties, addProperty, updatedProperty, propertyStatus, deleteProperty, resetProperties } = propertySlice.actions;
 export default propertySlice.reducer;
