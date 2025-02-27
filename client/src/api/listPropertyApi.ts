@@ -119,4 +119,4 @@ export const blockProperty = async (propertyId: string, isBlocked: boolean) => {
     console.log("Error in blocking the property:", error);
     throw error;
   }
-};
+}

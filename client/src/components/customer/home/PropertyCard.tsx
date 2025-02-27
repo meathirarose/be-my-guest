@@ -4,6 +4,7 @@ import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
 import { Pagination } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { Heart } from "lucide-react";
 
 const isImageUrl = (url: string): boolean => {
   const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff"];
@@ -18,11 +19,12 @@ interface PropertyCardProps {
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state?.user?.user);
   const [properties, setProperties] = useState<PropertyFormData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const propertiesPerPage = 9;
 
@@ -42,7 +44,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
       setLoading(false);
     }
   };
-  fetchProperties();  
+  fetchProperties(); 
+  
+  const toggleFavorite = (propertyId: string) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(propertyId)
+        ? prevFavorites.filter((id) => id !== propertyId)
+        : [...prevFavorites, propertyId]
+    );
+  };
 
   // Pagination logic
   const startIndex = (currentPage - 1) * propertiesPerPage;
@@ -62,17 +72,30 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onPropertyClick }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-40 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20 px-40 max-w-7xl mx-auto">
         {currentProperties.map((property) => (
           <div
             key={property?.id}
             onClick={() => onPropertyClick(property?.id)}
-            className="w-72 bg-white shadow-xl rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer"
+            className="w-80 bg-white shadow-xl rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer relative"
           >
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(property.id);
+              }}
+              className="absolute top-3 right-3 p-1 z-10 bg-transparent rounded-full transition-colors"
+            >
+              {favorites.includes(property.id) ? (
+                <Heart className="w-6 h-6 text-red-500 fill-red-500" />
+              ) : (
+                <Heart className="w-6 h-6 text-gray-200 fill-gray-600" />
+              )}
+            </div>
             <img
               src={getFirstImageUrl(property?.mediaUrls)}
               alt={property?.basicInfo?.propertyName}
-              className="h-48 w-full object-cover rounded-t-2xl"
+              className="h-64 w-full object-cover rounded-t-2xl"
               loading="lazy"
             />
             <div className="p-5">
