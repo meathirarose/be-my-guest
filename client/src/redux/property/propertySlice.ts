@@ -15,6 +15,7 @@ const propertySlice = createSlice({
     reducers: {
         setProperties(state, action: PayloadAction<PropertyFormData[]>) {
             state.properties = action.payload;
+            console.log(state.properties,"from redux======================================================");
         },
         addProperty(state, action: PayloadAction<PropertyFormData>) {
             state.properties.push(action.payload);

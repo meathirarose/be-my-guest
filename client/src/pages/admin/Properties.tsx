@@ -51,9 +51,7 @@ const Properties: React.FC = () => {
 
       dispatch(propertyStatus({ id, isBlocked: newBlockedStatus }));
 
-      message.success(
-        `Property ${newBlockedStatus ? "blocked" : "unblocked"} successfully.`
-      );
+      message.success(`Property ${newBlockedStatus ? "blocked" : "unblocked"} successfully.` );
     } catch (error) {
       message.error("Failed to update the property status");
       console.error("Error updating property status:", error);

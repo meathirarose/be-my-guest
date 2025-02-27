@@ -129,7 +129,7 @@ const PropertyDetails: React.FC = () => {
                   className="w-12 h-12 rounded-full border"
                 />
                 <div>
-                  <p className="font-semibold text-gray-800">Stay with {userData?.name || "Host"}</p>
+                  <p className="font-semibold text-gray-800">Hosted by {userData?.name || "Host"}</p>
                   <p className="text-gray-600 text-sm">1.6 years hosting</p>
                 </div>
               </div>

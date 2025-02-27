@@ -62,7 +62,10 @@ export class UserService implements IUserService {
         const existingUser = await this.userRepository.findByEmail(email);
         if (!existingUser) throw new NotFoundError("User not found with this email");
       
-        if (existingUser.isBlocked) throw new NotAuthorizedError();
+        if (existingUser.isBlocked) {
+          console.log(existingUser.isBlocked, "is blocked")
+          throw new NotAuthorizedError();
+        }
       
         const passwordMatch = bcryptjs.compareSync(password, existingUser.password);
         if (!passwordMatch) throw new BadRequestError("Invalid email or Password.!");
@@ -85,9 +88,13 @@ export class UserService implements IUserService {
         const decoded = AuthService.verifyRefreshToken(refreshToken);
         if(decoded) {
           const userExist = await this.userRepository.findByEmail(decoded.email);
-          if(userExist && userExist.isBlocked === true) throw new NotAuthorizedError();
+          if(userExist && userExist.isBlocked === true) {
+            console.log("userexist and is blocked true-----------------------------------")
+            throw new NotAuthorizedError();
+          }
         }
         if (!decoded) {
+          console.log("no decoded----------------------------")
           throw new NotAuthorizedError();
         }
 
