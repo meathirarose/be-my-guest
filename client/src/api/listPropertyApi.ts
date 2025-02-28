@@ -62,7 +62,7 @@ export const fetchAllProperties = async () => {
     console.error("Error getting property details:", error);
     throw error;
   }
-}
+};
 
 // fetching a single property by its id
 export const fetchPropertyById = async (propertyId: string) => {
@@ -117,6 +117,56 @@ export const blockProperty = async (propertyId: string, isBlocked: boolean) => {
     return response;
   } catch (error) {
     console.log("Error in blocking the property:", error);
+    throw error;
+  }
+};
+
+// add to the wishlist
+export const addToWishlist = async (propertyId: string) => {
+  try {
+    const response = await axiosInstance.post(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/add-to-wishlist`,
+      { propertyId }
+    );
+    console.log(response, "response from the list property api-------------------------addtowishlist")
+    return response;
+  } catch (error) {
+    console.log("Error in wishlisting the property:", error);
+    throw error;
+  }
+};
+
+// remove from wishlist
+export const removeFromWishlist = async (propertyId: string) => {
+  try {
+    const response = await axiosInstance.post(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/remove-from-wishlist`,
+      { propertyId }
+    );
+    console.log(response, "response from the list property api-------------------------removefromwishlist")
+    return response;
+  } catch (error) {
+    console.log("Error in removing property from wishlist:", error);
+    throw error;
+  }
+}
+
+// fetch all wishlists
+export const fetchWishlist = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/fetch-wishlist`,
+    );
+    console.log(response, "response from the list property api---------------------------fetchwishllst");
+    return response;
+  } catch (error) {
+    console.log("Error in fetching properties from wishlist:", error);
     throw error;
   }
 }

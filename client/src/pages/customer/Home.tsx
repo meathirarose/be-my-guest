@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";import { useNavigate } from "react-router-dom";
 import Header from "../../components/customer/Header";
 import PropertyCard from "../../components/customer/home/PropertyCard";
 import Footer from "../../shared/components/layout/Footer";
-import { useNavigate } from "react-router-dom";
 import SearchBar from "../../components/customer/home/SearchBar";
 import FilterButton from "../../components/buttons/FilterButton";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleView = (id: string) => {
-    navigate(`/customer/property-details/${id}`);
+    setLoading(true);
+    setTimeout(() => {
+      navigate(`/customer/property-details/${id}`);
+      setLoading(false);
+    }, 500); 
   };
+
+  const customIcon = <LoadingOutlined style={{ fontSize: 30, color: "#7e22ce" }} spin />;
 
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -21,7 +29,9 @@ const Home: React.FC = () => {
           <SearchBar />
           <FilterButton />
         </div>
-        <PropertyCard onPropertyClick={handleView} />
+        <Spin spinning={loading} tip="Loading..." indicator={customIcon} className="text-purple-700">
+          <PropertyCard onPropertyClick={handleView} />
+        </Spin>
       </div>
       <Footer />
     </div>
