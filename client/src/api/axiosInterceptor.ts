@@ -1,6 +1,7 @@
 import axios from "axios";
 import { logout } from "../redux/user/userSlice";
 import store from "../redux/store";
+import StatusCodes from "../constants/StatusCodes";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -12,7 +13,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.status === StatusCodes.UNAUTHORIZED && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
