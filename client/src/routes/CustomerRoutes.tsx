@@ -8,6 +8,7 @@ import Home from "../pages/customer/Home";
 import PropertyDetails from "../pages/customer/PropertyDetails";
 import PublicRoute from "./PublicRoute";
 import Profile from "../pages/customer/Profile";
+import Wishlist from "../pages/customer/Wishlist";
 
 const CustomerRoutes: React.FC = () => (
   <Routes>
@@ -23,6 +24,7 @@ const CustomerRoutes: React.FC = () => (
       <Route path="/customer/home" element={<Home />} />
       <Route path="/customer/property-details/:id" element={<PropertyDetails />} />
       <Route path="/customer/profile" element={<Profile />} />
+      <Route path="/customer/wishlist" element={<Wishlist />} />
     </Route>
   </Routes>
 );

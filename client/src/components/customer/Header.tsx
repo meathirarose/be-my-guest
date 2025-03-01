@@ -41,6 +41,10 @@ const Header: React.FC = () => {
     navigate("/customer/home");
   };
 
+  const handleWishlistClick = () => {
+    navigate("/customer/wishlist");
+  };
+
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if(menuRef.current && !menuRef.current.contains(event.target as Node)) setIsMenuOpen(false);
@@ -85,7 +89,7 @@ const Header: React.FC = () => {
 
                 <li
                   className="w-full pb-2 px-4 flex items-center space-x-2 cursor-pointer"
-                  onClick={handleProfileClick}
+                  onClick={handleWishlistClick}
                 >
                   <FiHeart className="text-lg" />
                   <span>Wishlists</span>

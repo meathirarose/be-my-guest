@@ -41,7 +41,7 @@ const SearchBar: React.FC = () => {
           />
         </div>
 
-        <button className="ml-4 bg-red-500 text-white p-3 rounded-full hover:bg-red-600">
+        <button className="ml-4 bg-purple-500 text-white p-3 rounded-full hover:bg-purple-600">
           <FaSearch />
         </button>
       </div>
