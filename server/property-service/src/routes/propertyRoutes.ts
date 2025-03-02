@@ -50,4 +50,10 @@ router.patch(
     propertyController.blockProperty
 );
 
+router.post(
+    "/add-to-wishlist",
+    requireAuth,
+    propertyController.addToWishlist
+)
+
 export default router;

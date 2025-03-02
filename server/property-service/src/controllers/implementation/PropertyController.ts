@@ -111,5 +111,15 @@ export class PropertyController implements IPropertyController {
             next(error);
         }
     }
+
+    public addToWishlist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const data = req.body;
+            console.log(data, "what is in the req body do you want to know?-------------------------------");
+            responseHandler(res, HttpStatusCode.OK, Messages.CREATED, { data: data });
+        } catch (error) {
+            next(error);
+        }
+    }
     
 }
