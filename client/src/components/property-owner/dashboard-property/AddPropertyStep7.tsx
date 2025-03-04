@@ -49,6 +49,9 @@ const AddPropertyStep7: React.FC<Step7Props> = ({ data, onChange, isEditMode }) 
               <strong>Build Year: </strong> {data.basicInfo.buildYear}
             </div>
             <div>
+              <strong>Hosting Since Year: </strong> {data.basicInfo.hostingSince}
+            </div>
+            <div>
               <strong>Contact Email: </strong> {data.basicInfo.contactEmail}
             </div>
             <div>

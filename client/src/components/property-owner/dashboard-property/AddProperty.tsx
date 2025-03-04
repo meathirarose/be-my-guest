@@ -35,6 +35,7 @@ const AddPropertyPage: React.FC = () => {
       propertyName: "",
       propertyDescription: "",
       buildYear: "",
+      hostingSince: "",
       liveAtProperty: false,
       contactEmail: "",
       contactMobile: "",

@@ -2,6 +2,7 @@ export interface PropertyBasicInfo {
     propertyName: string,
     propertyDescription: string,
     buildYear: string,
+    hostingSince: string,
     liveAtProperty: boolean,
     contactEmail: string,
     contactMobile: string,

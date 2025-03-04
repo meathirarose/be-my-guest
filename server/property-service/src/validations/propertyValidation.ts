@@ -19,7 +19,13 @@ export const propertyValidationSchema = Joi.object({
         "number.min": "Build year must be after 1800",
         "number.max": `Build year cannot be in the future (max is ${new Date().getFullYear()})`,
         "any.required": "Build year is required",
-      }),
+    }),
+    hostingSince: Joi.number().integer().min(1800).max(new Date().getFullYear()).required().messages({
+        "number.base": "Year is required and must be a valid number",
+        "number.min": "Year year must be after 1800",
+        "number.max": `Year year cannot be in the future (max is ${new Date().getFullYear()})`,
+        "any.required": "Year year is required",
+    }),
     liveAtProperty: Joi.boolean().required().messages({ "any.required": "Live at property status is required" }),
     contactEmail: Joi.string().email().required().messages({
         "string.email": "Invalid email address",

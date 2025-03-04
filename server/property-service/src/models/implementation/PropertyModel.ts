@@ -7,6 +7,7 @@ const propertySchema: Schema = new Schema(
       propertyName: { type: String, required: true },
       propertyDescription: { type: String, required: true },
       buildYear: { type: String, required: true },
+      hostingSince: { type: String, required: true },
       liveAtProperty: { type: Boolean, default: false },
       contactEmail: { type: String, required: true },
       contactMobile: { type: String, required: true },

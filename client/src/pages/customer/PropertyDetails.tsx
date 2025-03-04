@@ -17,6 +17,10 @@ const PropertyDetails: React.FC = () => {
   const [formData, setFormData] = useState<PropertyFormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<User | null>(null);
+  const hostingSinceYears = formData?.basicInfo?.hostingSince
+  ? new Date().getFullYear() - parseInt(formData?.basicInfo?.hostingSince) : 0;
+
+  console.log(formData?.basicInfo.hostingSince, hostingSinceYears, "hostingSinceYears");
   
   useEffect(() => {
     const fetchUserData = async () => {
@@ -130,7 +134,7 @@ const PropertyDetails: React.FC = () => {
                 />
                 <div>
                   <p className="font-semibold text-gray-800">Hosted by {userData?.name || "Host"}</p>
-                  <p className="text-gray-600 text-sm">1.6 years hosting</p>
+                  <p className="text-gray-600 text-sm">{hostingSinceYears} years hosting</p>
                 </div>
               </div>
             </div>

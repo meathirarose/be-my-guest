@@ -46,6 +46,7 @@ export interface IPropertyDoc extends mongoose.Document {
     propertyName: string;
     propertyDescription: string;
     buildYear: string;
+    hostingSince: string;
     liveAtProperty: boolean;
     contactEmail: string;
     contactMobile: string;

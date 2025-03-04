@@ -98,6 +98,28 @@ const AddPropertyStep2: React.FC<Step2Props> = ({ data, onChange }) => {
           )}
         </div>
 
+        {/* Hosting since */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Hosting since?
+          </label>
+          <select
+            className="w-full max-w-xl p-2 border rounded-xl focus:ring-2 focus:ring-purple-500"
+            value={data.hostingSince}
+            onChange={(e) => onChange({ hostingSince: e.target.value })}
+          >
+            <option value="">Select Year</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          {errors.hostingSince && (
+            <p className="text-red-500 text-xs">{errors.hostingSince}</p>
+          )}
+        </div>
+
         {/* Live at Property */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
