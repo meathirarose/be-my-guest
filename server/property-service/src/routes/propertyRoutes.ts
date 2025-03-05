@@ -54,6 +54,12 @@ router.post(
     "/add-to-wishlist",
     requireAuth,
     propertyController.addToWishlist
-)
+);
+
+router.post(
+    "/filter-properties",
+    requireAuth,
+    propertyController.filterProperties
+);
 
 export default router;

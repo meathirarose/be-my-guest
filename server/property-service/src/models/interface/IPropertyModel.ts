@@ -58,6 +58,7 @@ export interface IPropertyDoc extends mongoose.Document {
     pincode: string;
     country: string;
     state: string;
+    district: string;
     city: string;
   };
   roomsAndSpaces: {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { RotateCw, Edit, Trash2, MapPin, Users, Home, Calendar, Mail } from "lucide-react";
-import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
+import { PropertyFormData } from "../../interfaces/Property";
 import { fetchPropertyById } from "../../api/listPropertyApi";
 import Footer from "../../shared/components/layout/Footer";
 import Header from "../../components/common/Header";

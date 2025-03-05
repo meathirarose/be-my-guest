@@ -121,5 +121,19 @@ export class PropertyController implements IPropertyController {
             next(error);
         }
     }
+
+    public filterProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { priceRange, rooms, location } = req.body;
+            console.log(priceRange, rooms, location, "what is in the req body do you want to know?-------------------------------");
+
+            const properties = await this.propertyService.filterProperties({ priceRange, rooms, location });
+            if(!properties || properties.length === 0) throw new NotFoundError("No properties found!");
+            
+            responseHandler(res, HttpStatusCode.OK, Messages.SUCCESS, { data: { priceRange, rooms, location } });
+        } catch (error) {
+            next(error);
+        }
+    }
     
 }

@@ -1,23 +1,27 @@
 import { SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Drawer, Slider, Select, InputNumber, Button, Space, Divider } from "antd";
+import { fetchAllProperties, filterProperties } from "../../api/listPropertyApi";
 
 const FilterButton: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const [rooms, setRooms] = useState<number>(1);
   const [location, setLocation] = useState<string>("");
+  const [locationOptions, setLocationOptions] = useState<{ value: string; label: string }[]>([]);
 
-  const showDrawer = () => {
-    setOpen(true);
-  };
+  const showDrawer = () => setOpen(true);;
+  const onClose = () => setOpen(false);
 
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const handleApplyFilters = () => {
-     console.log("Applied filters:", { priceRange, rooms, location });
+  const handleApplyFilters = async () => {
+    const filters = { priceRange, rooms, location };
+    console.log("Applied filters:", filters);
+    try {
+      const filteredProperties = await filterProperties(filters);
+      console.log("Filtered properties:", filteredProperties);
+    } catch (error) {
+      console.log("Error applying filters:", error);
+    } 
     onClose();
   };
 
@@ -31,14 +35,29 @@ const FilterButton: React.FC = () => {
     setPriceRange([value[0], value[1]]);
   };
 
-  const locationOptions = [
-    { value: "new-york", label: "New York" },
-    { value: "los-angeles", label: "Los Angeles" },
-    { value: "chicago", label: "Chicago" },
-    { value: "miami", label: "Miami" },
-    { value: "seattle", label: "Seattle" },
-  ];
+  useEffect(() => {
+    fetchAllPropertiesData();
+  }, []);
 
+  const fetchAllPropertiesData = async () => {
+    try {
+      const response = await fetchAllProperties(); 
+      const properties = response.data?.data;
+      if (!properties || !Array.isArray(properties)) {
+        console.error("Invalid properties data");
+        return;
+      }
+      const uniqueLocations = Array.from(new Set(properties.map((property) => property.location?.district).filter(Boolean)));
+      console.log(uniqueLocations, "why it is not getting the unique locations----------------------------------------------");
+      const formattedLocations = uniqueLocations.map((loc) => ({ value: loc, label: loc, }));
+      setLocationOptions(formattedLocations);
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+    }
+  };
+  fetchAllPropertiesData();
+  
+  
   return (
     <div>
       <button 

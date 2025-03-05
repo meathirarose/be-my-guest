@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiOutlineEdit, AiOutlineStop } from "react-icons/ai";
-import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
+import { PropertyFormData } from "../../../interfaces/Property";
 import { Pagination } from "antd";
 
 interface PropertyListProps {

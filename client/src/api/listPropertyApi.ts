@@ -1,4 +1,5 @@
-import { PropertyFormData } from "../interfaces/ListPropertyDetails";
+import { FilterParams } from "../interfaces/FilterProperty";
+import { PropertyFormData } from "../interfaces/Property";
 import axiosInstance from "./axiosInterceptor";
 
 // adding property
@@ -167,6 +168,23 @@ export const fetchWishlist = async () => {
     return response;
   } catch (error) {
     console.log("Error in fetching properties from wishlist:", error);
+    throw error;
+  }
+}
+
+// filter properties
+export const filterProperties = async (filters: FilterParams) => {
+  try {
+    const response = await axiosInstance.post(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/property-service/api/properties/filter-properties`,
+      filters
+    );
+    console.log(response.data, "response from the list property api---------------------------filterproperties");
+    return response.data;
+  } catch (error) {
+    console.log("Error in filtering properties:", error);
     throw error;
   }
 }

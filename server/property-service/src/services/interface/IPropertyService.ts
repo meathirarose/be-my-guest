@@ -14,4 +14,5 @@ export interface IPropertyService {
     fetchProperty(propertyId: string): Promise<IPropertyDoc | null>;
     updateProperty(propertyId: string, updatedData: Partial<IPropertyDoc>): Promise<IPropertyDoc | null>;
     blockProperty(propertyId: string, isBlocked: boolean): Promise<IPropertyDoc | null>;
+    filterProperties(filter: { priceRange?: number[], rooms?: number, location?: string }): Promise<IPropertyDoc[] | null>;
 }

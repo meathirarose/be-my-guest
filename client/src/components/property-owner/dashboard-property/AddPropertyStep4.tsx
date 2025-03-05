@@ -1,5 +1,5 @@
 import React from "react";
-import { RoomsAndSpaces } from "../../../interfaces/ListPropertyDetails";
+import { RoomsAndSpaces } from "../../../interfaces/Property";
 
 interface Step4Props {
   data: RoomsAndSpaces;

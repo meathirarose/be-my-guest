@@ -72,4 +72,13 @@ export class PropertyRepository extends BaseRepository<IPropertyDoc> implements 
         }
     }
 
+    async filterProperties(filter: Record<string, unknown>): Promise<IPropertyDoc[] | null> {
+        try {
+            return await this.findAll(filter); 
+        } catch (error) {
+            console.error("Error filtering properties:", error);
+            throw error;
+        }
+    }
+    
 }

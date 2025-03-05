@@ -11,7 +11,7 @@ import AddPropertyStep7 from "./AddPropertyStep7";
 import { fetchPropertyById, listProperty, updateProperty, } from "../../../api/listPropertyApi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { PropertyBasicInfo, PropertyFormData, PropertyLocation, PropertyPricing, RoomsAndSpaces,} from "../../../interfaces/ListPropertyDetails";
+import { PropertyBasicInfo, PropertyFormData, PropertyLocation, PropertyPricing, RoomsAndSpaces,} from "../../../interfaces/Property";
 import axios from "axios";
 import Joi from "joi";
 import { propertyValidationSchema } from "../../../validations/property/propertyValidation";

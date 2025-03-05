@@ -1,5 +1,5 @@
 import React from "react";
-import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
+import { PropertyFormData } from "../../../interfaces/Property";
 
 interface Step7Props {
   data: PropertyFormData;

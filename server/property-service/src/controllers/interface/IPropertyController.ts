@@ -8,4 +8,5 @@ export interface IPropertyController {
     updateProperty(req: Request, res: Response, next: NextFunction): Promise<void>;
     blockProperty(req: Request, res: Response, next: NextFunction): Promise<void>;
     addToWishlist(req: Request, res: Response, next: NextFunction): Promise<void>;
+    filterProperties(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

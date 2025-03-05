@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { addToWishlist, fetchAllProperties } from "../../../api/listPropertyApi";
-import { PropertyFormData } from "../../../interfaces/ListPropertyDetails";
+import { PropertyFormData } from "../../../interfaces/Property";
 import { Pagination, Carousel } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

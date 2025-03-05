@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PropertyFormData } from "../../interfaces/ListPropertyDetails";
+import { PropertyFormData } from "../../interfaces/Property";
 
 interface PropertyState {
     properties: PropertyFormData[];

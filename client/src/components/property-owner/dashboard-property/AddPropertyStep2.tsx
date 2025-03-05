@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InputField from "../../../shared/components/ui/InputField";
-import { PropertyBasicInfo } from "../../../interfaces/ListPropertyDetails";
+import { PropertyBasicInfo } from "../../../interfaces/Property";
 
 interface Step2Props {
   data: PropertyBasicInfo;

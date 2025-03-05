@@ -93,4 +93,30 @@ export class PropertyService implements IPropertyService {
     }
   }
 
+  async filterProperties(filter: { priceRange?: number[]; rooms?: number; location?: string }): Promise<IPropertyDoc[] | null> {
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const query: any = {};
+
+        if(filter.priceRange && filter.priceRange.length === 2) {
+            query["pricing.price"] = { $gte: filter.priceRange[0], $lte: filter.priceRange[1] };
+        }
+        if(filter.rooms) {
+            query["roomsAndSpaces.rooms"] = filter.rooms;       
+        }
+        if(filter.location) {  
+            query["location.district"] = { $regex: filter.location, $options: "i" };
+        }
+
+        console.log("Filtering properties with query:", query);
+        const response = await this.propertyRepository.filterProperties(query);
+        if(!response || response.length === 0) throw new BadRequestError("No properties found.");
+
+        return response;
+    } catch (error) {
+        if (error instanceof NotFoundError || error instanceof BadRequestError || error instanceof NotAuthorizedError) throw error;
+        throw new Error("An unexpected error occurred during filtering properties.");
+    }
+  }
+
 }

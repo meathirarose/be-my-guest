@@ -1,6 +1,6 @@
 import React from "react";
 import InputField from "../../../shared/components/ui/InputField";
-import { PropertyPricing } from "../../../interfaces/ListPropertyDetails";
+import { PropertyPricing } from "../../../interfaces/Property";
 
 interface Step6Props {
   data: PropertyPricing;

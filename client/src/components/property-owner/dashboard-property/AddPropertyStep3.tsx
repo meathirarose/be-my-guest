@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InputField from "../../../shared/components/ui/InputField";
-import { PropertyLocation } from "../../../interfaces/ListPropertyDetails";
+import { PropertyLocation } from "../../../interfaces/Property";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
